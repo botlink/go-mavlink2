@@ -1,5 +1,7 @@
 package common
 
+import mavlink2 "github.com/queue-b/go-mavlink2"
+
 /*
 Generated using mavgen - https://github.com/ArduPilot/pymavlink/
 
@@ -32,8 +34,8 @@ func (d DialectCommon) GetName() string {
 	return "common"
 }
 
-// GetMetadata retrieves the metadata for the message. If no metadata is found, ErrUnknownMessage is returned
-func (d DialectCommon) GetMetadata(messageID uint32) (meta mavlink2.MessageMeta, err error) {
+// GetMeta retrieves the metadata for the message. If no metadata is found, ErrUnknownMessage is returned
+func (d DialectCommon) GetMeta(messageID uint32) (meta mavlink2.MessageMeta, err error) {
 	var ok bool
 
 	if meta, ok = commonMessages[messageID]; !ok {

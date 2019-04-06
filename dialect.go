@@ -28,7 +28,7 @@ import "encoding/binary"
 
 // Dialect represents a collection of MAVLink message definitions
 type Dialect interface {
-	GetMetadata(Frame) (MessageMeta, error)
+	GetMeta(uint32) (MessageMeta, error)
 	GetMessage(Frame) (Message, error)
 }
 
@@ -43,7 +43,7 @@ func (d Dialects) Validate(frame Frame) error {
 	var meta MessageMeta
 	var err error
 	for _, dialect := range d {
-		meta, err = dialect.GetMetadata(frame)
+		meta, err = dialect.GetMeta(frame.GetMessageID())
 
 		// If the Dialect doesn't know about the message, just try the next one
 		if err == ErrUnknownMessage {
