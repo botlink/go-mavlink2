@@ -37,6 +37,7 @@ type Message interface {
 	GetDialect() string
 	GetName() string
 	GetID() uint32
+	Read(int, []byte) error
 }
 
 // UnknownMessage represents a message that is not part of any loaded Dialect
