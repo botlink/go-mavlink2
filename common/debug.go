@@ -31,8 +31,8 @@ import (
 
 /*Debug Send a debug value. The index is used to discriminate between values. These values show up in the plot of QGroundControl as DEBUG N. */
 type Debug struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*TimeBootMs Timestamp (time since system boot). */
 	TimeBootMs uint32
 	/*Value DEBUG value */
@@ -41,11 +41,31 @@ type Debug struct {
 	Ind uint8
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *Debug) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *Debug) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *Debug) GetName() string {
+	return "Debug"
+}
+
+// GetID gets the ID of the Message
+func (m *Debug) GetID() uint32 {
+	return 254
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *Debug) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.TimeBootMs)
 	if err != nil {
 		return

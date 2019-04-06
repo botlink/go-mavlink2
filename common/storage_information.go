@@ -31,8 +31,8 @@ import (
 
 /*StorageInformation Information about a storage medium. */
 type StorageInformation struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*TimeBootMs Timestamp (time since system boot). */
 	TimeBootMs uint32
 	/*TotalCapacity Total capacity. */
@@ -53,11 +53,31 @@ type StorageInformation struct {
 	Status uint8
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *StorageInformation) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *StorageInformation) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *StorageInformation) GetName() string {
+	return "StorageInformation"
+}
+
+// GetID gets the ID of the Message
+func (m *StorageInformation) GetID() uint32 {
+	return 261
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *StorageInformation) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.TimeBootMs)
 	if err != nil {
 		return

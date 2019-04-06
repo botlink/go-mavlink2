@@ -31,8 +31,8 @@ import (
 
 /*ChangeOperatorControl Request to control this MAV */
 type ChangeOperatorControl struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*TargetSystem System the GCS requests control for */
 	TargetSystem uint8
 	/*ControlRequest 0: request control of this MAV, 1: Release control of this MAV */
@@ -43,11 +43,31 @@ type ChangeOperatorControl struct {
 	Passkey []byte
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *ChangeOperatorControl) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *ChangeOperatorControl) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *ChangeOperatorControl) GetName() string {
+	return "ChangeOperatorControl"
+}
+
+// GetID gets the ID of the Message
+func (m *ChangeOperatorControl) GetID() uint32 {
+	return 5
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *ChangeOperatorControl) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.TargetSystem)
 	if err != nil {
 		return

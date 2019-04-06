@@ -31,8 +31,8 @@ import (
 
 /*HilActuatorControls Sent from autopilot to simulation. Hardware in the loop control outputs (replacement for HIL_CONTROLS) */
 type HilActuatorControls struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*TimeUsec Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude the number. */
 	TimeUsec uint64
 	/*Flags Flags as bitfield, reserved for future use. */
@@ -43,11 +43,31 @@ type HilActuatorControls struct {
 	Mode uint8
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *HilActuatorControls) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *HilActuatorControls) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *HilActuatorControls) GetName() string {
+	return "HilActuatorControls"
+}
+
+// GetID gets the ID of the Message
+func (m *HilActuatorControls) GetID() uint32 {
+	return 93
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *HilActuatorControls) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.TimeUsec)
 	if err != nil {
 		return

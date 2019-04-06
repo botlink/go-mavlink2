@@ -31,19 +31,39 @@ import (
 
 /*Statustext Status text message. These messages are printed in yellow in the COMM console of QGroundControl. WARNING: They consume quite some bandwidth, so use only for important status and error messages. If implemented wisely, these messages are buffered on the MCU and sent only at a limited rate (e.g. 10 Hz). */
 type Statustext struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*Severity Severity of status. Relies on the definitions within RFC-5424. */
 	Severity uint8
 	/*Text Status text message, without null termination character */
 	Text []byte
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *Statustext) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *Statustext) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *Statustext) GetName() string {
+	return "Statustext"
+}
+
+// GetID gets the ID of the Message
+func (m *Statustext) GetID() uint32 {
+	return 253
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *Statustext) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.Severity)
 	if err != nil {
 		return

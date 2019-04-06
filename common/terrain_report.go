@@ -31,8 +31,8 @@ import (
 
 /*TerrainReport Response from a TERRAIN_CHECK request */
 type TerrainReport struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*Lat Latitude */
 	Lat int32
 	/*Lon Longitude */
@@ -49,11 +49,31 @@ type TerrainReport struct {
 	Loaded uint16
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *TerrainReport) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *TerrainReport) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *TerrainReport) GetName() string {
+	return "TerrainReport"
+}
+
+// GetID gets the ID of the Message
+func (m *TerrainReport) GetID() uint32 {
+	return 136
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *TerrainReport) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.Lat)
 	if err != nil {
 		return

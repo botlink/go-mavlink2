@@ -31,8 +31,8 @@ import (
 
 /*SmartBatteryInfo Smart Battery information (static/infrequent update). Use for updates from: smart battery to flight stack, flight stack to GCS. Use instead of BATTERY_STATUS for smart batteries. */
 type SmartBatteryInfo struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*CapacityFullSpecification Capacity when full according to manufacturer, -1: field not provided. */
 	CapacityFullSpecification int32
 	/*CapacityFull Capacity when full (accounting for battery degradation), -1: field not provided. */
@@ -55,11 +55,31 @@ type SmartBatteryInfo struct {
 	DeviceName []byte
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *SmartBatteryInfo) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *SmartBatteryInfo) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *SmartBatteryInfo) GetName() string {
+	return "SmartBatteryInfo"
+}
+
+// GetID gets the ID of the Message
+func (m *SmartBatteryInfo) GetID() uint32 {
+	return 370
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *SmartBatteryInfo) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.CapacityFullSpecification)
 	if err != nil {
 		return

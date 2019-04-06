@@ -31,8 +31,8 @@ import (
 
 /*Attitude The attitude in the aeronautical frame (right-handed, Z-down, X-front, Y-right). */
 type Attitude struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*TimeBootMs Timestamp (time since system boot). */
 	TimeBootMs uint32
 	/*Roll Roll angle (-pi..+pi) */
@@ -49,11 +49,31 @@ type Attitude struct {
 	Yawspeed float32
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *Attitude) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *Attitude) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *Attitude) GetName() string {
+	return "Attitude"
+}
+
+// GetID gets the ID of the Message
+func (m *Attitude) GetID() uint32 {
+	return 30
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *Attitude) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.TimeBootMs)
 	if err != nil {
 		return

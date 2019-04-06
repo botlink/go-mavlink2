@@ -31,8 +31,8 @@ import (
 
 /*ServoOutputRaw The RAW values of the servo outputs (for RC input from the remote, use the RC_CHANNELS messages). The standard PPM modulation is as follows: 1000 microseconds: 0%, 2000 microseconds: 100%. */
 type ServoOutputRaw struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*TimeUsec Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude the number. */
 	TimeUsec uint32
 	/*Servo1Raw Servo output 1 value */
@@ -71,11 +71,31 @@ type ServoOutputRaw struct {
 	Servo16Raw uint16
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *ServoOutputRaw) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *ServoOutputRaw) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *ServoOutputRaw) GetName() string {
+	return "ServoOutputRaw"
+}
+
+// GetID gets the ID of the Message
+func (m *ServoOutputRaw) GetID() uint32 {
+	return 36
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *ServoOutputRaw) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.TimeUsec)
 	if err != nil {
 		return

@@ -31,8 +31,8 @@ import (
 
 /*HilOpticalFlow Simulated optical flow from a flow sensor (e.g. PX4FLOW or optical mouse sensor) */
 type HilOpticalFlow struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*TimeUsec Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude the number. */
 	TimeUsec uint64
 	/*IntegrationTimeUs Integration time. Divide integrated_x and integrated_y by the integration time to obtain average flow. The integration time also indicates the. */
@@ -59,11 +59,31 @@ type HilOpticalFlow struct {
 	Quality uint8
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *HilOpticalFlow) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *HilOpticalFlow) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *HilOpticalFlow) GetName() string {
+	return "HilOpticalFlow"
+}
+
+// GetID gets the ID of the Message
+func (m *HilOpticalFlow) GetID() uint32 {
+	return 114
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *HilOpticalFlow) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.TimeUsec)
 	if err != nil {
 		return

@@ -31,8 +31,8 @@ import (
 
 /*CommandInt Message encoding a command with parameters as scaled integers. Scaling depends on the actual command value. */
 type CommandInt struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*Param1 PARAM1, see MAV_CMD enum */
 	Param1 float32
 	/*Param2 PARAM2, see MAV_CMD enum */
@@ -61,11 +61,31 @@ type CommandInt struct {
 	Autocontinue uint8
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *CommandInt) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *CommandInt) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *CommandInt) GetName() string {
+	return "CommandInt"
+}
+
+// GetID gets the ID of the Message
+func (m *CommandInt) GetID() uint32 {
+	return 75
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *CommandInt) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.Param1)
 	if err != nil {
 		return

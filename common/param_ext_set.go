@@ -31,8 +31,8 @@ import (
 
 /*ParamExtSet Set a parameter value. In order to deal with message loss (and retransmission of PARAM_EXT_SET), when setting a parameter value and the new value is the same as the current value, you will immediately get a PARAM_ACK_ACCEPTED response. If the current state is PARAM_ACK_IN_PROGRESS, you will accordingly receive a PARAM_ACK_IN_PROGRESS in response. */
 type ParamExtSet struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*TargetSystem System ID */
 	TargetSystem uint8
 	/*TargetComponent Component ID */
@@ -45,11 +45,31 @@ type ParamExtSet struct {
 	ParamType uint8
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *ParamExtSet) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *ParamExtSet) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *ParamExtSet) GetName() string {
+	return "ParamExtSet"
+}
+
+// GetID gets the ID of the Message
+func (m *ParamExtSet) GetID() uint32 {
+	return 323
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *ParamExtSet) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.TargetSystem)
 	if err != nil {
 		return

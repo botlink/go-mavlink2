@@ -31,8 +31,8 @@ import (
 
 /*Collision Information about a potential collision */
 type Collision struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*ID Unique identifier, domain based on src field */
 	ID uint32
 	/*TimeToMinimumDelta Estimated time until collision occurs */
@@ -49,11 +49,31 @@ type Collision struct {
 	ThreatLevel uint8
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *Collision) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *Collision) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *Collision) GetName() string {
+	return "Collision"
+}
+
+// GetID gets the ID of the Message
+func (m *Collision) GetID() uint32 {
+	return 247
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *Collision) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.ID)
 	if err != nil {
 		return

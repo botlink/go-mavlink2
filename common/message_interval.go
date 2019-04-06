@@ -31,19 +31,39 @@ import (
 
 /*MessageInterval The interval between messages for a particular MAVLink message ID. This interface replaces DATA_STREAM */
 type MessageInterval struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*IntervalUs The interval between two messages. A value of -1 indicates this stream is disabled, 0 indicates it is not available, > 0 indicates the interval at which it is sent. */
 	IntervalUs int32
 	/*MessageID The ID of the requested MAVLink message. v1.0 is limited to 254 messages. */
 	MessageID uint16
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *MessageInterval) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *MessageInterval) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *MessageInterval) GetName() string {
+	return "MessageInterval"
+}
+
+// GetID gets the ID of the Message
+func (m *MessageInterval) GetID() uint32 {
+	return 244
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *MessageInterval) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.IntervalUs)
 	if err != nil {
 		return

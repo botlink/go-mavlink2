@@ -31,8 +31,8 @@ import (
 
 /*FlightInformation Information about flight since last arming. */
 type FlightInformation struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*ArmingTimeUtc Timestamp at arming (time since UNIX epoch) in UTC, 0 for unknown */
 	ArmingTimeUtc uint64
 	/*TakeoffTimeUtc Timestamp at takeoff (time since UNIX epoch) in UTC, 0 for unknown */
@@ -43,11 +43,31 @@ type FlightInformation struct {
 	TimeBootMs uint32
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *FlightInformation) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *FlightInformation) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *FlightInformation) GetName() string {
+	return "FlightInformation"
+}
+
+// GetID gets the ID of the Message
+func (m *FlightInformation) GetID() uint32 {
+	return 264
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *FlightInformation) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.ArmingTimeUtc)
 	if err != nil {
 		return

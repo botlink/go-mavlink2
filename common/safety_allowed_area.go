@@ -31,8 +31,8 @@ import (
 
 /*SafetyAllowedArea Read out the safety zone the MAV currently assumes. */
 type SafetyAllowedArea struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*P1X x position 1 / Latitude 1 */
 	P1X float32
 	/*P1Y y position 1 / Longitude 1 */
@@ -49,11 +49,31 @@ type SafetyAllowedArea struct {
 	Frame uint8
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *SafetyAllowedArea) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *SafetyAllowedArea) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *SafetyAllowedArea) GetName() string {
+	return "SafetyAllowedArea"
+}
+
+// GetID gets the ID of the Message
+func (m *SafetyAllowedArea) GetID() uint32 {
+	return 55
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *SafetyAllowedArea) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.P1X)
 	if err != nil {
 		return

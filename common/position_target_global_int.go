@@ -31,8 +31,8 @@ import (
 
 /*PositionTargetGlobalInt Reports the current commanded vehicle position, velocity, and acceleration as specified by the autopilot. This should match the commands sent in SET_POSITION_TARGET_GLOBAL_INT if the vehicle is being controlled this way. */
 type PositionTargetGlobalInt struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*TimeBootMs Timestamp (time since system boot). The rationale for the timestamp in the setpoint is to allow the system to compensate for the transport delay of the setpoint. This allows the system to compensate processing latency. */
 	TimeBootMs uint32
 	/*LatInt X Position in WGS84 frame */
@@ -63,11 +63,31 @@ type PositionTargetGlobalInt struct {
 	CoordinateFrame uint8
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *PositionTargetGlobalInt) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *PositionTargetGlobalInt) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *PositionTargetGlobalInt) GetName() string {
+	return "PositionTargetGlobalInt"
+}
+
+// GetID gets the ID of the Message
+func (m *PositionTargetGlobalInt) GetID() uint32 {
+	return 87
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *PositionTargetGlobalInt) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.TimeBootMs)
 	if err != nil {
 		return

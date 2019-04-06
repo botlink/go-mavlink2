@@ -31,8 +31,8 @@ import (
 
 /*AttitudeQuaternion The attitude in the aeronautical frame (right-handed, Z-down, X-front, Y-right), expressed as quaternion. Quaternion order is w, x, y, z and a zero rotation would be expressed as (1 0 0 0). */
 type AttitudeQuaternion struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*TimeBootMs Timestamp (time since system boot). */
 	TimeBootMs uint32
 	/*Q1 Quaternion component 1, w (1 in null-rotation) */
@@ -51,11 +51,31 @@ type AttitudeQuaternion struct {
 	Yawspeed float32
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *AttitudeQuaternion) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *AttitudeQuaternion) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *AttitudeQuaternion) GetName() string {
+	return "AttitudeQuaternion"
+}
+
+// GetID gets the ID of the Message
+func (m *AttitudeQuaternion) GetID() uint32 {
+	return 31
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *AttitudeQuaternion) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.TimeBootMs)
 	if err != nil {
 		return

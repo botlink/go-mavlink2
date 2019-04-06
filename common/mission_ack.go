@@ -31,8 +31,8 @@ import (
 
 /*MissionAck Acknowledgment message during waypoint handling. The type field states if this message is a positive ack (type=0) or if an error happened (type=non-zero). */
 type MissionAck struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*TargetSystem System ID */
 	TargetSystem uint8
 	/*TargetComponent Component ID */
@@ -43,11 +43,31 @@ type MissionAck struct {
 	MissionType uint8
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *MissionAck) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *MissionAck) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *MissionAck) GetName() string {
+	return "MissionAck"
+}
+
+// GetID gets the ID of the Message
+func (m *MissionAck) GetID() uint32 {
+	return 47
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *MissionAck) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.TargetSystem)
 	if err != nil {
 		return

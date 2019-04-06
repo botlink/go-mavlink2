@@ -31,8 +31,8 @@ import (
 
 /*CommandLong Send a command with up to seven parameters to the MAV */
 type CommandLong struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*Param1 Parameter 1 (for the specific command). */
 	Param1 float32
 	/*Param2 Parameter 2 (for the specific command). */
@@ -57,11 +57,31 @@ type CommandLong struct {
 	Confirmation uint8
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *CommandLong) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *CommandLong) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *CommandLong) GetName() string {
+	return "CommandLong"
+}
+
+// GetID gets the ID of the Message
+func (m *CommandLong) GetID() uint32 {
+	return 76
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *CommandLong) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.Param1)
 	if err != nil {
 		return

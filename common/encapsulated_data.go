@@ -31,19 +31,39 @@ import (
 
 /*EncapsulatedData Data packet for images sent using the Image Transmission Protocol: https://mavlink.io/en/services/image_transmission.html. */
 type EncapsulatedData struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*Seqnr sequence number (starting with 0 on every transmission) */
 	Seqnr uint16
 	/*Data image data bytes */
 	Data []uint8
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *EncapsulatedData) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *EncapsulatedData) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *EncapsulatedData) GetName() string {
+	return "EncapsulatedData"
+}
+
+// GetID gets the ID of the Message
+func (m *EncapsulatedData) GetID() uint32 {
+	return 131
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *EncapsulatedData) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.Seqnr)
 	if err != nil {
 		return

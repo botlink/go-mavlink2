@@ -31,8 +31,8 @@ import (
 
 /*FileTransferProtocol File transfer message */
 type FileTransferProtocol struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*TargetNetwork Network ID (0 for broadcast) */
 	TargetNetwork uint8
 	/*TargetSystem System ID (0 for broadcast) */
@@ -43,11 +43,31 @@ type FileTransferProtocol struct {
 	Payload []uint8
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *FileTransferProtocol) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *FileTransferProtocol) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *FileTransferProtocol) GetName() string {
+	return "FileTransferProtocol"
+}
+
+// GetID gets the ID of the Message
+func (m *FileTransferProtocol) GetID() uint32 {
+	return 110
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *FileTransferProtocol) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.TargetNetwork)
 	if err != nil {
 		return

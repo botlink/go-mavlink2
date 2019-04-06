@@ -31,8 +31,8 @@ import (
 
 /*ResourceRequest The autopilot is requesting a resource (file, binary, other type of data) */
 type ResourceRequest struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*RequestID Request ID. This ID should be re-used when sending back URI contents */
 	RequestID uint8
 	/*URIType The type of requested URI. 0 = a file via URL. 1 = a UAVCAN binary */
@@ -45,11 +45,31 @@ type ResourceRequest struct {
 	Storage []uint8
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *ResourceRequest) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *ResourceRequest) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *ResourceRequest) GetName() string {
+	return "ResourceRequest"
+}
+
+// GetID gets the ID of the Message
+func (m *ResourceRequest) GetID() uint32 {
+	return 142
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *ResourceRequest) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.RequestID)
 	if err != nil {
 		return

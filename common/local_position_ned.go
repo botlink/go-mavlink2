@@ -31,8 +31,8 @@ import (
 
 /*LocalPositionNed The filtered local position (e.g. fused computer vision and accelerometers). Coordinate frame is right-handed, Z-axis down (aeronautical frame, NED / north-east-down convention) */
 type LocalPositionNed struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*TimeBootMs Timestamp (time since system boot). */
 	TimeBootMs uint32
 	/*X X Position */
@@ -49,11 +49,31 @@ type LocalPositionNed struct {
 	Vz float32
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *LocalPositionNed) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *LocalPositionNed) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *LocalPositionNed) GetName() string {
+	return "LocalPositionNed"
+}
+
+// GetID gets the ID of the Message
+func (m *LocalPositionNed) GetID() uint32 {
+	return 32
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *LocalPositionNed) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.TimeBootMs)
 	if err != nil {
 		return

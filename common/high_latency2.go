@@ -31,8 +31,8 @@ import (
 
 /*HighLatency2 Message appropriate for high latency connections like Iridium (version 2) */
 type HighLatency2 struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*Timestamp Timestamp (milliseconds since boot or Unix epoch) */
 	Timestamp uint32
 	/*Latitude Latitude */
@@ -89,11 +89,31 @@ type HighLatency2 struct {
 	Custom2 int8
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *HighLatency2) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *HighLatency2) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *HighLatency2) GetName() string {
+	return "HighLatency2"
+}
+
+// GetID gets the ID of the Message
+func (m *HighLatency2) GetID() uint32 {
+	return 235
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *HighLatency2) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.Timestamp)
 	if err != nil {
 		return

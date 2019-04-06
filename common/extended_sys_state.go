@@ -31,19 +31,39 @@ import (
 
 /*ExtendedSysState Provides state for additional features */
 type ExtendedSysState struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*VtolState The VTOL state if applicable. Is set to MAV_VTOL_STATE_UNDEFINED if UAV is not in VTOL configuration. */
 	VtolState uint8
 	/*LandedState The landed state. Is set to MAV_LANDED_STATE_UNDEFINED if landed state is unknown. */
 	LandedState uint8
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *ExtendedSysState) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *ExtendedSysState) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *ExtendedSysState) GetName() string {
+	return "ExtendedSysState"
+}
+
+// GetID gets the ID of the Message
+func (m *ExtendedSysState) GetID() uint32 {
+	return 245
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *ExtendedSysState) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.VtolState)
 	if err != nil {
 		return

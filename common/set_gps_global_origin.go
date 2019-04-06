@@ -31,8 +31,8 @@ import (
 
 /*SetGpsGlobalOrigin As local waypoints exist, the global waypoint reference allows to transform between the local coordinate frame and the global (GPS) coordinate frame. This can be necessary when e.g. in- and outdoor settings are connected and the MAV should move from in- to outdoor. */
 type SetGpsGlobalOrigin struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*Latitude Latitude (WGS84) */
 	Latitude int32
 	/*Longitude Longitude (WGS84) */
@@ -45,11 +45,31 @@ type SetGpsGlobalOrigin struct {
 	TimeUsec uint64
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *SetGpsGlobalOrigin) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *SetGpsGlobalOrigin) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *SetGpsGlobalOrigin) GetName() string {
+	return "SetGpsGlobalOrigin"
+}
+
+// GetID gets the ID of the Message
+func (m *SetGpsGlobalOrigin) GetID() uint32 {
+	return 48
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *SetGpsGlobalOrigin) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.Latitude)
 	if err != nil {
 		return

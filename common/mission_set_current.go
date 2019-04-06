@@ -31,8 +31,8 @@ import (
 
 /*MissionSetCurrent Set the mission item with sequence number seq as current item. This means that the MAV will continue to this mission item on the shortest path (not following the mission items in-between). */
 type MissionSetCurrent struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*Seq Sequence */
 	Seq uint16
 	/*TargetSystem System ID */
@@ -41,11 +41,31 @@ type MissionSetCurrent struct {
 	TargetComponent uint8
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *MissionSetCurrent) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *MissionSetCurrent) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *MissionSetCurrent) GetName() string {
+	return "MissionSetCurrent"
+}
+
+// GetID gets the ID of the Message
+func (m *MissionSetCurrent) GetID() uint32 {
+	return 41
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *MissionSetCurrent) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.Seq)
 	if err != nil {
 		return

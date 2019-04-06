@@ -31,19 +31,39 @@ import (
 
 /*Timesync Time synchronization message. */
 type Timesync struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*Tc1 Time sync timestamp 1 */
 	Tc1 int64
 	/*Ts1 Time sync timestamp 2 */
 	Ts1 int64
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *Timesync) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *Timesync) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *Timesync) GetName() string {
+	return "Timesync"
+}
+
+// GetID gets the ID of the Message
+func (m *Timesync) GetID() uint32 {
+	return 111
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *Timesync) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.Tc1)
 	if err != nil {
 		return

@@ -31,8 +31,8 @@ import (
 
 /*VisionSpeedEstimate Speed estimate from a vision source. */
 type VisionSpeedEstimate struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*Usec Timestamp (UNIX time or time since system boot) */
 	Usec uint64
 	/*X Global X speed */
@@ -45,11 +45,31 @@ type VisionSpeedEstimate struct {
 	Covariance []float32
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *VisionSpeedEstimate) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *VisionSpeedEstimate) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *VisionSpeedEstimate) GetName() string {
+	return "VisionSpeedEstimate"
+}
+
+// GetID gets the ID of the Message
+func (m *VisionSpeedEstimate) GetID() uint32 {
+	return 103
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *VisionSpeedEstimate) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.Usec)
 	if err != nil {
 		return

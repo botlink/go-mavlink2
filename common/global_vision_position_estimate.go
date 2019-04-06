@@ -31,8 +31,8 @@ import (
 
 /*GlobalVisionPositionEstimate Global position/attitude estimate from a vision source. */
 type GlobalVisionPositionEstimate struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*Usec Timestamp (UNIX time or since system boot) */
 	Usec uint64
 	/*X Global X position */
@@ -51,11 +51,31 @@ type GlobalVisionPositionEstimate struct {
 	Covariance []float32
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *GlobalVisionPositionEstimate) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *GlobalVisionPositionEstimate) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *GlobalVisionPositionEstimate) GetName() string {
+	return "GlobalVisionPositionEstimate"
+}
+
+// GetID gets the ID of the Message
+func (m *GlobalVisionPositionEstimate) GetID() uint32 {
+	return 101
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *GlobalVisionPositionEstimate) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.Usec)
 	if err != nil {
 		return

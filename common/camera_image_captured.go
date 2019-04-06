@@ -31,8 +31,8 @@ import (
 
 /*CameraImageCaptured Information about a captured image */
 type CameraImageCaptured struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*TimeUtc Timestamp (time since UNIX epoch) in UTC. 0 for unknown. */
 	TimeUtc uint64
 	/*TimeBootMs Timestamp (time since system boot). */
@@ -57,11 +57,31 @@ type CameraImageCaptured struct {
 	FileURL []byte
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *CameraImageCaptured) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *CameraImageCaptured) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *CameraImageCaptured) GetName() string {
+	return "CameraImageCaptured"
+}
+
+// GetID gets the ID of the Message
+func (m *CameraImageCaptured) GetID() uint32 {
+	return 263
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *CameraImageCaptured) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.TimeUtc)
 	if err != nil {
 		return

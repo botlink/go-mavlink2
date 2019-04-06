@@ -32,8 +32,8 @@ import (
 /*MissionItemInt Message encoding a mission item. This message is emitted to announce
   the presence of a mission item and to set a mission item on the system. The mission item can be either in x, y, z meters (type: LOCAL) or x:lat, y:lon, z:altitude. Local frame is Z-down, right handed (NED), global frame is Z-up, right handed (ENU). See also https://mavlink.io/en/services/mission.html. */
 type MissionItemInt struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*Param1 PARAM1, see MAV_CMD enum */
 	Param1 float32
 	/*Param2 PARAM2, see MAV_CMD enum */
@@ -66,11 +66,31 @@ type MissionItemInt struct {
 	MissionType uint8
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *MissionItemInt) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *MissionItemInt) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *MissionItemInt) GetName() string {
+	return "MissionItemInt"
+}
+
+// GetID gets the ID of the Message
+func (m *MissionItemInt) GetID() uint32 {
+	return 73
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *MissionItemInt) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.Param1)
 	if err != nil {
 		return

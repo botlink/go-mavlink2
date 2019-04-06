@@ -31,8 +31,8 @@ import (
 
 /*MemoryVect Send raw controller memory. The use of this message is discouraged for normal packets, but a quite efficient way for testing new messages and getting experimental debug output. */
 type MemoryVect struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*Address Starting address of the debug variables */
 	Address uint16
 	/*Ver Version code of the type variable. 0=unknown, type ignored and assumed int16_t. 1=as below */
@@ -43,11 +43,31 @@ type MemoryVect struct {
 	Value []int8
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *MemoryVect) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *MemoryVect) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *MemoryVect) GetName() string {
+	return "MemoryVect"
+}
+
+// GetID gets the ID of the Message
+func (m *MemoryVect) GetID() uint32 {
+	return 249
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *MemoryVect) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.Address)
 	if err != nil {
 		return

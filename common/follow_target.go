@@ -31,8 +31,8 @@ import (
 
 /*FollowTarget Current motion information from a designated system */
 type FollowTarget struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*Timestamp Timestamp (time since system boot). */
 	Timestamp uint64
 	/*CustomState button states or switches of a tracker device */
@@ -57,11 +57,31 @@ type FollowTarget struct {
 	EstCapabilities uint8
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *FollowTarget) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *FollowTarget) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *FollowTarget) GetName() string {
+	return "FollowTarget"
+}
+
+// GetID gets the ID of the Message
+func (m *FollowTarget) GetID() uint32 {
+	return 144
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *FollowTarget) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.Timestamp)
 	if err != nil {
 		return

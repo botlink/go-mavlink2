@@ -31,8 +31,8 @@ import (
 
 /*LogEntry Reply to LOG_REQUEST_LIST */
 type LogEntry struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*TimeUtc UTC timestamp of log since 1970, or 0 if not available */
 	TimeUtc uint32
 	/*Size Size of the log (may be approximate) */
@@ -45,11 +45,31 @@ type LogEntry struct {
 	LastLogNum uint16
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *LogEntry) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *LogEntry) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *LogEntry) GetName() string {
+	return "LogEntry"
+}
+
+// GetID gets the ID of the Message
+func (m *LogEntry) GetID() uint32 {
+	return 118
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *LogEntry) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.TimeUtc)
 	if err != nil {
 		return

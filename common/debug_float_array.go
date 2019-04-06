@@ -31,8 +31,8 @@ import (
 
 /*DebugFloatArray Large debug/prototyping array. The message uses the maximum available payload for data. The array_id and name fields are used to discriminate between messages in code and in user interfaces (respectively). Do not use in production code. */
 type DebugFloatArray struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*TimeUsec Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude the number. */
 	TimeUsec uint64
 	/*ArrayID Unique ID used to discriminate between arrays */
@@ -43,11 +43,31 @@ type DebugFloatArray struct {
 	Data []float32
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *DebugFloatArray) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *DebugFloatArray) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *DebugFloatArray) GetName() string {
+	return "DebugFloatArray"
+}
+
+// GetID gets the ID of the Message
+func (m *DebugFloatArray) GetID() uint32 {
+	return 350
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *DebugFloatArray) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.TimeUsec)
 	if err != nil {
 		return

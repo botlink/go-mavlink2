@@ -31,8 +31,8 @@ import (
 
 /*ProtocolVersion Version and capability of protocol version. This message is the response to REQUEST_PROTOCOL_VERSION and is used as part of the handshaking to establish which MAVLink version should be used on the network. Every node should respond to REQUEST_PROTOCOL_VERSION to enable the handshaking. Library implementers should consider adding this into the default decoding state machine to allow the protocol core to respond directly. */
 type ProtocolVersion struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*Version Currently active MAVLink version number * 100: v1.0 is 100, v2.0 is 200, etc. */
 	Version uint16
 	/*MinVersion Minimum MAVLink version supported */
@@ -45,11 +45,31 @@ type ProtocolVersion struct {
 	LibraryVersionHash []uint8
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *ProtocolVersion) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *ProtocolVersion) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *ProtocolVersion) GetName() string {
+	return "ProtocolVersion"
+}
+
+// GetID gets the ID of the Message
+func (m *ProtocolVersion) GetID() uint32 {
+	return 300
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *ProtocolVersion) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.Version)
 	if err != nil {
 		return

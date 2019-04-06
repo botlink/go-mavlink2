@@ -31,8 +31,8 @@ import (
 
 /*SysStatus The general system state. If the system is following the MAVLink standard, the system state is mainly defined by three orthogonal states/modes: The system mode, which is either LOCKED (motors shut down and locked), MANUAL (system under RC control), GUIDED (system with autonomous position control, position setpoint controlled manually) or AUTO (system guided by path/waypoint planner). The NAV_MODE defined the current flight state: LIFTOFF (often an open-loop maneuver), LANDING, WAYPOINTS or VECTOR. This represents the internal navigation state machine. The system status shows whether the system is currently active or not and if an emergency occurred. During the CRITICAL and EMERGENCY states the MAV is still considered to be active, but should start emergency procedures autonomously. After a failure occurred it should first move from active to critical to allow manual intervention and then move to emergency after a certain timeout. */
 type SysStatus struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*OnboardControlSensorsPresent Bitmap showing which onboard controllers and sensors are present. Value of 0: not present. Value of 1: present. */
 	OnboardControlSensorsPresent uint32
 	/*OnboardControlSensorsEnabled Bitmap showing which onboard controllers and sensors are enabled:  Value of 0: not enabled. Value of 1: enabled. */
@@ -61,11 +61,31 @@ type SysStatus struct {
 	BatteryRemaining int8
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *SysStatus) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *SysStatus) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *SysStatus) GetName() string {
+	return "SysStatus"
+}
+
+// GetID gets the ID of the Message
+func (m *SysStatus) GetID() uint32 {
+	return 1
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *SysStatus) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.OnboardControlSensorsPresent)
 	if err != nil {
 		return

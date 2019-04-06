@@ -31,8 +31,8 @@ import (
 
 /*OrbitExecutionStatus Vehicle status report that is sent out while orbit execution is in progress (see MAV_CMD_DO_ORBIT). */
 type OrbitExecutionStatus struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*TimeUsec Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude the number. */
 	TimeUsec uint64
 	/*Radius Radius of the orbit circle. Positive values orbit clockwise, negative values orbit counter-clockwise. */
@@ -47,11 +47,31 @@ type OrbitExecutionStatus struct {
 	Frame uint8
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *OrbitExecutionStatus) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *OrbitExecutionStatus) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *OrbitExecutionStatus) GetName() string {
+	return "OrbitExecutionStatus"
+}
+
+// GetID gets the ID of the Message
+func (m *OrbitExecutionStatus) GetID() uint32 {
+	return 360
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *OrbitExecutionStatus) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.TimeUsec)
 	if err != nil {
 		return

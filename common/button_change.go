@@ -31,8 +31,8 @@ import (
 
 /*ButtonChange Report button state change. */
 type ButtonChange struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*TimeBootMs Timestamp (time since system boot). */
 	TimeBootMs uint32
 	/*LastChangeMs Time of last change of button state. */
@@ -41,11 +41,31 @@ type ButtonChange struct {
 	State uint8
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *ButtonChange) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *ButtonChange) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *ButtonChange) GetName() string {
+	return "ButtonChange"
+}
+
+// GetID gets the ID of the Message
+func (m *ButtonChange) GetID() uint32 {
+	return 257
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *ButtonChange) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.TimeBootMs)
 	if err != nil {
 		return

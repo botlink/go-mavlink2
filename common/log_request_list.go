@@ -31,8 +31,8 @@ import (
 
 /*LogRequestList Request a list of available logs. On some systems calling this may stop on-board logging until LOG_REQUEST_END is called. */
 type LogRequestList struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*Start First log id (0 for first available) */
 	Start uint16
 	/*End Last log id (0xffff for last available) */
@@ -43,11 +43,31 @@ type LogRequestList struct {
 	TargetComponent uint8
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *LogRequestList) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *LogRequestList) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *LogRequestList) GetName() string {
+	return "LogRequestList"
+}
+
+// GetID gets the ID of the Message
+func (m *LogRequestList) GetID() uint32 {
+	return 117
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *LogRequestList) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.Start)
 	if err != nil {
 		return

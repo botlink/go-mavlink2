@@ -31,19 +31,39 @@ import (
 
 /*ParamRequestList Request all parameters of this component. After this request, all parameters are emitted. */
 type ParamRequestList struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*TargetSystem System ID */
 	TargetSystem uint8
 	/*TargetComponent Component ID */
 	TargetComponent uint8
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *ParamRequestList) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *ParamRequestList) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *ParamRequestList) GetName() string {
+	return "ParamRequestList"
+}
+
+// GetID gets the ID of the Message
+func (m *ParamRequestList) GetID() uint32 {
+	return 21
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *ParamRequestList) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.TargetSystem)
 	if err != nil {
 		return

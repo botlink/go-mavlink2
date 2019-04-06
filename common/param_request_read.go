@@ -31,8 +31,8 @@ import (
 
 /*ParamRequestRead Request to read the onboard parameter with the param_id string id. Onboard parameters are stored as key[const char*] -> value[float]. This allows to send a parameter to any other component (such as the GCS) without the need of previous knowledge of possible parameter names. Thus the same GCS can store different parameters for different autopilots. See also https://mavlink.io/en/services/parameter.html for a full documentation of QGroundControl and IMU code. */
 type ParamRequestRead struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*ParamIndex Parameter index. Send -1 to use the param ID field as identifier (else the param id will be ignored) */
 	ParamIndex int16
 	/*TargetSystem System ID */
@@ -43,11 +43,31 @@ type ParamRequestRead struct {
 	ParamID []byte
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *ParamRequestRead) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *ParamRequestRead) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *ParamRequestRead) GetName() string {
+	return "ParamRequestRead"
+}
+
+// GetID gets the ID of the Message
+func (m *ParamRequestRead) GetID() uint32 {
+	return 20
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *ParamRequestRead) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.ParamIndex)
 	if err != nil {
 		return

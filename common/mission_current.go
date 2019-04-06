@@ -31,17 +31,37 @@ import (
 
 /*MissionCurrent Message that announces the sequence number of the current active mission item. The MAV will fly towards this mission item. */
 type MissionCurrent struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*Seq Sequence */
 	Seq uint16
+}
+
+// GetVersion gets the MAVLink version of the Message contents
+func (m *MissionCurrent) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *MissionCurrent) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *MissionCurrent) GetName() string {
+	return "MissionCurrent"
+}
+
+// GetID gets the ID of the Message
+func (m *MissionCurrent) GetID() uint32 {
+	return 42
 }
 
 // Read sets the field values of the message from the raw message payload
 func (m *MissionCurrent) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.Seq)
 	if err != nil {
 		return

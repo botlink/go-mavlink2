@@ -31,8 +31,8 @@ import (
 
 /*ParamMapRc Bind a RC channel to a parameter. The parameter should change according to the RC channel value. */
 type ParamMapRc struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*ParamValue0 Initial parameter value */
 	ParamValue0 float32
 	/*Scale Scale, maps the RC range [-1, 1] to a parameter value */
@@ -53,11 +53,31 @@ type ParamMapRc struct {
 	ParameterRcChannelIndex uint8
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *ParamMapRc) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *ParamMapRc) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *ParamMapRc) GetName() string {
+	return "ParamMapRc"
+}
+
+// GetID gets the ID of the Message
+func (m *ParamMapRc) GetID() uint32 {
+	return 50
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *ParamMapRc) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.ParamValue0)
 	if err != nil {
 		return

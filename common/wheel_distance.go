@@ -31,8 +31,8 @@ import (
 
 /*WheelDistance Cumulative distance traveled for each reported wheel. */
 type WheelDistance struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*TimeUsec Timestamp (synced to UNIX time or since system boot). */
 	TimeUsec uint64
 	/*Distance Distance reported by individual wheel encoders. Forward rotations increase values, reverse rotations decrease them. Not all wheels will necessarily have wheel encoders; the mapping of encoders to wheel positions must be agreed/understood by the endpoints. */
@@ -41,11 +41,31 @@ type WheelDistance struct {
 	Count uint8
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *WheelDistance) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *WheelDistance) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *WheelDistance) GetName() string {
+	return "WheelDistance"
+}
+
+// GetID gets the ID of the Message
+func (m *WheelDistance) GetID() uint32 {
+	return 9000
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *WheelDistance) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.TimeUsec)
 	if err != nil {
 		return

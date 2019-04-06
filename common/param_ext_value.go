@@ -31,8 +31,8 @@ import (
 
 /*ParamExtValue Emit the value of a parameter. The inclusion of param_count and param_index in the message allows the recipient to keep track of received parameters and allows them to re-request missing parameters after a loss or timeout. */
 type ParamExtValue struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*ParamCount Total number of parameters */
 	ParamCount uint16
 	/*ParamIndex Index of this parameter */
@@ -45,11 +45,31 @@ type ParamExtValue struct {
 	ParamType uint8
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *ParamExtValue) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *ParamExtValue) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *ParamExtValue) GetName() string {
+	return "ParamExtValue"
+}
+
+// GetID gets the ID of the Message
+func (m *ParamExtValue) GetID() uint32 {
+	return 322
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *ParamExtValue) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.ParamCount)
 	if err != nil {
 		return

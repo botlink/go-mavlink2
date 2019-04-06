@@ -31,8 +31,8 @@ import (
 
 /*LoggingAck An ack for a LOGGING_DATA_ACKED message */
 type LoggingAck struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*Sequence sequence number (must match the one in LOGGING_DATA_ACKED) */
 	Sequence uint16
 	/*TargetSystem system ID of the target */
@@ -41,11 +41,31 @@ type LoggingAck struct {
 	TargetComponent uint8
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *LoggingAck) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *LoggingAck) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *LoggingAck) GetName() string {
+	return "LoggingAck"
+}
+
+// GetID gets the ID of the Message
+func (m *LoggingAck) GetID() uint32 {
+	return 268
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *LoggingAck) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.Sequence)
 	if err != nil {
 		return

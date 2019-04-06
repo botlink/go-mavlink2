@@ -31,8 +31,8 @@ import (
 
 /*BatteryStatus Battery information. Updates GCS with flight controller battery status. Use SMART_BATTERY_* messages instead for smart batteries. */
 type BatteryStatus struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*CurrentConsumed Consumed charge, -1: autopilot does not provide consumption estimate */
 	CurrentConsumed int32
 	/*EnergyConsumed Consumed energy, -1: autopilot does not provide energy consumption estimate */
@@ -57,11 +57,31 @@ type BatteryStatus struct {
 	ChargeState uint8
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *BatteryStatus) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *BatteryStatus) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *BatteryStatus) GetName() string {
+	return "BatteryStatus"
+}
+
+// GetID gets the ID of the Message
+func (m *BatteryStatus) GetID() uint32 {
+	return 147
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *BatteryStatus) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.CurrentConsumed)
 	if err != nil {
 		return

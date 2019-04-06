@@ -31,8 +31,8 @@ import (
 
 /*VIDeoStreamStatus Information about the status of a video stream. */
 type VIDeoStreamStatus struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*Framerate Frame rate */
 	Framerate float32
 	/*Bitrate Bit rate */
@@ -51,11 +51,31 @@ type VIDeoStreamStatus struct {
 	StreamID uint8
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *VIDeoStreamStatus) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *VIDeoStreamStatus) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *VIDeoStreamStatus) GetName() string {
+	return "VIDeoStreamStatus"
+}
+
+// GetID gets the ID of the Message
+func (m *VIDeoStreamStatus) GetID() uint32 {
+	return 270
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *VIDeoStreamStatus) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.Framerate)
 	if err != nil {
 		return

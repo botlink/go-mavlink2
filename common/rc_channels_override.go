@@ -31,8 +31,8 @@ import (
 
 /*RcChannelsOverrIDe The RAW values of the RC channels sent to the MAV to override info received from the RC radio. A value of UINT16_MAX means no change to that channel. A value of 0 means control of that channel should be released back to the RC radio. The standard PPM modulation is as follows: 1000 microseconds: 0%, 2000 microseconds: 100%. Individual receivers/transmitters might violate this specification. */
 type RcChannelsOverrIDe struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*Chan1Raw RC channel 1 value. A value of UINT16_MAX means to ignore this field. */
 	Chan1Raw uint16
 	/*Chan2Raw RC channel 2 value. A value of UINT16_MAX means to ignore this field. */
@@ -75,11 +75,31 @@ type RcChannelsOverrIDe struct {
 	Chan18Raw uint16
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *RcChannelsOverrIDe) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *RcChannelsOverrIDe) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *RcChannelsOverrIDe) GetName() string {
+	return "RcChannelsOverrIDe"
+}
+
+// GetID gets the ID of the Message
+func (m *RcChannelsOverrIDe) GetID() uint32 {
+	return 70
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *RcChannelsOverrIDe) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.Chan1Raw)
 	if err != nil {
 		return

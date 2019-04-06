@@ -31,8 +31,8 @@ import (
 
 /*CommandAck Report status of a command. Includes feedback whether the command was executed. */
 type CommandAck struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*Command Command ID (of acknowledged command). */
 	Command uint16
 	/*Result Result of command. */
@@ -47,11 +47,31 @@ type CommandAck struct {
 	TargetComponent uint8
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *CommandAck) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *CommandAck) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *CommandAck) GetName() string {
+	return "CommandAck"
+}
+
+// GetID gets the ID of the Message
+func (m *CommandAck) GetID() uint32 {
+	return 77
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *CommandAck) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.Command)
 	if err != nil {
 		return

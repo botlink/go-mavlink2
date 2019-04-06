@@ -32,8 +32,8 @@ import (
 /*GlobalPositionInt The filtered global position (e.g. fused GPS and accelerometers). The position is in GPS-frame (right-handed, Z-up). It
   is designed as scaled integer message since the resolution of float is not sufficient. */
 type GlobalPositionInt struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*TimeBootMs Timestamp (time since system boot). */
 	TimeBootMs uint32
 	/*Lat Latitude, expressed */
@@ -54,11 +54,31 @@ type GlobalPositionInt struct {
 	Hdg uint16
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *GlobalPositionInt) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *GlobalPositionInt) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *GlobalPositionInt) GetName() string {
+	return "GlobalPositionInt"
+}
+
+// GetID gets the ID of the Message
+func (m *GlobalPositionInt) GetID() uint32 {
+	return 33
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *GlobalPositionInt) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.TimeBootMs)
 	if err != nil {
 		return

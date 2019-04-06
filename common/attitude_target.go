@@ -31,8 +31,8 @@ import (
 
 /*AttitudeTarget Reports the current commanded attitude of the vehicle as specified by the autopilot. This should match the commands sent in a SET_ATTITUDE_TARGET message if the vehicle is being controlled this way. */
 type AttitudeTarget struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*TimeBootMs Timestamp (time since system boot). */
 	TimeBootMs uint32
 	/*Q Attitude quaternion (w, x, y, z order, zero-rotation is 1, 0, 0, 0) */
@@ -49,11 +49,31 @@ type AttitudeTarget struct {
 	TypeMask uint8
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *AttitudeTarget) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *AttitudeTarget) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *AttitudeTarget) GetName() string {
+	return "AttitudeTarget"
+}
+
+// GetID gets the ID of the Message
+func (m *AttitudeTarget) GetID() uint32 {
+	return 83
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *AttitudeTarget) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.TimeBootMs)
 	if err != nil {
 		return

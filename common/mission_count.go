@@ -31,8 +31,8 @@ import (
 
 /*MissionCount This message is emitted as response to MISSION_REQUEST_LIST by the MAV and to initiate a write transaction. The GCS can then request the individual mission item based on the knowledge of the total number of waypoints. */
 type MissionCount struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*Count Number of mission items in the sequence */
 	Count uint16
 	/*TargetSystem System ID */
@@ -43,11 +43,31 @@ type MissionCount struct {
 	MissionType uint8
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *MissionCount) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *MissionCount) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *MissionCount) GetName() string {
+	return "MissionCount"
+}
+
+// GetID gets the ID of the Message
+func (m *MissionCount) GetID() uint32 {
+	return 44
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *MissionCount) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.Count)
 	if err != nil {
 		return

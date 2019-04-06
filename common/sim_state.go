@@ -31,8 +31,8 @@ import (
 
 /*SimState Status of simulation environment, if used */
 type SimState struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*Q1 True attitude quaternion component 1, w (1 in null-rotation) */
 	Q1 float32
 	/*Q2 True attitude quaternion component 2, x (0 in null-rotation) */
@@ -77,11 +77,31 @@ type SimState struct {
 	Vd float32
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *SimState) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *SimState) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *SimState) GetName() string {
+	return "SimState"
+}
+
+// GetID gets the ID of the Message
+func (m *SimState) GetID() uint32 {
+	return 108
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *SimState) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.Q1)
 	if err != nil {
 		return

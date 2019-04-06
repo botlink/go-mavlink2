@@ -31,8 +31,8 @@ import (
 
 /*UavcanNodeInfo General information describing a particular UAVCAN node. Please refer to the definition of the UAVCAN service "uavcan.protocol.GetNodeInfo" for the background information. This message should be emitted by the system whenever a new node appears online, or an existing node reboots. Additionally, it can be emitted upon request from the other end of the MAVLink channel (see MAV_CMD_UAVCAN_GET_NODE_INFO). It is also not prohibited to emit this message unconditionally at a low frequency. The UAVCAN specification is available at http://uavcan.org. */
 type UavcanNodeInfo struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*TimeUsec Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude the number. */
 	TimeUsec uint64
 	/*UptimeSec Time since the start-up of the node. */
@@ -53,11 +53,31 @@ type UavcanNodeInfo struct {
 	SwVersionMinor uint8
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *UavcanNodeInfo) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *UavcanNodeInfo) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *UavcanNodeInfo) GetName() string {
+	return "UavcanNodeInfo"
+}
+
+// GetID gets the ID of the Message
+func (m *UavcanNodeInfo) GetID() uint32 {
+	return 311
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *UavcanNodeInfo) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.TimeUsec)
 	if err != nil {
 		return

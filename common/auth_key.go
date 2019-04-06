@@ -31,17 +31,37 @@ import (
 
 /*AuthKey Emit an encrypted signature / key identifying this system. PLEASE NOTE: This protocol has been kept simple, so transmitting the key requires an encrypted channel for true safety. */
 type AuthKey struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*Key key */
 	Key []byte
+}
+
+// GetVersion gets the MAVLink version of the Message contents
+func (m *AuthKey) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *AuthKey) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *AuthKey) GetName() string {
+	return "AuthKey"
+}
+
+// GetID gets the ID of the Message
+func (m *AuthKey) GetID() uint32 {
+	return 7
 }
 
 // Read sets the field values of the message from the raw message payload
 func (m *AuthKey) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.Key)
 	if err != nil {
 		return

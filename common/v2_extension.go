@@ -31,8 +31,8 @@ import (
 
 /*V2Extension Message implementing parts of the V2 payload specs in V1 frames for transitional support. */
 type V2Extension struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*MessageType A code that identifies the software component that understands this message (analogous to USB device classes or mime type strings).  If this code is less than 32768, it is considered a 'registered' protocol extension and the corresponding entry should be added to https://github.com/mavlink/mavlink/extension-message-ids.xml.  Software creators can register blocks of message IDs as needed (useful for GCS specific metadata, etc...). Message_types greater than 32767 are considered local experiments and should not be checked in to any widely distributed codebase. */
 	MessageType uint16
 	/*TargetNetwork Network ID (0 for broadcast) */
@@ -45,11 +45,31 @@ type V2Extension struct {
 	Payload []uint8
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *V2Extension) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *V2Extension) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *V2Extension) GetName() string {
+	return "V2Extension"
+}
+
+// GetID gets the ID of the Message
+func (m *V2Extension) GetID() uint32 {
+	return 248
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *V2Extension) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.MessageType)
 	if err != nil {
 		return

@@ -31,8 +31,8 @@ import (
 
 /*ParamExtAck Response from a PARAM_EXT_SET message. */
 type ParamExtAck struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*ParamID Parameter id, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string */
 	ParamID []byte
 	/*ParamValue Parameter value (new value if PARAM_ACK_ACCEPTED, current value otherwise) */
@@ -43,11 +43,31 @@ type ParamExtAck struct {
 	ParamResult uint8
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *ParamExtAck) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *ParamExtAck) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *ParamExtAck) GetName() string {
+	return "ParamExtAck"
+}
+
+// GetID gets the ID of the Message
+func (m *ParamExtAck) GetID() uint32 {
+	return 324
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *ParamExtAck) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.ParamID)
 	if err != nil {
 		return

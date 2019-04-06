@@ -31,8 +31,8 @@ import (
 
 /*PowerStatus Power supply status */
 type PowerStatus struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*Vcc 5V rail voltage. */
 	Vcc uint16
 	/*Vservo Servo rail voltage. */
@@ -41,11 +41,31 @@ type PowerStatus struct {
 	Flags uint16
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *PowerStatus) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *PowerStatus) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *PowerStatus) GetName() string {
+	return "PowerStatus"
+}
+
+// GetID gets the ID of the Message
+func (m *PowerStatus) GetID() uint32 {
+	return 125
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *PowerStatus) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.Vcc)
 	if err != nil {
 		return

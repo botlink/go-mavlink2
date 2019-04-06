@@ -31,19 +31,39 @@ import (
 
 /*WifiConfigAp Configure AP SSID and Password. */
 type WifiConfigAp struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*SsID Name of Wi-Fi network (SSID). Leave it blank to leave it unchanged. */
 	SsID []byte
 	/*Password Password. Leave it blank for an open AP. */
 	Password []byte
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *WifiConfigAp) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *WifiConfigAp) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *WifiConfigAp) GetName() string {
+	return "WifiConfigAp"
+}
+
+// GetID gets the ID of the Message
+func (m *WifiConfigAp) GetID() uint32 {
+	return 299
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *WifiConfigAp) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.SsID)
 	if err != nil {
 		return

@@ -31,8 +31,8 @@ import (
 
 /*EstimatorStatus Estimator status message including flags, innovation test ratios and estimated accuracies. The flags message is an integer bitmask containing information on which EKF outputs are valid. See the ESTIMATOR_STATUS_FLAGS enum definition for further information. The innovation test ratios show the magnitude of the sensor innovation divided by the innovation check threshold. Under normal operation the innovation test ratios should be below 0.5 with occasional values up to 1.0. Values greater than 1.0 should be rare under normal operation and indicate that a measurement has been rejected by the filter. The user should be notified if an innovation test ratio greater than 1.0 is recorded. Notifications for values in the range between 0.5 and 1.0 should be optional and controllable by the user. */
 type EstimatorStatus struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*TimeUsec Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude the number. */
 	TimeUsec uint64
 	/*VelRatio Velocity innovation test ratio */
@@ -55,11 +55,31 @@ type EstimatorStatus struct {
 	Flags uint16
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *EstimatorStatus) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *EstimatorStatus) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *EstimatorStatus) GetName() string {
+	return "EstimatorStatus"
+}
+
+// GetID gets the ID of the Message
+func (m *EstimatorStatus) GetID() uint32 {
+	return 230
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *EstimatorStatus) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.TimeUsec)
 	if err != nil {
 		return

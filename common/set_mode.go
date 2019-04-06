@@ -31,8 +31,8 @@ import (
 
 /*SetMode Set the system mode, as defined by enum MAV_MODE. There is no target component id as the mode is by definition for the overall aircraft, not only for one component. */
 type SetMode struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*CustomMode The new autopilot-specific mode. This field can be ignored by an autopilot. */
 	CustomMode uint32
 	/*TargetSystem The system setting the mode */
@@ -41,11 +41,31 @@ type SetMode struct {
 	BaseMode uint8
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *SetMode) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *SetMode) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *SetMode) GetName() string {
+	return "SetMode"
+}
+
+// GetID gets the ID of the Message
+func (m *SetMode) GetID() uint32 {
+	return 11
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *SetMode) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.CustomMode)
 	if err != nil {
 		return

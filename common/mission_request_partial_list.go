@@ -31,8 +31,8 @@ import (
 
 /*MissionRequestPartialList Request a partial list of mission items from the system/component. https://mavlink.io/en/services/mission.html. If start and end index are the same, just send one waypoint. */
 type MissionRequestPartialList struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*StartIndex Start index */
 	StartIndex int16
 	/*EndIndex End index, -1 by default (-1: send list to end). Else a valid index of the list */
@@ -45,11 +45,31 @@ type MissionRequestPartialList struct {
 	MissionType uint8
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *MissionRequestPartialList) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *MissionRequestPartialList) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *MissionRequestPartialList) GetName() string {
+	return "MissionRequestPartialList"
+}
+
+// GetID gets the ID of the Message
+func (m *MissionRequestPartialList) GetID() uint32 {
+	return 37
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *MissionRequestPartialList) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.StartIndex)
 	if err != nil {
 		return

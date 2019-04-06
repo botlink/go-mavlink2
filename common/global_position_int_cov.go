@@ -31,8 +31,8 @@ import (
 
 /*GlobalPositionIntCov The filtered global position (e.g. fused GPS and accelerometers). The position is in GPS-frame (right-handed, Z-up). It  is designed as scaled integer message since the resolution of float is not sufficient. NOTE: This message is intended for onboard networks / companion computers and higher-bandwidth links and optimized for accuracy and completeness. Please use the GLOBAL_POSITION_INT message for a minimal subset. */
 type GlobalPositionIntCov struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*TimeUsec Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude the number. */
 	TimeUsec uint64
 	/*Lat Latitude */
@@ -55,11 +55,31 @@ type GlobalPositionIntCov struct {
 	EstimatorType uint8
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *GlobalPositionIntCov) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *GlobalPositionIntCov) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *GlobalPositionIntCov) GetName() string {
+	return "GlobalPositionIntCov"
+}
+
+// GetID gets the ID of the Message
+func (m *GlobalPositionIntCov) GetID() uint32 {
+	return 63
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *GlobalPositionIntCov) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.TimeUsec)
 	if err != nil {
 		return

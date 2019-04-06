@@ -31,8 +31,8 @@ import (
 
 /*TerrainRequest Request for terrain data and terrain status */
 type TerrainRequest struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*Mask Bitmask of requested 4x4 grids (row major 8x7 array of grids, 56 bits) */
 	Mask uint64
 	/*Lat Latitude of SW corner of first grid */
@@ -43,11 +43,31 @@ type TerrainRequest struct {
 	GrIDSpacing uint16
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *TerrainRequest) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *TerrainRequest) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *TerrainRequest) GetName() string {
+	return "TerrainRequest"
+}
+
+// GetID gets the ID of the Message
+func (m *TerrainRequest) GetID() uint32 {
+	return 133
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *TerrainRequest) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.Mask)
 	if err != nil {
 		return

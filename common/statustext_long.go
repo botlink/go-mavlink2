@@ -31,19 +31,39 @@ import (
 
 /*StatustextLong Status text message (use only for important status and error messages). The full message payload can be used for status text, but we recommend that updates be kept concise. Note: The message is intended as a less restrictive replacement for STATUSTEXT. */
 type StatustextLong struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*Severity Severity of status. Relies on the definitions within RFC-5424. */
 	Severity uint8
 	/*Text Status text message, without null termination character. */
 	Text []byte
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *StatustextLong) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *StatustextLong) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *StatustextLong) GetName() string {
+	return "StatustextLong"
+}
+
+// GetID gets the ID of the Message
+func (m *StatustextLong) GetID() uint32 {
+	return 365
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *StatustextLong) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.Severity)
 	if err != nil {
 		return

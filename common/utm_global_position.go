@@ -31,8 +31,8 @@ import (
 
 /*UtmGlobalPosition The global position resulting from GPS and sensor fusion. */
 type UtmGlobalPosition struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*Time Time of applicability of position (microseconds since UNIX epoch). */
 	Time uint64
 	/*Lat Latitude (WGS84) */
@@ -71,11 +71,31 @@ type UtmGlobalPosition struct {
 	Flags uint8
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *UtmGlobalPosition) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *UtmGlobalPosition) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *UtmGlobalPosition) GetName() string {
+	return "UtmGlobalPosition"
+}
+
+// GetID gets the ID of the Message
+func (m *UtmGlobalPosition) GetID() uint32 {
+	return 340
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *UtmGlobalPosition) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.Time)
 	if err != nil {
 		return

@@ -31,8 +31,8 @@ import (
 
 /*SerialControl Control a serial port. This can be used for raw access to an onboard serial peripheral such as a GPS or telemetry radio. It is designed to make it possible to update the devices firmware via MAVLink messages or change the devices settings. A message with zero bytes can be used to change just the baudrate. */
 type SerialControl struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*Baudrate Baudrate of transfer. Zero means no change. */
 	Baudrate uint32
 	/*Timeout Timeout for reply data */
@@ -47,11 +47,31 @@ type SerialControl struct {
 	Data []uint8
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *SerialControl) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *SerialControl) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *SerialControl) GetName() string {
+	return "SerialControl"
+}
+
+// GetID gets the ID of the Message
+func (m *SerialControl) GetID() uint32 {
+	return 126
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *SerialControl) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.Baudrate)
 	if err != nil {
 		return

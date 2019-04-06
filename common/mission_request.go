@@ -31,8 +31,8 @@ import (
 
 /*MissionRequest Request the information of the mission item with the sequence number seq. The response of the system to this message should be a MISSION_ITEM message. https://mavlink.io/en/services/mission.html */
 type MissionRequest struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*Seq Sequence */
 	Seq uint16
 	/*TargetSystem System ID */
@@ -43,11 +43,31 @@ type MissionRequest struct {
 	MissionType uint8
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *MissionRequest) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *MissionRequest) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *MissionRequest) GetName() string {
+	return "MissionRequest"
+}
+
+// GetID gets the ID of the Message
+func (m *MissionRequest) GetID() uint32 {
+	return 40
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *MissionRequest) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.Seq)
 	if err != nil {
 		return

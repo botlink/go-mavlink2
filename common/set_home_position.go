@@ -31,8 +31,8 @@ import (
 
 /*SetHomePosition The position the system will return to and land on. The position is set automatically by the system during the takeoff in case it was not explicitly set by the operator before or after. The global and local positions encode the position in the respective coordinate frames, while the q parameter encodes the orientation of the surface. Under normal conditions it describes the heading and terrain slope, which can be used by the aircraft to adjust the approach. The approach 3D vector describes the point to which the system should fly in normal flight mode and then perform a landing sequence along the vector. */
 type SetHomePosition struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*Latitude Latitude (WGS84) */
 	Latitude int32
 	/*Longitude Longitude (WGS84) */
@@ -59,11 +59,31 @@ type SetHomePosition struct {
 	TimeUsec uint64
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *SetHomePosition) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *SetHomePosition) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *SetHomePosition) GetName() string {
+	return "SetHomePosition"
+}
+
+// GetID gets the ID of the Message
+func (m *SetHomePosition) GetID() uint32 {
+	return 243
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *SetHomePosition) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.Latitude)
 	if err != nil {
 		return

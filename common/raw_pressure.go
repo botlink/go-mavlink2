@@ -31,8 +31,8 @@ import (
 
 /*RawPressure The RAW pressure readings for the typical setup of one absolute pressure and one differential pressure sensor. The sensor values should be the raw, UNSCALED ADC values. */
 type RawPressure struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*TimeUsec Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude the number. */
 	TimeUsec uint64
 	/*PressAbs Absolute pressure (raw) */
@@ -45,11 +45,31 @@ type RawPressure struct {
 	Temperature int16
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *RawPressure) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *RawPressure) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *RawPressure) GetName() string {
+	return "RawPressure"
+}
+
+// GetID gets the ID of the Message
+func (m *RawPressure) GetID() uint32 {
+	return 28
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *RawPressure) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.TimeUsec)
 	if err != nil {
 		return

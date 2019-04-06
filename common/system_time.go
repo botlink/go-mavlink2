@@ -31,19 +31,39 @@ import (
 
 /*SystemTime The system time is the time of the master clock, typically the computer clock of the main onboard computer. */
 type SystemTime struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*TimeUnixUsec Timestamp (UNIX epoch time). */
 	TimeUnixUsec uint64
 	/*TimeBootMs Timestamp (time since system boot). */
 	TimeBootMs uint32
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *SystemTime) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *SystemTime) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *SystemTime) GetName() string {
+	return "SystemTime"
+}
+
+// GetID gets the ID of the Message
+func (m *SystemTime) GetID() uint32 {
+	return 2
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *SystemTime) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.TimeUnixUsec)
 	if err != nil {
 		return

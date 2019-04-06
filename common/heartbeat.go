@@ -31,8 +31,8 @@ import (
 
 /*Heartbeat The heartbeat message shows that a system or component is present and responding. The type and autopilot fields (along with the message component id), allow the receiving system to treat further messages from this system appropriately (e.g. by laying out the user interface based on the autopilot). */
 type Heartbeat struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*CustomMode A bitfield for use for autopilot-specific flags */
 	CustomMode uint32
 	/*Type Type of the system (quadrotor, helicopter, etc.). Components use the same type as their associated system. */
@@ -47,11 +47,31 @@ type Heartbeat struct {
 	MavlinkVersion uint8
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *Heartbeat) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *Heartbeat) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *Heartbeat) GetName() string {
+	return "Heartbeat"
+}
+
+// GetID gets the ID of the Message
+func (m *Heartbeat) GetID() uint32 {
+	return 0
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *Heartbeat) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.CustomMode)
 	if err != nil {
 		return

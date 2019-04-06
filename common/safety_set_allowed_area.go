@@ -31,8 +31,8 @@ import (
 
 /*SafetySetAllowedArea Set a safety zone (volume), which is defined by two corners of a cube. This message can be used to tell the MAV which setpoints/waypoints to accept and which to reject. Safety areas are often enforced by national or competition regulations. */
 type SafetySetAllowedArea struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*P1X x position 1 / Latitude 1 */
 	P1X float32
 	/*P1Y y position 1 / Longitude 1 */
@@ -53,11 +53,31 @@ type SafetySetAllowedArea struct {
 	Frame uint8
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *SafetySetAllowedArea) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *SafetySetAllowedArea) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *SafetySetAllowedArea) GetName() string {
+	return "SafetySetAllowedArea"
+}
+
+// GetID gets the ID of the Message
+func (m *SafetySetAllowedArea) GetID() uint32 {
+	return 54
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *SafetySetAllowedArea) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.P1X)
 	if err != nil {
 		return

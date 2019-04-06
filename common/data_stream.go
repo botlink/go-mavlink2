@@ -31,8 +31,8 @@ import (
 
 /*DataStream Data stream status information. */
 type DataStream struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*MessageRate The message rate */
 	MessageRate uint16
 	/*StreamID The ID of the requested data stream */
@@ -41,11 +41,31 @@ type DataStream struct {
 	OnOff uint8
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *DataStream) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *DataStream) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *DataStream) GetName() string {
+	return "DataStream"
+}
+
+// GetID gets the ID of the Message
+func (m *DataStream) GetID() uint32 {
+	return 67
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *DataStream) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.MessageRate)
 	if err != nil {
 		return

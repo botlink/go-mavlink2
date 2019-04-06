@@ -31,19 +31,39 @@ import (
 
 /*TerrainCheck Request that the vehicle report terrain height at the given location. Used by GCS to check if vehicle has all terrain data needed for a mission. */
 type TerrainCheck struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*Lat Latitude */
 	Lat int32
 	/*Lon Longitude */
 	Lon int32
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *TerrainCheck) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *TerrainCheck) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *TerrainCheck) GetName() string {
+	return "TerrainCheck"
+}
+
+// GetID gets the ID of the Message
+func (m *TerrainCheck) GetID() uint32 {
+	return 135
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *TerrainCheck) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.Lat)
 	if err != nil {
 		return

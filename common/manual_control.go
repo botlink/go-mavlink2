@@ -31,8 +31,8 @@ import (
 
 /*ManualControl This message provides an API for manually controlling the vehicle using standard joystick axes nomenclature, along with a joystick-like input device. Unused axes can be disabled an buttons are also transmit as boolean values of their  */
 type ManualControl struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*X X-axis, normalized to the range [-1000,1000]. A value of INT16_MAX indicates that this axis is invalid. Generally corresponds to forward(1000)-backward(-1000) movement on a joystick and the pitch of a vehicle. */
 	X int16
 	/*Y Y-axis, normalized to the range [-1000,1000]. A value of INT16_MAX indicates that this axis is invalid. Generally corresponds to left(-1000)-right(1000) movement on a joystick and the roll of a vehicle. */
@@ -47,11 +47,31 @@ type ManualControl struct {
 	Target uint8
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *ManualControl) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *ManualControl) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *ManualControl) GetName() string {
+	return "ManualControl"
+}
+
+// GetID gets the ID of the Message
+func (m *ManualControl) GetID() uint32 {
+	return 69
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *ManualControl) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.X)
 	if err != nil {
 		return

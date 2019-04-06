@@ -31,8 +31,8 @@ import (
 
 /*ParamSet Set a parameter value (write new value to permanent storage). IMPORTANT: The receiving component should acknowledge the new parameter value by sending a PARAM_VALUE message to all communication partners. This will also ensure that multiple GCS all have an up-to-date list of all parameters. If the sending GCS did not receive a PARAM_VALUE message within its timeout time, it should re-send the PARAM_SET message. */
 type ParamSet struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*ParamValue Onboard parameter value */
 	ParamValue float32
 	/*TargetSystem System ID */
@@ -45,11 +45,31 @@ type ParamSet struct {
 	ParamType uint8
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *ParamSet) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *ParamSet) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *ParamSet) GetName() string {
+	return "ParamSet"
+}
+
+// GetID gets the ID of the Message
+func (m *ParamSet) GetID() uint32 {
+	return 23
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *ParamSet) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.ParamValue)
 	if err != nil {
 		return

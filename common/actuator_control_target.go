@@ -31,8 +31,8 @@ import (
 
 /*ActuatorControlTarget Set the vehicle attitude and body angular rates. */
 type ActuatorControlTarget struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*TimeUsec Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude the number. */
 	TimeUsec uint64
 	/*Controls Actuator controls. Normed to -1..+1 where 0 is neutral position. Throttle for single rotation direction motors is 0..1, negative range for reverse direction. Standard mapping for attitude controls (group 0): (index 0-7): roll, pitch, yaw, throttle, flaps, spoilers, airbrakes, landing gear. Load a pass-through mixer to repurpose them as generic outputs. */
@@ -41,11 +41,31 @@ type ActuatorControlTarget struct {
 	GroupMlx uint8
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *ActuatorControlTarget) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *ActuatorControlTarget) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *ActuatorControlTarget) GetName() string {
+	return "ActuatorControlTarget"
+}
+
+// GetID gets the ID of the Message
+func (m *ActuatorControlTarget) GetID() uint32 {
+	return 140
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *ActuatorControlTarget) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.TimeUsec)
 	if err != nil {
 		return

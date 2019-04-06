@@ -31,8 +31,8 @@ import (
 
 /*ParamExtRequestRead Request to read the value of a parameter with the either the param_id string id or param_index. */
 type ParamExtRequestRead struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*ParamIndex Parameter index. Set to -1 to use the Parameter ID field as identifier (else param_id will be ignored) */
 	ParamIndex int16
 	/*TargetSystem System ID */
@@ -43,11 +43,31 @@ type ParamExtRequestRead struct {
 	ParamID []byte
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *ParamExtRequestRead) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *ParamExtRequestRead) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *ParamExtRequestRead) GetName() string {
+	return "ParamExtRequestRead"
+}
+
+// GetID gets the ID of the Message
+func (m *ParamExtRequestRead) GetID() uint32 {
+	return 320
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *ParamExtRequestRead) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.ParamIndex)
 	if err != nil {
 		return

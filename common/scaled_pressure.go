@@ -31,8 +31,8 @@ import (
 
 /*ScaledPressure The pressure readings for the typical setup of one absolute and differential pressure sensor. The units are as specified in each field. */
 type ScaledPressure struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*TimeBootMs Timestamp (time since system boot). */
 	TimeBootMs uint32
 	/*PressAbs Absolute pressure */
@@ -43,11 +43,31 @@ type ScaledPressure struct {
 	Temperature int16
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *ScaledPressure) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *ScaledPressure) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *ScaledPressure) GetName() string {
+	return "ScaledPressure"
+}
+
+// GetID gets the ID of the Message
+func (m *ScaledPressure) GetID() uint32 {
+	return 29
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *ScaledPressure) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.TimeBootMs)
 	if err != nil {
 		return

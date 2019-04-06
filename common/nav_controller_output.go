@@ -31,8 +31,8 @@ import (
 
 /*NavControllerOutput The state of the fixed wing navigation and position controller. */
 type NavControllerOutput struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*NavRoll Current desired roll */
 	NavRoll float32
 	/*NavPitch Current desired pitch */
@@ -51,11 +51,31 @@ type NavControllerOutput struct {
 	WpDist uint16
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *NavControllerOutput) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *NavControllerOutput) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *NavControllerOutput) GetName() string {
+	return "NavControllerOutput"
+}
+
+// GetID gets the ID of the Message
+func (m *NavControllerOutput) GetID() uint32 {
+	return 62
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *NavControllerOutput) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.NavRoll)
 	if err != nil {
 		return

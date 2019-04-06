@@ -31,8 +31,8 @@ import (
 
 /*MissionWritePartialList This message is sent to the MAV to write a partial list. If start index == end index, only one item will be transmitted / updated. If the start index is NOT 0 and above the current list size, this request should be REJECTED! */
 type MissionWritePartialList struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*StartIndex Start index. Must be smaller / equal to the largest index of the current onboard list. */
 	StartIndex int16
 	/*EndIndex End index, equal or greater than start index. */
@@ -45,11 +45,31 @@ type MissionWritePartialList struct {
 	MissionType uint8
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *MissionWritePartialList) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *MissionWritePartialList) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *MissionWritePartialList) GetName() string {
+	return "MissionWritePartialList"
+}
+
+// GetID gets the ID of the Message
+func (m *MissionWritePartialList) GetID() uint32 {
+	return 38
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *MissionWritePartialList) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.StartIndex)
 	if err != nil {
 		return

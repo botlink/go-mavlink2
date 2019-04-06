@@ -31,8 +31,8 @@ import (
 
 /*RcChannelsScaled The scaled values of the RC channels received: (-100%) -10000, (0%) 0, (100%) 10000. Channels that are inactive should be set to UINT16_MAX. */
 type RcChannelsScaled struct {
-	/*ReadVersion indicates the wire format the packet was read from */
-	ReadVersion int
+	/*FrameVersion indicates the wire format of the frame this message was read from */
+	FrameVersion int
 	/*TimeBootMs Timestamp (time since system boot). */
 	TimeBootMs uint32
 	/*Chan1Scaled RC channel 1 value scaled. */
@@ -57,11 +57,31 @@ type RcChannelsScaled struct {
 	Rssi uint8
 }
 
+// GetVersion gets the MAVLink version of the Message contents
+func (m *RcChannelsScaled) GetVersion() int {
+	return m.FrameVersion
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *RcChannelsScaled) GetDialect() string {
+	return "common"
+}
+
+// GetName gets the name of the Message
+func (m *RcChannelsScaled) GetName() string {
+	return "RcChannelsScaled"
+}
+
+// GetID gets the ID of the Message
+func (m *RcChannelsScaled) GetID() uint32 {
+	return 34
+}
+
 // Read sets the field values of the message from the raw message payload
 func (m *RcChannelsScaled) Read(version int, payload []byte) (err error) {
 	reader := bytes.NewReader(payload)
 
-	m.ReadVersion = version
+	m.FrameVersion = version
 	err = binary.Read(reader, binary.LittleEndian, &m.TimeBootMs)
 	if err != nil {
 		return
