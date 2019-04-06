@@ -1,3 +1,5 @@
+package mavlink2
+
 /*
 Copyright 2019 queue-b <https://github.com/queue-b>
 
@@ -20,11 +22,8 @@ OUT OF OR IN CONNECTION WITH THE GENERATED SOFTWARE OR THE USE OR OTHER DEALINGS
 IN THE GENERATED SOFTWARE.
 */
 
-package mavlink
-
 import (
 	"bufio"
-	"fmt"
 	"io"
 )
 
