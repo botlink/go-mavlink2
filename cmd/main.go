@@ -8,7 +8,7 @@ import (
 	"sync"
 	"syscall"
 
-	"github.com/queue-b/go-mavlink2"
+	mavlink2 "github.com/queue-b/go-mavlink2"
 )
 
 func main() {
@@ -44,7 +44,7 @@ func main() {
 					break runloop
 				}
 
-				frame, err := mavlink.FrameFromBytes(packet[:length])
+				frame, err := mavlink2.FrameFromBytes(packet[:length])
 
 				if err != nil {
 					fmt.Println(err)
