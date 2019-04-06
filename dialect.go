@@ -24,9 +24,7 @@ OUT OF OR IN CONNECTION WITH THE GENERATED SOFTWARE OR THE USE OR OTHER DEALINGS
 IN THE GENERATED SOFTWARE.
 */
 
-import (
-	"encoding/binary"
-)
+import "encoding/binary"
 
 // Dialect represents a collection of MAVLink message definitions
 type Dialect interface {
@@ -72,6 +70,13 @@ func (d Dialects) Validate(frame Frame) error {
 	if frame.GetMessageLength() > meta.MaximumLength {
 		return ErrMessageTooLong
 	}
+
+	// You might be tempted to collapse the following lines down to a simple
+	// _, err = checksum.Write(append(frame.GetChecksumInput(), meta.CRCExtra))
+	// However, since frame.GetChecksumInput() returns a slice in the middle of an existing array
+	// append() helpfully appends the meta.CRCExtra byte to the end of the slice, which is actually
+	// the first byte of the embedded checksum, causing all sorts of implausible behavior
+	// when engaging in checksum comparison
 
 	_, err = checksum.Write(frame.GetChecksumInput())
 
