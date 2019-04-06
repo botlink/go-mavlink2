@@ -9,6 +9,7 @@ import (
 	"syscall"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
+	"github.com/queue-b/go-mavlink2/common"
 )
 
 func main() {
@@ -24,6 +25,8 @@ func main() {
 	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
 
 	var wg sync.WaitGroup
+
+	dialects := mavlink2.Dialects([]mavlink2.Dialect{common.DialectCommon{}})
 
 	wg.Add(1)
 	go func() {
@@ -49,6 +52,12 @@ func main() {
 				}
 
 				fmt.Println(frame)
+
+				err = dialects.Validate(frame)
+
+				if err != nil {
+					fmt.Printf("Error %v\n", err)
+				}
 			}
 		}
 
