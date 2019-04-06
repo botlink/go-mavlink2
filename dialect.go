@@ -24,7 +24,9 @@ OUT OF OR IN CONNECTION WITH THE GENERATED SOFTWARE OR THE USE OR OTHER DEALINGS
 IN THE GENERATED SOFTWARE.
 */
 
-import "encoding/binary"
+import (
+	"encoding/binary"
+)
 
 // Dialect represents a collection of MAVLink message definitions
 type Dialect interface {
@@ -71,7 +73,13 @@ func (d Dialects) Validate(frame Frame) error {
 		return ErrMessageTooLong
 	}
 
-	_, err = checksum.Write(append(frame.GetChecksumInput(), meta.CRCExtra))
+	_, err = checksum.Write(frame.GetChecksumInput())
+
+	if err != nil {
+		return err
+	}
+
+	_, err = checksum.Write([]byte{meta.CRCExtra})
 
 	if err != nil {
 		return err
