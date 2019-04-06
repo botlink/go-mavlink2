@@ -97,3 +97,6 @@ func (s *FrameStream) readFrame() (frame Frame, err error) {
 
 	return
 }
+
+// FrameParser represents a function that takes a Frame as input and returns a Message
+type FrameParser func(Frame) (Message, error)
