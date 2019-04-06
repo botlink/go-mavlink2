@@ -154,10 +154,7 @@ func (frame FrameV2) GetSenderComponentID() uint8 {
 func (frame FrameV2) GetMessageID() uint32 {
 	messageID := make([]byte, 4)
 
-	messageID[0] = frame[7]
-	messageID[1] = frame[8]
-	messageID[2] = frame[9]
-	messageID[3] = 0
+	copy(messageID[0:3], frame[7:10])
 
 	return binary.LittleEndian.Uint32(messageID)
 }
@@ -165,13 +162,13 @@ func (frame FrameV2) GetMessageID() uint32 {
 // GetMessageBytes returns the message contained in the Frame as a byte array
 func (frame FrameV2) GetMessageBytes() []byte {
 	start := 10
-	end := frame.GetMessageLength() + 10
+	end := start + int(frame.GetMessageLength())
 	return frame[start:end]
 }
 
 // GetChecksum returns the checksum of the Frame contents
 func (frame FrameV2) GetChecksum() uint16 {
-	start := frame.GetMessageLength() + 10
+	start := int(frame.GetMessageLength()) + 10
 	end := start + 2
 	return binary.LittleEndian.Uint16(frame[start:end])
 }
@@ -179,7 +176,7 @@ func (frame FrameV2) GetChecksum() uint16 {
 // GetChecksumInput returns the contents of the Frame used to calculate the checksum
 func (frame FrameV2) GetChecksumInput() []byte {
 	start := 1
-	end := frame.GetMessageLength() + 10
+	end := int(frame.GetMessageLength()) + 10
 	return frame[start:end]
 }
 
