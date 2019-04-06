@@ -34,10 +34,7 @@ func main() {
 				break runloop
 			default:
 				packet := make([]byte, 1024)
-				length, addr, err := udp.ReadFrom(packet)
-
-				fmt.Println(length)
-				fmt.Println(addr)
+				length, _, err := udp.ReadFrom(packet)
 
 				if err != nil {
 					fmt.Println(err)
