@@ -1,6 +1,8 @@
 package common
 
 /*
+Generated using mavgen - https://github.com/ArduPilot/pymavlink/
+
 Copyright 2019 queue-b <https://github.com/queue-b>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
