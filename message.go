@@ -1,5 +1,4 @@
-package mavlink
-
+package mavlink2
 
 /*
 Copyright 2019 queue-b <https://github.com/queue-b>
@@ -23,23 +22,24 @@ OUT OF OR IN CONNECTION WITH THE GENERATED SOFTWARE OR THE USE OR OTHER DEALINGS
 IN THE GENERATED SOFTWARE.
 */
 
-
-type MessageMetadata {
-    CRCExtra byte
-    MinimumLength uint8
-    MaximumLength uint8
+// MessageMeta stores metadata information about a MAVLink message
+type MessageMeta struct {
+	CRCExtra      byte
+	MinimumLength uint8
+	MaximumLength uint8
 }
 
+// Message defines a common interface for MAVLink messages
 type Message interface {
-    GetVersion() int
-    GetDialect() string
-    GetName() string
-    GetID() uint32
+	GetVersion() int
+	GetDialect() string
+	GetName() string
+	GetID() uint32
 }
 
+// UnknownMessage represents a message that is not part of any loaded Dialect
 type UnknownMessage struct {
-    ID uint32
-    Version int
-    Raw []byte
+	ID      uint32
+	Version int
+	Raw     []byte
 }
-
