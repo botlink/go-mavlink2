@@ -1,4 +1,4 @@
-package mavlink
+package mavlink2
 
 /*
 Copyright 2019 queue-b <https://github.com/queue-b>
@@ -22,9 +22,11 @@ OUT OF OR IN CONNECTION WITH THE GENERATED SOFTWARE OR THE USE OR OTHER DEALINGS
 IN THE GENERATED SOFTWARE.
 */
 
+import "encoding/binary"
+
 // Dialect represents a collection of MAVLink message definitions
 type Dialect interface {
-	GetMetadata(Frame) (MessageMetadata, errror)
+	GetMetadata(Frame) (MessageMeta, error)
 	GetMessage(Frame) (Message, error)
 }
 
@@ -36,7 +38,7 @@ func (d Dialects) Validate(frame Frame) error {
 	checksum := new(X25CRC)
 	checksum.Reset()
 
-	var meta MessageMetadata
+	var meta MessageMeta
 	var err error
 	for _, dialect := range d {
 		meta, err = dialect.GetMetadata(frame)
@@ -67,14 +69,14 @@ func (d Dialects) Validate(frame Frame) error {
 		return ErrMessageTooLong
 	}
 
-	_, err := checksum.Write(append(frame.GetChecksumInput(), meta.CRCExtra))
+	_, err = checksum.Write(append(frame.GetChecksumInput(), meta.CRCExtra))
 
 	if err != nil {
 		return err
 	}
 
 	// Caclulate the checksum
-	sum16 := binary.LittleEndian.Uint16(x25.Sum(nil))
+	sum16 := binary.LittleEndian.Uint16(checksum.Sum(nil))
 
 	// Check if the checksum matches
 	if sum16 != frame.GetChecksum() {
