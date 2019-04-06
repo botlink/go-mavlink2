@@ -209,3 +209,31 @@ func (frame FrameV2) String() string {
 
 	return format
 }
+
+var ErrFrameTooShort = fmt.Errorf("Frame too short")
+var ErrUnknownStartByte = fmt.Errorf("Unknown start byte")
+var ErrMessageTooShort = fmt.Errorf("Message too short")
+var ErrMessageTooLong = fmt.Errorf("Message too long")
+var ErrInvalidChecksum = fmt.Errorf("Invalid checksum")
+var ErrUnknownMessage = fmt.Errorf("Unknown message")
+
+// FrameFromBytes returns a Frame containing the input bytes,
+// or an error if the first byte is not a valid frame start
+func FrameFromBytes(raw []byte) (frame Frame, err error) {
+	if len(raw) == 0 {
+		err = ErrFrameTooShort
+		return
+	}
+
+	startByte := raw[0]
+
+	if startByte == V1StartByte {
+		frame = FrameV1(raw)
+	} else if startByte == V2StartByte {
+		frame = FrameV2(raw)
+	} else {
+		err = ErrUnknownStartByte
+	}
+
+	return
+}

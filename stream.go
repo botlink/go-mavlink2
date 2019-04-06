@@ -96,24 +96,3 @@ func (s *FrameStream) readFrame() (frame Frame, err error) {
 
 	return
 }
-
-// FrameFromBytes returns a Frame containing the input bytes,
-// or an error if the first byte is not a valid frame start
-func FrameFromBytes(raw []byte) (frame Frame, err error) {
-	if len(raw) == 0 {
-		err = fmt.Errorf("Runt frame")
-		return
-	}
-
-	startByte := raw[0]
-
-	if startByte == V1StartByte {
-		frame = FrameV1(raw)
-	} else if startByte == V2StartByte {
-		frame = FrameV2(raw)
-	} else {
-		err = fmt.Errorf("Unknown start byte")
-	}
-
-	return
-}
