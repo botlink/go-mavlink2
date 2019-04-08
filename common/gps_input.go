@@ -27,12 +27,13 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+
+	mavlink2 "github.com/queue-b/go-mavlink2"
+	"github.com/queue-b/go-mavlink2/util"
 )
 
 /*GpsInput GPS sensor input message.  This is a raw sensor value sent by the GPS. This is NOT the global position estimate of the system. */
 type GpsInput struct {
-	/*FrameVersion indicates the wire format of the frame this message was read from */
-	FrameVersion int
 	/*TimeUsec Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude the number. */
 	TimeUsec uint64
 	/*TimeWeekMs GPS time (from start of GPS week) */
@@ -69,6 +70,8 @@ type GpsInput struct {
 	FixType uint8
 	/*SatellitesVisible Number of satellites visible. */
 	SatellitesVisible uint8
+	/*HasExtensionFieldValues indicates if this message has any extensions and  */
+	HasExtensionFieldValues bool
 }
 
 // GetVersion gets the MAVLink version of the Message contents
@@ -91,197 +94,97 @@ func (m *GpsInput) GetID() uint32 {
 	return 232
 }
 
+// HasExtensionFields returns true if the message definition contained extensions; false otherwise
+func (m *GpsInput) HasExtensionFields() bool {
+	return false
+}
+
+func (m *GpsInput) getV1Length() int {
+	return 63
+}
+
+func (m *GpsInput) getIOSlice() []byte {
+	return make([]byte, 63+1)
+}
+
 // Read sets the field values of the message from the raw message payload
-func (m *GpsInput) Read(version int, payload []byte) (err error) {
-	reader := bytes.NewReader(payload)
+func (m *GpsInput) Read(frame mavlink2.Frame) (err error) {
+	version := frame.GetVersion()
 
-	m.FrameVersion = version
-	err = binary.Read(reader, binary.LittleEndian, &m.TimeUsec)
-	if err != nil {
+	// Ensure only Version 1 or Version 2 were specified
+	if version != 1 && version != 2 {
+		err = mavlink2.ErrUnsupportedVersion
 		return
 	}
 
-	err = binary.Read(reader, binary.LittleEndian, &m.TimeWeekMs)
-	if err != nil {
+	// Don't attempt to Read V2 messages from V1 frames
+	if m.GetID() > 255 && version < 2 {
+		err = mavlink2.ErrDecodeV2MessageV1Frame
 		return
 	}
 
-	err = binary.Read(reader, binary.LittleEndian, &m.Lat)
-	if err != nil {
-		return
+	// binary.Read can panic; swallow the panic and return a sane error
+	defer func() {
+		if r := recover(); r != nil {
+			err = mavlink2.ErrPrivateField
+		}
+	}()
+
+	// Get a slice of bytes long enough for the all the GpsInput fields
+	// binary.Read requires enough bytes in the reader to read all fields, even if
+	// the fields are just zero values. This also simplifies handling MAVLink2
+	// extensions and trailing zero truncation.
+	ioSlice := m.getIOSlice()
+
+	copy(ioSlice, frame.GetMessageBytes())
+
+	// Indicate if
+	if version == 2 && m.HasExtensionFields() {
+		ioSlice[len(ioSlice)-1] = 1
 	}
 
-	err = binary.Read(reader, binary.LittleEndian, &m.Lon)
-	if err != nil {
-		return
-	}
+	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, &m.Alt)
-	if err != nil {
-		return
-	}
-
-	err = binary.Read(reader, binary.LittleEndian, &m.Hdop)
-	if err != nil {
-		return
-	}
-
-	err = binary.Read(reader, binary.LittleEndian, &m.Vdop)
-	if err != nil {
-		return
-	}
-
-	err = binary.Read(reader, binary.LittleEndian, &m.Vn)
-	if err != nil {
-		return
-	}
-
-	err = binary.Read(reader, binary.LittleEndian, &m.Ve)
-	if err != nil {
-		return
-	}
-
-	err = binary.Read(reader, binary.LittleEndian, &m.Vd)
-	if err != nil {
-		return
-	}
-
-	err = binary.Read(reader, binary.LittleEndian, &m.SpeedAccuracy)
-	if err != nil {
-		return
-	}
-
-	err = binary.Read(reader, binary.LittleEndian, &m.HorizAccuracy)
-	if err != nil {
-		return
-	}
-
-	err = binary.Read(reader, binary.LittleEndian, &m.VertAccuracy)
-	if err != nil {
-		return
-	}
-
-	err = binary.Read(reader, binary.LittleEndian, &m.IgnoreFlags)
-	if err != nil {
-		return
-	}
-
-	err = binary.Read(reader, binary.LittleEndian, &m.TimeWeek)
-	if err != nil {
-		return
-	}
-
-	err = binary.Read(reader, binary.LittleEndian, &m.GpsID)
-	if err != nil {
-		return
-	}
-
-	err = binary.Read(reader, binary.LittleEndian, &m.FixType)
-	if err != nil {
-		return
-	}
-
-	err = binary.Read(reader, binary.LittleEndian, &m.SatellitesVisible)
-	if err != nil {
-		return
-	}
+	err = binary.Read(reader, binary.LittleEndian, *m)
 
 	return
 }
 
 // Write encodes the field values of the message to a byte array
-func (m *GpsInput) Write(version int) ([]byte, error) {
+func (m *GpsInput) Write(version int) (output []byte, err error) {
 	var buffer bytes.Buffer
 	var err error
-	err = binary.Write(&buffer, binary.LittleEndian, m.TimeUsec)
-	if err != nil {
-		return nil, err
+
+	// Ensure only Version 1 or Version 2 were specified
+	if version != 1 && version != 2 {
+		err = mavlink2.ErrUnsupportedVersion
+		return
 	}
 
-	err = binary.Write(&buffer, binary.LittleEndian, m.TimeWeekMs)
-	if err != nil {
-		return nil, err
+	// Don't attempt to Write V2 messages to V1 bodies
+	if m.GetID() > 255 && version < 2 {
+		err = mavlink2.ErrEncodeV2MessageV1Frame
+		return
 	}
 
-	err = binary.Write(&buffer, binary.LittleEndian, m.Lat)
+	err = binary.Write(&buffer, binary.LittleEndian, *m)
 	if err != nil {
-		return nil, err
+		return
 	}
 
-	err = binary.Write(&buffer, binary.LittleEndian, m.Lon)
-	if err != nil {
-		return nil, err
+	// V1 uses fixed message lengths and does not include any extension fields
+	// Truncate the byte slice to the correct length
+	if version == 1 {
+		output = buffer.Bytes()[:m.getV1Length()]
 	}
 
-	err = binary.Write(&buffer, binary.LittleEndian, m.Alt)
-	if err != nil {
-		return nil, err
+	// V2 uses variable message lengths and includes extension fields
+	// The variable length is caused by truncating any trailing zeroes from
+	// the end of the message before it is added to a frame
+	if version == 2 {
+		output = util.TruncateV2(buffer.Bytes())
 	}
 
-	err = binary.Write(&buffer, binary.LittleEndian, m.Hdop)
-	if err != nil {
-		return nil, err
-	}
+	return
 
-	err = binary.Write(&buffer, binary.LittleEndian, m.Vdop)
-	if err != nil {
-		return nil, err
-	}
-
-	err = binary.Write(&buffer, binary.LittleEndian, m.Vn)
-	if err != nil {
-		return nil, err
-	}
-
-	err = binary.Write(&buffer, binary.LittleEndian, m.Ve)
-	if err != nil {
-		return nil, err
-	}
-
-	err = binary.Write(&buffer, binary.LittleEndian, m.Vd)
-	if err != nil {
-		return nil, err
-	}
-
-	err = binary.Write(&buffer, binary.LittleEndian, m.SpeedAccuracy)
-	if err != nil {
-		return nil, err
-	}
-
-	err = binary.Write(&buffer, binary.LittleEndian, m.HorizAccuracy)
-	if err != nil {
-		return nil, err
-	}
-
-	err = binary.Write(&buffer, binary.LittleEndian, m.VertAccuracy)
-	if err != nil {
-		return nil, err
-	}
-
-	err = binary.Write(&buffer, binary.LittleEndian, m.IgnoreFlags)
-	if err != nil {
-		return nil, err
-	}
-
-	err = binary.Write(&buffer, binary.LittleEndian, m.TimeWeek)
-	if err != nil {
-		return nil, err
-	}
-
-	err = binary.Write(&buffer, binary.LittleEndian, m.GpsID)
-	if err != nil {
-		return nil, err
-	}
-
-	err = binary.Write(&buffer, binary.LittleEndian, m.FixType)
-	if err != nil {
-		return nil, err
-	}
-
-	err = binary.Write(&buffer, binary.LittleEndian, m.SatellitesVisible)
-	if err != nil {
-		return nil, err
-	}
-
-	return buffer.Bytes(), nil
 }

@@ -27,12 +27,13 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+
+	mavlink2 "github.com/queue-b/go-mavlink2"
+	"github.com/queue-b/go-mavlink2/util"
 )
 
 /*CommandAck Report status of a command. Includes feedback whether the command was executed. */
 type CommandAck struct {
-	/*FrameVersion indicates the wire format of the frame this message was read from */
-	FrameVersion int
 	/*Command Command ID (of acknowledged command). */
 	Command uint16
 	/*Result Result of command. */
@@ -45,6 +46,8 @@ type CommandAck struct {
 	TargetSystem uint8
 	/*TargetComponent WIP: Component which requested the command to be executed */
 	TargetComponent uint8
+	/*HasExtensionFieldValues indicates if this message has any extensions and  */
+	HasExtensionFieldValues bool
 }
 
 // GetVersion gets the MAVLink version of the Message contents
@@ -67,82 +70,97 @@ func (m *CommandAck) GetID() uint32 {
 	return 77
 }
 
+// HasExtensionFields returns true if the message definition contained extensions; false otherwise
+func (m *CommandAck) HasExtensionFields() bool {
+	return true
+}
+
+func (m *CommandAck) getV1Length() int {
+	return 3
+}
+
+func (m *CommandAck) getIOSlice() []byte {
+	return make([]byte, 10+1)
+}
+
 // Read sets the field values of the message from the raw message payload
-func (m *CommandAck) Read(version int, payload []byte) (err error) {
-	reader := bytes.NewReader(payload)
+func (m *CommandAck) Read(frame mavlink2.Frame) (err error) {
+	version := frame.GetVersion()
 
-	m.FrameVersion = version
-	err = binary.Read(reader, binary.LittleEndian, &m.Command)
-	if err != nil {
+	// Ensure only Version 1 or Version 2 were specified
+	if version != 1 && version != 2 {
+		err = mavlink2.ErrUnsupportedVersion
 		return
 	}
 
-	err = binary.Read(reader, binary.LittleEndian, &m.Result)
-	if err != nil {
+	// Don't attempt to Read V2 messages from V1 frames
+	if m.GetID() > 255 && version < 2 {
+		err = mavlink2.ErrDecodeV2MessageV1Frame
 		return
 	}
 
-	if version == 2 {
-		err = binary.Read(reader, binary.LittleEndian, &m.Progress)
-		if err != nil {
-			return
+	// binary.Read can panic; swallow the panic and return a sane error
+	defer func() {
+		if r := recover(); r != nil {
+			err = mavlink2.ErrPrivateField
 		}
+	}()
 
-		err = binary.Read(reader, binary.LittleEndian, &m.ResultParam2)
-		if err != nil {
-			return
-		}
+	// Get a slice of bytes long enough for the all the CommandAck fields
+	// binary.Read requires enough bytes in the reader to read all fields, even if
+	// the fields are just zero values. This also simplifies handling MAVLink2
+	// extensions and trailing zero truncation.
+	ioSlice := m.getIOSlice()
 
-		err = binary.Read(reader, binary.LittleEndian, &m.TargetSystem)
-		if err != nil {
-			return
-		}
+	copy(ioSlice, frame.GetMessageBytes())
 
-		err = binary.Read(reader, binary.LittleEndian, &m.TargetComponent)
-		if err != nil {
-			return
-		}
-
+	// Indicate if
+	if version == 2 && m.HasExtensionFields() {
+		ioSlice[len(ioSlice)-1] = 1
 	}
+
+	reader := bytes.NewReader(ioSlice)
+
+	err = binary.Read(reader, binary.LittleEndian, *m)
+
 	return
 }
 
 // Write encodes the field values of the message to a byte array
-func (m *CommandAck) Write(version int) ([]byte, error) {
+func (m *CommandAck) Write(version int) (output []byte, err error) {
 	var buffer bytes.Buffer
 	var err error
-	err = binary.Write(&buffer, binary.LittleEndian, m.Command)
-	if err != nil {
-		return nil, err
+
+	// Ensure only Version 1 or Version 2 were specified
+	if version != 1 && version != 2 {
+		err = mavlink2.ErrUnsupportedVersion
+		return
 	}
 
-	err = binary.Write(&buffer, binary.LittleEndian, m.Result)
-	if err != nil {
-		return nil, err
+	// Don't attempt to Write V2 messages to V1 bodies
+	if m.GetID() > 255 && version < 2 {
+		err = mavlink2.ErrEncodeV2MessageV1Frame
+		return
 	}
 
+	err = binary.Write(&buffer, binary.LittleEndian, *m)
+	if err != nil {
+		return
+	}
+
+	// V1 uses fixed message lengths and does not include any extension fields
+	// Truncate the byte slice to the correct length
+	if version == 1 {
+		output = buffer.Bytes()[:m.getV1Length()]
+	}
+
+	// V2 uses variable message lengths and includes extension fields
+	// The variable length is caused by truncating any trailing zeroes from
+	// the end of the message before it is added to a frame
 	if version == 2 {
-		err = binary.Write(&buffer, binary.LittleEndian, m.Result)
-		if err != nil {
-			return nil, err
-		}
-
-		err = binary.Write(&buffer, binary.LittleEndian, m.Result)
-		if err != nil {
-			return nil, err
-		}
-
-		err = binary.Write(&buffer, binary.LittleEndian, m.Result)
-		if err != nil {
-			return nil, err
-		}
-
-		err = binary.Write(&buffer, binary.LittleEndian, m.Result)
-		if err != nil {
-			return nil, err
-		}
-
+		output = util.TruncateV2(buffer.Bytes())
 	}
 
-	return buffer.Bytes(), nil
+	return
+
 }

@@ -27,12 +27,13 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+
+	mavlink2 "github.com/queue-b/go-mavlink2"
+	"github.com/queue-b/go-mavlink2/util"
 )
 
 /*ControlSystemState The smoothed, monotonic system state used to feed the control loops of the system. */
 type ControlSystemState struct {
-	/*FrameVersion indicates the wire format of the frame this message was read from */
-	FrameVersion int
 	/*TimeUsec Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude the number. */
 	TimeUsec uint64
 	/*XAcc X acceleration in body frame */
@@ -56,17 +57,19 @@ type ControlSystemState struct {
 	/*Airspeed Airspeed, set to -1 if unknown */
 	Airspeed float32
 	/*VelVariance Variance of body velocity estimate */
-	VelVariance []float32
+	VelVariance [3]float32
 	/*PosVariance Variance in local position */
-	PosVariance []float32
+	PosVariance [3]float32
 	/*Q The attitude, represented as Quaternion */
-	Q []float32
+	Q [4]float32
 	/*RollRate Angular rate in roll axis */
 	RollRate float32
 	/*PitchRate Angular rate in pitch axis */
 	PitchRate float32
 	/*YawRate Angular rate in yaw axis */
 	YawRate float32
+	/*HasExtensionFieldValues indicates if this message has any extensions and  */
+	HasExtensionFieldValues bool
 }
 
 // GetVersion gets the MAVLink version of the Message contents
@@ -89,187 +92,97 @@ func (m *ControlSystemState) GetID() uint32 {
 	return 146
 }
 
+// HasExtensionFields returns true if the message definition contained extensions; false otherwise
+func (m *ControlSystemState) HasExtensionFields() bool {
+	return false
+}
+
+func (m *ControlSystemState) getV1Length() int {
+	return 100
+}
+
+func (m *ControlSystemState) getIOSlice() []byte {
+	return make([]byte, 100+1)
+}
+
 // Read sets the field values of the message from the raw message payload
-func (m *ControlSystemState) Read(version int, payload []byte) (err error) {
-	reader := bytes.NewReader(payload)
+func (m *ControlSystemState) Read(frame mavlink2.Frame) (err error) {
+	version := frame.GetVersion()
 
-	m.FrameVersion = version
-	err = binary.Read(reader, binary.LittleEndian, &m.TimeUsec)
-	if err != nil {
+	// Ensure only Version 1 or Version 2 were specified
+	if version != 1 && version != 2 {
+		err = mavlink2.ErrUnsupportedVersion
 		return
 	}
 
-	err = binary.Read(reader, binary.LittleEndian, &m.XAcc)
-	if err != nil {
+	// Don't attempt to Read V2 messages from V1 frames
+	if m.GetID() > 255 && version < 2 {
+		err = mavlink2.ErrDecodeV2MessageV1Frame
 		return
 	}
 
-	err = binary.Read(reader, binary.LittleEndian, &m.YAcc)
-	if err != nil {
-		return
+	// binary.Read can panic; swallow the panic and return a sane error
+	defer func() {
+		if r := recover(); r != nil {
+			err = mavlink2.ErrPrivateField
+		}
+	}()
+
+	// Get a slice of bytes long enough for the all the ControlSystemState fields
+	// binary.Read requires enough bytes in the reader to read all fields, even if
+	// the fields are just zero values. This also simplifies handling MAVLink2
+	// extensions and trailing zero truncation.
+	ioSlice := m.getIOSlice()
+
+	copy(ioSlice, frame.GetMessageBytes())
+
+	// Indicate if
+	if version == 2 && m.HasExtensionFields() {
+		ioSlice[len(ioSlice)-1] = 1
 	}
 
-	err = binary.Read(reader, binary.LittleEndian, &m.ZAcc)
-	if err != nil {
-		return
-	}
+	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, &m.XVel)
-	if err != nil {
-		return
-	}
-
-	err = binary.Read(reader, binary.LittleEndian, &m.YVel)
-	if err != nil {
-		return
-	}
-
-	err = binary.Read(reader, binary.LittleEndian, &m.ZVel)
-	if err != nil {
-		return
-	}
-
-	err = binary.Read(reader, binary.LittleEndian, &m.XPos)
-	if err != nil {
-		return
-	}
-
-	err = binary.Read(reader, binary.LittleEndian, &m.YPos)
-	if err != nil {
-		return
-	}
-
-	err = binary.Read(reader, binary.LittleEndian, &m.ZPos)
-	if err != nil {
-		return
-	}
-
-	err = binary.Read(reader, binary.LittleEndian, &m.Airspeed)
-	if err != nil {
-		return
-	}
-
-	err = binary.Read(reader, binary.LittleEndian, &m.VelVariance)
-	if err != nil {
-		return
-	}
-
-	err = binary.Read(reader, binary.LittleEndian, &m.PosVariance)
-	if err != nil {
-		return
-	}
-
-	err = binary.Read(reader, binary.LittleEndian, &m.Q)
-	if err != nil {
-		return
-	}
-
-	err = binary.Read(reader, binary.LittleEndian, &m.RollRate)
-	if err != nil {
-		return
-	}
-
-	err = binary.Read(reader, binary.LittleEndian, &m.PitchRate)
-	if err != nil {
-		return
-	}
-
-	err = binary.Read(reader, binary.LittleEndian, &m.YawRate)
-	if err != nil {
-		return
-	}
+	err = binary.Read(reader, binary.LittleEndian, *m)
 
 	return
 }
 
 // Write encodes the field values of the message to a byte array
-func (m *ControlSystemState) Write(version int) ([]byte, error) {
+func (m *ControlSystemState) Write(version int) (output []byte, err error) {
 	var buffer bytes.Buffer
 	var err error
-	err = binary.Write(&buffer, binary.LittleEndian, m.TimeUsec)
-	if err != nil {
-		return nil, err
+
+	// Ensure only Version 1 or Version 2 were specified
+	if version != 1 && version != 2 {
+		err = mavlink2.ErrUnsupportedVersion
+		return
 	}
 
-	err = binary.Write(&buffer, binary.LittleEndian, m.XAcc)
-	if err != nil {
-		return nil, err
+	// Don't attempt to Write V2 messages to V1 bodies
+	if m.GetID() > 255 && version < 2 {
+		err = mavlink2.ErrEncodeV2MessageV1Frame
+		return
 	}
 
-	err = binary.Write(&buffer, binary.LittleEndian, m.YAcc)
+	err = binary.Write(&buffer, binary.LittleEndian, *m)
 	if err != nil {
-		return nil, err
+		return
 	}
 
-	err = binary.Write(&buffer, binary.LittleEndian, m.ZAcc)
-	if err != nil {
-		return nil, err
+	// V1 uses fixed message lengths and does not include any extension fields
+	// Truncate the byte slice to the correct length
+	if version == 1 {
+		output = buffer.Bytes()[:m.getV1Length()]
 	}
 
-	err = binary.Write(&buffer, binary.LittleEndian, m.XVel)
-	if err != nil {
-		return nil, err
+	// V2 uses variable message lengths and includes extension fields
+	// The variable length is caused by truncating any trailing zeroes from
+	// the end of the message before it is added to a frame
+	if version == 2 {
+		output = util.TruncateV2(buffer.Bytes())
 	}
 
-	err = binary.Write(&buffer, binary.LittleEndian, m.YVel)
-	if err != nil {
-		return nil, err
-	}
+	return
 
-	err = binary.Write(&buffer, binary.LittleEndian, m.ZVel)
-	if err != nil {
-		return nil, err
-	}
-
-	err = binary.Write(&buffer, binary.LittleEndian, m.XPos)
-	if err != nil {
-		return nil, err
-	}
-
-	err = binary.Write(&buffer, binary.LittleEndian, m.YPos)
-	if err != nil {
-		return nil, err
-	}
-
-	err = binary.Write(&buffer, binary.LittleEndian, m.ZPos)
-	if err != nil {
-		return nil, err
-	}
-
-	err = binary.Write(&buffer, binary.LittleEndian, m.Airspeed)
-	if err != nil {
-		return nil, err
-	}
-
-	err = binary.Write(&buffer, binary.LittleEndian, m.VelVariance)
-	if err != nil {
-		return nil, err
-	}
-
-	err = binary.Write(&buffer, binary.LittleEndian, m.PosVariance)
-	if err != nil {
-		return nil, err
-	}
-
-	err = binary.Write(&buffer, binary.LittleEndian, m.Q)
-	if err != nil {
-		return nil, err
-	}
-
-	err = binary.Write(&buffer, binary.LittleEndian, m.RollRate)
-	if err != nil {
-		return nil, err
-	}
-
-	err = binary.Write(&buffer, binary.LittleEndian, m.PitchRate)
-	if err != nil {
-		return nil, err
-	}
-
-	err = binary.Write(&buffer, binary.LittleEndian, m.YawRate)
-	if err != nil {
-		return nil, err
-	}
-
-	return buffer.Bytes(), nil
 }

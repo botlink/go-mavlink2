@@ -27,12 +27,13 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+
+	mavlink2 "github.com/queue-b/go-mavlink2"
+	"github.com/queue-b/go-mavlink2/util"
 )
 
 /*ViconPositionEstimate Global position estimate from a Vicon motion system source. */
 type ViconPositionEstimate struct {
-	/*FrameVersion indicates the wire format of the frame this message was read from */
-	FrameVersion int
 	/*Usec Timestamp (UNIX time or time since system boot) */
 	Usec uint64
 	/*X Global X position */
@@ -48,7 +49,9 @@ type ViconPositionEstimate struct {
 	/*Yaw Yaw angle */
 	Yaw float32
 	/*Covariance Row-major representation of 6x6 pose cross-covariance matrix upper right triangle (states: x, y, z, roll, pitch, yaw; first six entries are the first ROW, next five entries are the second ROW, etc.). If unknown, assign NaN value to first element in the array. */
-	Covariance []float32
+	Covariance [21]float32
+	/*HasExtensionFieldValues indicates if this message has any extensions and  */
+	HasExtensionFieldValues bool
 }
 
 // GetVersion gets the MAVLink version of the Message contents
@@ -71,102 +74,97 @@ func (m *ViconPositionEstimate) GetID() uint32 {
 	return 104
 }
 
+// HasExtensionFields returns true if the message definition contained extensions; false otherwise
+func (m *ViconPositionEstimate) HasExtensionFields() bool {
+	return true
+}
+
+func (m *ViconPositionEstimate) getV1Length() int {
+	return 32
+}
+
+func (m *ViconPositionEstimate) getIOSlice() []byte {
+	return make([]byte, 116+1)
+}
+
 // Read sets the field values of the message from the raw message payload
-func (m *ViconPositionEstimate) Read(version int, payload []byte) (err error) {
-	reader := bytes.NewReader(payload)
+func (m *ViconPositionEstimate) Read(frame mavlink2.Frame) (err error) {
+	version := frame.GetVersion()
 
-	m.FrameVersion = version
-	err = binary.Read(reader, binary.LittleEndian, &m.Usec)
-	if err != nil {
+	// Ensure only Version 1 or Version 2 were specified
+	if version != 1 && version != 2 {
+		err = mavlink2.ErrUnsupportedVersion
 		return
 	}
 
-	err = binary.Read(reader, binary.LittleEndian, &m.X)
-	if err != nil {
+	// Don't attempt to Read V2 messages from V1 frames
+	if m.GetID() > 255 && version < 2 {
+		err = mavlink2.ErrDecodeV2MessageV1Frame
 		return
 	}
 
-	err = binary.Read(reader, binary.LittleEndian, &m.Y)
-	if err != nil {
-		return
-	}
-
-	err = binary.Read(reader, binary.LittleEndian, &m.Z)
-	if err != nil {
-		return
-	}
-
-	err = binary.Read(reader, binary.LittleEndian, &m.Roll)
-	if err != nil {
-		return
-	}
-
-	err = binary.Read(reader, binary.LittleEndian, &m.Pitch)
-	if err != nil {
-		return
-	}
-
-	err = binary.Read(reader, binary.LittleEndian, &m.Yaw)
-	if err != nil {
-		return
-	}
-
-	if version == 2 {
-		err = binary.Read(reader, binary.LittleEndian, &m.Covariance)
-		if err != nil {
-			return
+	// binary.Read can panic; swallow the panic and return a sane error
+	defer func() {
+		if r := recover(); r != nil {
+			err = mavlink2.ErrPrivateField
 		}
+	}()
 
+	// Get a slice of bytes long enough for the all the ViconPositionEstimate fields
+	// binary.Read requires enough bytes in the reader to read all fields, even if
+	// the fields are just zero values. This also simplifies handling MAVLink2
+	// extensions and trailing zero truncation.
+	ioSlice := m.getIOSlice()
+
+	copy(ioSlice, frame.GetMessageBytes())
+
+	// Indicate if
+	if version == 2 && m.HasExtensionFields() {
+		ioSlice[len(ioSlice)-1] = 1
 	}
+
+	reader := bytes.NewReader(ioSlice)
+
+	err = binary.Read(reader, binary.LittleEndian, *m)
+
 	return
 }
 
 // Write encodes the field values of the message to a byte array
-func (m *ViconPositionEstimate) Write(version int) ([]byte, error) {
+func (m *ViconPositionEstimate) Write(version int) (output []byte, err error) {
 	var buffer bytes.Buffer
 	var err error
-	err = binary.Write(&buffer, binary.LittleEndian, m.Usec)
-	if err != nil {
-		return nil, err
+
+	// Ensure only Version 1 or Version 2 were specified
+	if version != 1 && version != 2 {
+		err = mavlink2.ErrUnsupportedVersion
+		return
 	}
 
-	err = binary.Write(&buffer, binary.LittleEndian, m.X)
-	if err != nil {
-		return nil, err
+	// Don't attempt to Write V2 messages to V1 bodies
+	if m.GetID() > 255 && version < 2 {
+		err = mavlink2.ErrEncodeV2MessageV1Frame
+		return
 	}
 
-	err = binary.Write(&buffer, binary.LittleEndian, m.Y)
+	err = binary.Write(&buffer, binary.LittleEndian, *m)
 	if err != nil {
-		return nil, err
+		return
 	}
 
-	err = binary.Write(&buffer, binary.LittleEndian, m.Z)
-	if err != nil {
-		return nil, err
+	// V1 uses fixed message lengths and does not include any extension fields
+	// Truncate the byte slice to the correct length
+	if version == 1 {
+		output = buffer.Bytes()[:m.getV1Length()]
 	}
 
-	err = binary.Write(&buffer, binary.LittleEndian, m.Roll)
-	if err != nil {
-		return nil, err
-	}
-
-	err = binary.Write(&buffer, binary.LittleEndian, m.Pitch)
-	if err != nil {
-		return nil, err
-	}
-
-	err = binary.Write(&buffer, binary.LittleEndian, m.Yaw)
-	if err != nil {
-		return nil, err
-	}
-
+	// V2 uses variable message lengths and includes extension fields
+	// The variable length is caused by truncating any trailing zeroes from
+	// the end of the message before it is added to a frame
 	if version == 2 {
-		err = binary.Write(&buffer, binary.LittleEndian, m.Yaw)
-		if err != nil {
-			return nil, err
-		}
-
+		output = util.TruncateV2(buffer.Bytes())
 	}
 
-	return buffer.Bytes(), nil
+	return
+
 }

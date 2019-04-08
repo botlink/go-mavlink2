@@ -27,12 +27,14 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"math"
+
+	mavlink2 "github.com/queue-b/go-mavlink2"
+	"github.com/queue-b/go-mavlink2/util"
 )
 
 /*CameraInformation Information about a camera */
 type CameraInformation struct {
-	/*FrameVersion indicates the wire format of the frame this message was read from */
-	FrameVersion int
 	/*TimeBootMs Timestamp (time since system boot). */
 	TimeBootMs uint32
 	/*FirmwareVersion Version of the camera firmware (v << 24 & 0xff = Dev, v << 16 & 0xff = Patch, v << 8 & 0xff = Minor, v & 0xff = Major) */
@@ -52,13 +54,31 @@ type CameraInformation struct {
 	/*CamDefinitionVersion Camera definition version (iteration) */
 	CamDefinitionVersion uint16
 	/*VendorName Name of the camera vendor */
-	VendorName []uint8
+	VendorName [32]uint8
 	/*ModelName Name of the camera model */
-	ModelName []uint8
+	ModelName [32]uint8
 	/*LensID Reserved for a lens ID */
 	LensID uint8
 	/*CamDefinitionURI Camera definition URI (if any, otherwise only basic functions will be available). */
-	CamDefinitionURI []byte
+	CamDefinitionURI [140]byte
+	/*HasExtensionFieldValues indicates if this message has any extensions and  */
+	HasExtensionFieldValues bool
+}
+
+// SetCamDefinitionURI encodes the input string to the CamDefinitionURI array
+func (m *CameraInformation) SetCamDefinitionURI(input string) (err error) {
+	m.CamDefinitionURI = []byte(input)[:math.Min(len(input), 140)]
+
+	if len(input) > 140 {
+		err = mavlink2.ErrStringTooLong
+	}
+
+	return
+}
+
+// GetCamDefinitionURI decodes the null-terminated string in the CamDefinitionURI
+func (m *CameraInformation) GetCamDefinitionURI() string {
+	return string(m.CamDefinitionURI[:util.CStrLen(m.CamDefinitionURI)])
 }
 
 // GetVersion gets the MAVLink version of the Message contents
@@ -81,147 +101,97 @@ func (m *CameraInformation) GetID() uint32 {
 	return 259
 }
 
+// HasExtensionFields returns true if the message definition contained extensions; false otherwise
+func (m *CameraInformation) HasExtensionFields() bool {
+	return false
+}
+
+func (m *CameraInformation) getV1Length() int {
+	return 235
+}
+
+func (m *CameraInformation) getIOSlice() []byte {
+	return make([]byte, 235+1)
+}
+
 // Read sets the field values of the message from the raw message payload
-func (m *CameraInformation) Read(version int, payload []byte) (err error) {
-	reader := bytes.NewReader(payload)
+func (m *CameraInformation) Read(frame mavlink2.Frame) (err error) {
+	version := frame.GetVersion()
 
-	m.FrameVersion = version
-	err = binary.Read(reader, binary.LittleEndian, &m.TimeBootMs)
-	if err != nil {
+	// Ensure only Version 1 or Version 2 were specified
+	if version != 1 && version != 2 {
+		err = mavlink2.ErrUnsupportedVersion
 		return
 	}
 
-	err = binary.Read(reader, binary.LittleEndian, &m.FirmwareVersion)
-	if err != nil {
+	// Don't attempt to Read V2 messages from V1 frames
+	if m.GetID() > 255 && version < 2 {
+		err = mavlink2.ErrDecodeV2MessageV1Frame
 		return
 	}
 
-	err = binary.Read(reader, binary.LittleEndian, &m.FocalLength)
-	if err != nil {
-		return
+	// binary.Read can panic; swallow the panic and return a sane error
+	defer func() {
+		if r := recover(); r != nil {
+			err = mavlink2.ErrPrivateField
+		}
+	}()
+
+	// Get a slice of bytes long enough for the all the CameraInformation fields
+	// binary.Read requires enough bytes in the reader to read all fields, even if
+	// the fields are just zero values. This also simplifies handling MAVLink2
+	// extensions and trailing zero truncation.
+	ioSlice := m.getIOSlice()
+
+	copy(ioSlice, frame.GetMessageBytes())
+
+	// Indicate if
+	if version == 2 && m.HasExtensionFields() {
+		ioSlice[len(ioSlice)-1] = 1
 	}
 
-	err = binary.Read(reader, binary.LittleEndian, &m.SensorSizeH)
-	if err != nil {
-		return
-	}
+	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, &m.SensorSizeV)
-	if err != nil {
-		return
-	}
-
-	err = binary.Read(reader, binary.LittleEndian, &m.Flags)
-	if err != nil {
-		return
-	}
-
-	err = binary.Read(reader, binary.LittleEndian, &m.ResolutionH)
-	if err != nil {
-		return
-	}
-
-	err = binary.Read(reader, binary.LittleEndian, &m.ResolutionV)
-	if err != nil {
-		return
-	}
-
-	err = binary.Read(reader, binary.LittleEndian, &m.CamDefinitionVersion)
-	if err != nil {
-		return
-	}
-
-	err = binary.Read(reader, binary.LittleEndian, &m.VendorName)
-	if err != nil {
-		return
-	}
-
-	err = binary.Read(reader, binary.LittleEndian, &m.ModelName)
-	if err != nil {
-		return
-	}
-
-	err = binary.Read(reader, binary.LittleEndian, &m.LensID)
-	if err != nil {
-		return
-	}
-
-	err = binary.Read(reader, binary.LittleEndian, &m.CamDefinitionURI)
-	if err != nil {
-		return
-	}
+	err = binary.Read(reader, binary.LittleEndian, *m)
 
 	return
 }
 
 // Write encodes the field values of the message to a byte array
-func (m *CameraInformation) Write(version int) ([]byte, error) {
+func (m *CameraInformation) Write(version int) (output []byte, err error) {
 	var buffer bytes.Buffer
 	var err error
-	err = binary.Write(&buffer, binary.LittleEndian, m.TimeBootMs)
-	if err != nil {
-		return nil, err
+
+	// Ensure only Version 1 or Version 2 were specified
+	if version != 1 && version != 2 {
+		err = mavlink2.ErrUnsupportedVersion
+		return
 	}
 
-	err = binary.Write(&buffer, binary.LittleEndian, m.FirmwareVersion)
-	if err != nil {
-		return nil, err
+	// Don't attempt to Write V2 messages to V1 bodies
+	if m.GetID() > 255 && version < 2 {
+		err = mavlink2.ErrEncodeV2MessageV1Frame
+		return
 	}
 
-	err = binary.Write(&buffer, binary.LittleEndian, m.FocalLength)
+	err = binary.Write(&buffer, binary.LittleEndian, *m)
 	if err != nil {
-		return nil, err
+		return
 	}
 
-	err = binary.Write(&buffer, binary.LittleEndian, m.SensorSizeH)
-	if err != nil {
-		return nil, err
+	// V1 uses fixed message lengths and does not include any extension fields
+	// Truncate the byte slice to the correct length
+	if version == 1 {
+		output = buffer.Bytes()[:m.getV1Length()]
 	}
 
-	err = binary.Write(&buffer, binary.LittleEndian, m.SensorSizeV)
-	if err != nil {
-		return nil, err
+	// V2 uses variable message lengths and includes extension fields
+	// The variable length is caused by truncating any trailing zeroes from
+	// the end of the message before it is added to a frame
+	if version == 2 {
+		output = util.TruncateV2(buffer.Bytes())
 	}
 
-	err = binary.Write(&buffer, binary.LittleEndian, m.Flags)
-	if err != nil {
-		return nil, err
-	}
+	return
 
-	err = binary.Write(&buffer, binary.LittleEndian, m.ResolutionH)
-	if err != nil {
-		return nil, err
-	}
-
-	err = binary.Write(&buffer, binary.LittleEndian, m.ResolutionV)
-	if err != nil {
-		return nil, err
-	}
-
-	err = binary.Write(&buffer, binary.LittleEndian, m.CamDefinitionVersion)
-	if err != nil {
-		return nil, err
-	}
-
-	err = binary.Write(&buffer, binary.LittleEndian, m.VendorName)
-	if err != nil {
-		return nil, err
-	}
-
-	err = binary.Write(&buffer, binary.LittleEndian, m.ModelName)
-	if err != nil {
-		return nil, err
-	}
-
-	err = binary.Write(&buffer, binary.LittleEndian, m.LensID)
-	if err != nil {
-		return nil, err
-	}
-
-	err = binary.Write(&buffer, binary.LittleEndian, m.CamDefinitionURI)
-	if err != nil {
-		return nil, err
-	}
-
-	return buffer.Bytes(), nil
 }

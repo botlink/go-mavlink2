@@ -27,12 +27,13 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+
+	mavlink2 "github.com/queue-b/go-mavlink2"
+	"github.com/queue-b/go-mavlink2/util"
 )
 
 /*AutopilotVersion Version and capability of autopilot software */
 type AutopilotVersion struct {
-	/*FrameVersion indicates the wire format of the frame this message was read from */
-	FrameVersion int
 	/*Capabilities Bitmap of capabilities */
 	Capabilities uint64
 	/*UID UID if provided by hardware (see uid2) */
@@ -50,13 +51,15 @@ type AutopilotVersion struct {
 	/*ProductID ID of the product */
 	ProductID uint16
 	/*FlightCustomVersion Custom version field, commonly the first 8 bytes of the git hash. This is not an unique identifier, but should allow to identify the commit using the main version number even for very large code bases. */
-	FlightCustomVersion []uint8
+	FlightCustomVersion [8]uint8
 	/*MIDdlewareCustomVersion Custom version field, commonly the first 8 bytes of the git hash. This is not an unique identifier, but should allow to identify the commit using the main version number even for very large code bases. */
-	MIDdlewareCustomVersion []uint8
+	MIDdlewareCustomVersion [8]uint8
 	/*OsCustomVersion Custom version field, commonly the first 8 bytes of the git hash. This is not an unique identifier, but should allow to identify the commit using the main version number even for very large code bases. */
-	OsCustomVersion []uint8
+	OsCustomVersion [8]uint8
 	/*UID2 UID if provided by hardware (supersedes the uid field. If this is non-zero, use this field, otherwise use uid) */
-	UID2 []uint8
+	UID2 [18]uint8
+	/*HasExtensionFieldValues indicates if this message has any extensions and  */
+	HasExtensionFieldValues bool
 }
 
 // GetVersion gets the MAVLink version of the Message contents
@@ -79,142 +82,97 @@ func (m *AutopilotVersion) GetID() uint32 {
 	return 148
 }
 
+// HasExtensionFields returns true if the message definition contained extensions; false otherwise
+func (m *AutopilotVersion) HasExtensionFields() bool {
+	return true
+}
+
+func (m *AutopilotVersion) getV1Length() int {
+	return 60
+}
+
+func (m *AutopilotVersion) getIOSlice() []byte {
+	return make([]byte, 78+1)
+}
+
 // Read sets the field values of the message from the raw message payload
-func (m *AutopilotVersion) Read(version int, payload []byte) (err error) {
-	reader := bytes.NewReader(payload)
+func (m *AutopilotVersion) Read(frame mavlink2.Frame) (err error) {
+	version := frame.GetVersion()
 
-	m.FrameVersion = version
-	err = binary.Read(reader, binary.LittleEndian, &m.Capabilities)
-	if err != nil {
+	// Ensure only Version 1 or Version 2 were specified
+	if version != 1 && version != 2 {
+		err = mavlink2.ErrUnsupportedVersion
 		return
 	}
 
-	err = binary.Read(reader, binary.LittleEndian, &m.UID)
-	if err != nil {
+	// Don't attempt to Read V2 messages from V1 frames
+	if m.GetID() > 255 && version < 2 {
+		err = mavlink2.ErrDecodeV2MessageV1Frame
 		return
 	}
 
-	err = binary.Read(reader, binary.LittleEndian, &m.FlightSwVersion)
-	if err != nil {
-		return
-	}
-
-	err = binary.Read(reader, binary.LittleEndian, &m.MIDdlewareSwVersion)
-	if err != nil {
-		return
-	}
-
-	err = binary.Read(reader, binary.LittleEndian, &m.OsSwVersion)
-	if err != nil {
-		return
-	}
-
-	err = binary.Read(reader, binary.LittleEndian, &m.BoardVersion)
-	if err != nil {
-		return
-	}
-
-	err = binary.Read(reader, binary.LittleEndian, &m.VendorID)
-	if err != nil {
-		return
-	}
-
-	err = binary.Read(reader, binary.LittleEndian, &m.ProductID)
-	if err != nil {
-		return
-	}
-
-	err = binary.Read(reader, binary.LittleEndian, &m.FlightCustomVersion)
-	if err != nil {
-		return
-	}
-
-	err = binary.Read(reader, binary.LittleEndian, &m.MIDdlewareCustomVersion)
-	if err != nil {
-		return
-	}
-
-	err = binary.Read(reader, binary.LittleEndian, &m.OsCustomVersion)
-	if err != nil {
-		return
-	}
-
-	if version == 2 {
-		err = binary.Read(reader, binary.LittleEndian, &m.UID2)
-		if err != nil {
-			return
+	// binary.Read can panic; swallow the panic and return a sane error
+	defer func() {
+		if r := recover(); r != nil {
+			err = mavlink2.ErrPrivateField
 		}
+	}()
 
+	// Get a slice of bytes long enough for the all the AutopilotVersion fields
+	// binary.Read requires enough bytes in the reader to read all fields, even if
+	// the fields are just zero values. This also simplifies handling MAVLink2
+	// extensions and trailing zero truncation.
+	ioSlice := m.getIOSlice()
+
+	copy(ioSlice, frame.GetMessageBytes())
+
+	// Indicate if
+	if version == 2 && m.HasExtensionFields() {
+		ioSlice[len(ioSlice)-1] = 1
 	}
+
+	reader := bytes.NewReader(ioSlice)
+
+	err = binary.Read(reader, binary.LittleEndian, *m)
+
 	return
 }
 
 // Write encodes the field values of the message to a byte array
-func (m *AutopilotVersion) Write(version int) ([]byte, error) {
+func (m *AutopilotVersion) Write(version int) (output []byte, err error) {
 	var buffer bytes.Buffer
 	var err error
-	err = binary.Write(&buffer, binary.LittleEndian, m.Capabilities)
-	if err != nil {
-		return nil, err
+
+	// Ensure only Version 1 or Version 2 were specified
+	if version != 1 && version != 2 {
+		err = mavlink2.ErrUnsupportedVersion
+		return
 	}
 
-	err = binary.Write(&buffer, binary.LittleEndian, m.UID)
-	if err != nil {
-		return nil, err
+	// Don't attempt to Write V2 messages to V1 bodies
+	if m.GetID() > 255 && version < 2 {
+		err = mavlink2.ErrEncodeV2MessageV1Frame
+		return
 	}
 
-	err = binary.Write(&buffer, binary.LittleEndian, m.FlightSwVersion)
+	err = binary.Write(&buffer, binary.LittleEndian, *m)
 	if err != nil {
-		return nil, err
+		return
 	}
 
-	err = binary.Write(&buffer, binary.LittleEndian, m.MIDdlewareSwVersion)
-	if err != nil {
-		return nil, err
+	// V1 uses fixed message lengths and does not include any extension fields
+	// Truncate the byte slice to the correct length
+	if version == 1 {
+		output = buffer.Bytes()[:m.getV1Length()]
 	}
 
-	err = binary.Write(&buffer, binary.LittleEndian, m.OsSwVersion)
-	if err != nil {
-		return nil, err
-	}
-
-	err = binary.Write(&buffer, binary.LittleEndian, m.BoardVersion)
-	if err != nil {
-		return nil, err
-	}
-
-	err = binary.Write(&buffer, binary.LittleEndian, m.VendorID)
-	if err != nil {
-		return nil, err
-	}
-
-	err = binary.Write(&buffer, binary.LittleEndian, m.ProductID)
-	if err != nil {
-		return nil, err
-	}
-
-	err = binary.Write(&buffer, binary.LittleEndian, m.FlightCustomVersion)
-	if err != nil {
-		return nil, err
-	}
-
-	err = binary.Write(&buffer, binary.LittleEndian, m.MIDdlewareCustomVersion)
-	if err != nil {
-		return nil, err
-	}
-
-	err = binary.Write(&buffer, binary.LittleEndian, m.OsCustomVersion)
-	if err != nil {
-		return nil, err
-	}
-
+	// V2 uses variable message lengths and includes extension fields
+	// The variable length is caused by truncating any trailing zeroes from
+	// the end of the message before it is added to a frame
 	if version == 2 {
-		err = binary.Write(&buffer, binary.LittleEndian, m.OsCustomVersion)
-		if err != nil {
-			return nil, err
-		}
-
+		output = util.TruncateV2(buffer.Bytes())
 	}
 
-	return buffer.Bytes(), nil
+	return
+
 }

@@ -27,12 +27,13 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+
+	mavlink2 "github.com/queue-b/go-mavlink2"
+	"github.com/queue-b/go-mavlink2/util"
 )
 
 /*UtmGlobalPosition The global position resulting from GPS and sensor fusion. */
 type UtmGlobalPosition struct {
-	/*FrameVersion indicates the wire format of the frame this message was read from */
-	FrameVersion int
 	/*Time Time of applicability of position (microseconds since UNIX epoch). */
 	Time uint64
 	/*Lat Latitude (WGS84) */
@@ -64,11 +65,13 @@ type UtmGlobalPosition struct {
 	/*UpdateRate Time until next update. Set to 0 if unknown or in data driven mode. */
 	UpdateRate uint16
 	/*UasID Unique UAS ID. */
-	UasID []uint8
+	UasID [18]uint8
 	/*FlightState Flight state */
 	FlightState uint8
 	/*Flags Bitwise OR combination of the data available flags. */
 	Flags uint8
+	/*HasExtensionFieldValues indicates if this message has any extensions and  */
+	HasExtensionFieldValues bool
 }
 
 // GetVersion gets the MAVLink version of the Message contents
@@ -91,197 +94,97 @@ func (m *UtmGlobalPosition) GetID() uint32 {
 	return 340
 }
 
+// HasExtensionFields returns true if the message definition contained extensions; false otherwise
+func (m *UtmGlobalPosition) HasExtensionFields() bool {
+	return false
+}
+
+func (m *UtmGlobalPosition) getV1Length() int {
+	return 70
+}
+
+func (m *UtmGlobalPosition) getIOSlice() []byte {
+	return make([]byte, 70+1)
+}
+
 // Read sets the field values of the message from the raw message payload
-func (m *UtmGlobalPosition) Read(version int, payload []byte) (err error) {
-	reader := bytes.NewReader(payload)
+func (m *UtmGlobalPosition) Read(frame mavlink2.Frame) (err error) {
+	version := frame.GetVersion()
 
-	m.FrameVersion = version
-	err = binary.Read(reader, binary.LittleEndian, &m.Time)
-	if err != nil {
+	// Ensure only Version 1 or Version 2 were specified
+	if version != 1 && version != 2 {
+		err = mavlink2.ErrUnsupportedVersion
 		return
 	}
 
-	err = binary.Read(reader, binary.LittleEndian, &m.Lat)
-	if err != nil {
+	// Don't attempt to Read V2 messages from V1 frames
+	if m.GetID() > 255 && version < 2 {
+		err = mavlink2.ErrDecodeV2MessageV1Frame
 		return
 	}
 
-	err = binary.Read(reader, binary.LittleEndian, &m.Lon)
-	if err != nil {
-		return
+	// binary.Read can panic; swallow the panic and return a sane error
+	defer func() {
+		if r := recover(); r != nil {
+			err = mavlink2.ErrPrivateField
+		}
+	}()
+
+	// Get a slice of bytes long enough for the all the UtmGlobalPosition fields
+	// binary.Read requires enough bytes in the reader to read all fields, even if
+	// the fields are just zero values. This also simplifies handling MAVLink2
+	// extensions and trailing zero truncation.
+	ioSlice := m.getIOSlice()
+
+	copy(ioSlice, frame.GetMessageBytes())
+
+	// Indicate if
+	if version == 2 && m.HasExtensionFields() {
+		ioSlice[len(ioSlice)-1] = 1
 	}
 
-	err = binary.Read(reader, binary.LittleEndian, &m.Alt)
-	if err != nil {
-		return
-	}
+	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, &m.RelativeAlt)
-	if err != nil {
-		return
-	}
-
-	err = binary.Read(reader, binary.LittleEndian, &m.NextLat)
-	if err != nil {
-		return
-	}
-
-	err = binary.Read(reader, binary.LittleEndian, &m.NextLon)
-	if err != nil {
-		return
-	}
-
-	err = binary.Read(reader, binary.LittleEndian, &m.NextAlt)
-	if err != nil {
-		return
-	}
-
-	err = binary.Read(reader, binary.LittleEndian, &m.Vx)
-	if err != nil {
-		return
-	}
-
-	err = binary.Read(reader, binary.LittleEndian, &m.Vy)
-	if err != nil {
-		return
-	}
-
-	err = binary.Read(reader, binary.LittleEndian, &m.Vz)
-	if err != nil {
-		return
-	}
-
-	err = binary.Read(reader, binary.LittleEndian, &m.HAcc)
-	if err != nil {
-		return
-	}
-
-	err = binary.Read(reader, binary.LittleEndian, &m.VAcc)
-	if err != nil {
-		return
-	}
-
-	err = binary.Read(reader, binary.LittleEndian, &m.VelAcc)
-	if err != nil {
-		return
-	}
-
-	err = binary.Read(reader, binary.LittleEndian, &m.UpdateRate)
-	if err != nil {
-		return
-	}
-
-	err = binary.Read(reader, binary.LittleEndian, &m.UasID)
-	if err != nil {
-		return
-	}
-
-	err = binary.Read(reader, binary.LittleEndian, &m.FlightState)
-	if err != nil {
-		return
-	}
-
-	err = binary.Read(reader, binary.LittleEndian, &m.Flags)
-	if err != nil {
-		return
-	}
+	err = binary.Read(reader, binary.LittleEndian, *m)
 
 	return
 }
 
 // Write encodes the field values of the message to a byte array
-func (m *UtmGlobalPosition) Write(version int) ([]byte, error) {
+func (m *UtmGlobalPosition) Write(version int) (output []byte, err error) {
 	var buffer bytes.Buffer
 	var err error
-	err = binary.Write(&buffer, binary.LittleEndian, m.Time)
-	if err != nil {
-		return nil, err
+
+	// Ensure only Version 1 or Version 2 were specified
+	if version != 1 && version != 2 {
+		err = mavlink2.ErrUnsupportedVersion
+		return
 	}
 
-	err = binary.Write(&buffer, binary.LittleEndian, m.Lat)
-	if err != nil {
-		return nil, err
+	// Don't attempt to Write V2 messages to V1 bodies
+	if m.GetID() > 255 && version < 2 {
+		err = mavlink2.ErrEncodeV2MessageV1Frame
+		return
 	}
 
-	err = binary.Write(&buffer, binary.LittleEndian, m.Lon)
+	err = binary.Write(&buffer, binary.LittleEndian, *m)
 	if err != nil {
-		return nil, err
+		return
 	}
 
-	err = binary.Write(&buffer, binary.LittleEndian, m.Alt)
-	if err != nil {
-		return nil, err
+	// V1 uses fixed message lengths and does not include any extension fields
+	// Truncate the byte slice to the correct length
+	if version == 1 {
+		output = buffer.Bytes()[:m.getV1Length()]
 	}
 
-	err = binary.Write(&buffer, binary.LittleEndian, m.RelativeAlt)
-	if err != nil {
-		return nil, err
+	// V2 uses variable message lengths and includes extension fields
+	// The variable length is caused by truncating any trailing zeroes from
+	// the end of the message before it is added to a frame
+	if version == 2 {
+		output = util.TruncateV2(buffer.Bytes())
 	}
 
-	err = binary.Write(&buffer, binary.LittleEndian, m.NextLat)
-	if err != nil {
-		return nil, err
-	}
+	return
 
-	err = binary.Write(&buffer, binary.LittleEndian, m.NextLon)
-	if err != nil {
-		return nil, err
-	}
-
-	err = binary.Write(&buffer, binary.LittleEndian, m.NextAlt)
-	if err != nil {
-		return nil, err
-	}
-
-	err = binary.Write(&buffer, binary.LittleEndian, m.Vx)
-	if err != nil {
-		return nil, err
-	}
-
-	err = binary.Write(&buffer, binary.LittleEndian, m.Vy)
-	if err != nil {
-		return nil, err
-	}
-
-	err = binary.Write(&buffer, binary.LittleEndian, m.Vz)
-	if err != nil {
-		return nil, err
-	}
-
-	err = binary.Write(&buffer, binary.LittleEndian, m.HAcc)
-	if err != nil {
-		return nil, err
-	}
-
-	err = binary.Write(&buffer, binary.LittleEndian, m.VAcc)
-	if err != nil {
-		return nil, err
-	}
-
-	err = binary.Write(&buffer, binary.LittleEndian, m.VelAcc)
-	if err != nil {
-		return nil, err
-	}
-
-	err = binary.Write(&buffer, binary.LittleEndian, m.UpdateRate)
-	if err != nil {
-		return nil, err
-	}
-
-	err = binary.Write(&buffer, binary.LittleEndian, m.UasID)
-	if err != nil {
-		return nil, err
-	}
-
-	err = binary.Write(&buffer, binary.LittleEndian, m.FlightState)
-	if err != nil {
-		return nil, err
-	}
-
-	err = binary.Write(&buffer, binary.LittleEndian, m.Flags)
-	if err != nil {
-		return nil, err
-	}
-
-	return buffer.Bytes(), nil
 }

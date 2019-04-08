@@ -27,12 +27,14 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"math"
+
+	mavlink2 "github.com/queue-b/go-mavlink2"
+	"github.com/queue-b/go-mavlink2/util"
 )
 
 /*CameraImageCaptured Information about a captured image */
 type CameraImageCaptured struct {
-	/*FrameVersion indicates the wire format of the frame this message was read from */
-	FrameVersion int
 	/*TimeUtc Timestamp (time since UNIX epoch) in UTC. 0 for unknown. */
 	TimeUtc uint64
 	/*TimeBootMs Timestamp (time since system boot). */
@@ -46,7 +48,7 @@ type CameraImageCaptured struct {
 	/*RelativeAlt Altitude above ground */
 	RelativeAlt int32
 	/*Q Quaternion of camera orientation (w, x, y, z order, zero-rotation is 0, 0, 0, 0) */
-	Q []float32
+	Q [4]float32
 	/*ImageIndex Zero based index of this image (image count since armed -1) */
 	ImageIndex int32
 	/*CameraID Camera ID (1 for first, 2 for second, etc.) */
@@ -54,7 +56,25 @@ type CameraImageCaptured struct {
 	/*CaptureResult Boolean indicating success (1) or failure (0) while capturing this image. */
 	CaptureResult int8
 	/*FileURL URL of image taken. Either local storage or http://foo.jpg if camera provides an HTTP interface. */
-	FileURL []byte
+	FileURL [205]byte
+	/*HasExtensionFieldValues indicates if this message has any extensions and  */
+	HasExtensionFieldValues bool
+}
+
+// SetFileURL encodes the input string to the FileURL array
+func (m *CameraImageCaptured) SetFileURL(input string) (err error) {
+	m.FileURL = []byte(input)[:math.Min(len(input), 205)]
+
+	if len(input) > 205 {
+		err = mavlink2.ErrStringTooLong
+	}
+
+	return
+}
+
+// GetFileURL decodes the null-terminated string in the FileURL
+func (m *CameraImageCaptured) GetFileURL() string {
+	return string(m.FileURL[:util.CStrLen(m.FileURL)])
 }
 
 // GetVersion gets the MAVLink version of the Message contents
@@ -77,127 +97,97 @@ func (m *CameraImageCaptured) GetID() uint32 {
 	return 263
 }
 
+// HasExtensionFields returns true if the message definition contained extensions; false otherwise
+func (m *CameraImageCaptured) HasExtensionFields() bool {
+	return false
+}
+
+func (m *CameraImageCaptured) getV1Length() int {
+	return 255
+}
+
+func (m *CameraImageCaptured) getIOSlice() []byte {
+	return make([]byte, 255+1)
+}
+
 // Read sets the field values of the message from the raw message payload
-func (m *CameraImageCaptured) Read(version int, payload []byte) (err error) {
-	reader := bytes.NewReader(payload)
+func (m *CameraImageCaptured) Read(frame mavlink2.Frame) (err error) {
+	version := frame.GetVersion()
 
-	m.FrameVersion = version
-	err = binary.Read(reader, binary.LittleEndian, &m.TimeUtc)
-	if err != nil {
+	// Ensure only Version 1 or Version 2 were specified
+	if version != 1 && version != 2 {
+		err = mavlink2.ErrUnsupportedVersion
 		return
 	}
 
-	err = binary.Read(reader, binary.LittleEndian, &m.TimeBootMs)
-	if err != nil {
+	// Don't attempt to Read V2 messages from V1 frames
+	if m.GetID() > 255 && version < 2 {
+		err = mavlink2.ErrDecodeV2MessageV1Frame
 		return
 	}
 
-	err = binary.Read(reader, binary.LittleEndian, &m.Lat)
-	if err != nil {
-		return
+	// binary.Read can panic; swallow the panic and return a sane error
+	defer func() {
+		if r := recover(); r != nil {
+			err = mavlink2.ErrPrivateField
+		}
+	}()
+
+	// Get a slice of bytes long enough for the all the CameraImageCaptured fields
+	// binary.Read requires enough bytes in the reader to read all fields, even if
+	// the fields are just zero values. This also simplifies handling MAVLink2
+	// extensions and trailing zero truncation.
+	ioSlice := m.getIOSlice()
+
+	copy(ioSlice, frame.GetMessageBytes())
+
+	// Indicate if
+	if version == 2 && m.HasExtensionFields() {
+		ioSlice[len(ioSlice)-1] = 1
 	}
 
-	err = binary.Read(reader, binary.LittleEndian, &m.Lon)
-	if err != nil {
-		return
-	}
+	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, &m.Alt)
-	if err != nil {
-		return
-	}
-
-	err = binary.Read(reader, binary.LittleEndian, &m.RelativeAlt)
-	if err != nil {
-		return
-	}
-
-	err = binary.Read(reader, binary.LittleEndian, &m.Q)
-	if err != nil {
-		return
-	}
-
-	err = binary.Read(reader, binary.LittleEndian, &m.ImageIndex)
-	if err != nil {
-		return
-	}
-
-	err = binary.Read(reader, binary.LittleEndian, &m.CameraID)
-	if err != nil {
-		return
-	}
-
-	err = binary.Read(reader, binary.LittleEndian, &m.CaptureResult)
-	if err != nil {
-		return
-	}
-
-	err = binary.Read(reader, binary.LittleEndian, &m.FileURL)
-	if err != nil {
-		return
-	}
+	err = binary.Read(reader, binary.LittleEndian, *m)
 
 	return
 }
 
 // Write encodes the field values of the message to a byte array
-func (m *CameraImageCaptured) Write(version int) ([]byte, error) {
+func (m *CameraImageCaptured) Write(version int) (output []byte, err error) {
 	var buffer bytes.Buffer
 	var err error
-	err = binary.Write(&buffer, binary.LittleEndian, m.TimeUtc)
-	if err != nil {
-		return nil, err
+
+	// Ensure only Version 1 or Version 2 were specified
+	if version != 1 && version != 2 {
+		err = mavlink2.ErrUnsupportedVersion
+		return
 	}
 
-	err = binary.Write(&buffer, binary.LittleEndian, m.TimeBootMs)
-	if err != nil {
-		return nil, err
+	// Don't attempt to Write V2 messages to V1 bodies
+	if m.GetID() > 255 && version < 2 {
+		err = mavlink2.ErrEncodeV2MessageV1Frame
+		return
 	}
 
-	err = binary.Write(&buffer, binary.LittleEndian, m.Lat)
+	err = binary.Write(&buffer, binary.LittleEndian, *m)
 	if err != nil {
-		return nil, err
+		return
 	}
 
-	err = binary.Write(&buffer, binary.LittleEndian, m.Lon)
-	if err != nil {
-		return nil, err
+	// V1 uses fixed message lengths and does not include any extension fields
+	// Truncate the byte slice to the correct length
+	if version == 1 {
+		output = buffer.Bytes()[:m.getV1Length()]
 	}
 
-	err = binary.Write(&buffer, binary.LittleEndian, m.Alt)
-	if err != nil {
-		return nil, err
+	// V2 uses variable message lengths and includes extension fields
+	// The variable length is caused by truncating any trailing zeroes from
+	// the end of the message before it is added to a frame
+	if version == 2 {
+		output = util.TruncateV2(buffer.Bytes())
 	}
 
-	err = binary.Write(&buffer, binary.LittleEndian, m.RelativeAlt)
-	if err != nil {
-		return nil, err
-	}
+	return
 
-	err = binary.Write(&buffer, binary.LittleEndian, m.Q)
-	if err != nil {
-		return nil, err
-	}
-
-	err = binary.Write(&buffer, binary.LittleEndian, m.ImageIndex)
-	if err != nil {
-		return nil, err
-	}
-
-	err = binary.Write(&buffer, binary.LittleEndian, m.CameraID)
-	if err != nil {
-		return nil, err
-	}
-
-	err = binary.Write(&buffer, binary.LittleEndian, m.CaptureResult)
-	if err != nil {
-		return nil, err
-	}
-
-	err = binary.Write(&buffer, binary.LittleEndian, m.FileURL)
-	if err != nil {
-		return nil, err
-	}
-
-	return buffer.Bytes(), nil
 }

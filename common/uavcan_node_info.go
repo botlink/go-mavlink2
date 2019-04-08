@@ -27,12 +27,14 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"math"
+
+	mavlink2 "github.com/queue-b/go-mavlink2"
+	"github.com/queue-b/go-mavlink2/util"
 )
 
 /*UavcanNodeInfo General information describing a particular UAVCAN node. Please refer to the definition of the UAVCAN service "uavcan.protocol.GetNodeInfo" for the background information. This message should be emitted by the system whenever a new node appears online, or an existing node reboots. Additionally, it can be emitted upon request from the other end of the MAVLink channel (see MAV_CMD_UAVCAN_GET_NODE_INFO). It is also not prohibited to emit this message unconditionally at a low frequency. The UAVCAN specification is available at http://uavcan.org. */
 type UavcanNodeInfo struct {
-	/*FrameVersion indicates the wire format of the frame this message was read from */
-	FrameVersion int
 	/*TimeUsec Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude the number. */
 	TimeUsec uint64
 	/*UptimeSec Time since the start-up of the node. */
@@ -40,17 +42,35 @@ type UavcanNodeInfo struct {
 	/*SwVcsCommit Version control system (VCS) revision identifier (e.g. git short commit hash). Zero if unknown. */
 	SwVcsCommit uint32
 	/*Name Node name string. For example, "sapog.px4.io". */
-	Name []byte
+	Name [80]byte
 	/*HwVersionMajor Hardware major version number. */
 	HwVersionMajor uint8
 	/*HwVersionMinor Hardware minor version number. */
 	HwVersionMinor uint8
 	/*HwUniqueID Hardware unique 128-bit ID. */
-	HwUniqueID []uint8
+	HwUniqueID [16]uint8
 	/*SwVersionMajor Software major version number. */
 	SwVersionMajor uint8
 	/*SwVersionMinor Software minor version number. */
 	SwVersionMinor uint8
+	/*HasExtensionFieldValues indicates if this message has any extensions and  */
+	HasExtensionFieldValues bool
+}
+
+// SetName encodes the input string to the Name array
+func (m *UavcanNodeInfo) SetName(input string) (err error) {
+	m.Name = []byte(input)[:math.Min(len(input), 80)]
+
+	if len(input) > 80 {
+		err = mavlink2.ErrStringTooLong
+	}
+
+	return
+}
+
+// GetName decodes the null-terminated string in the Name
+func (m *UavcanNodeInfo) GetName() string {
+	return string(m.Name[:util.CStrLen(m.Name)])
 }
 
 // GetVersion gets the MAVLink version of the Message contents
@@ -73,107 +93,97 @@ func (m *UavcanNodeInfo) GetID() uint32 {
 	return 311
 }
 
+// HasExtensionFields returns true if the message definition contained extensions; false otherwise
+func (m *UavcanNodeInfo) HasExtensionFields() bool {
+	return false
+}
+
+func (m *UavcanNodeInfo) getV1Length() int {
+	return 116
+}
+
+func (m *UavcanNodeInfo) getIOSlice() []byte {
+	return make([]byte, 116+1)
+}
+
 // Read sets the field values of the message from the raw message payload
-func (m *UavcanNodeInfo) Read(version int, payload []byte) (err error) {
-	reader := bytes.NewReader(payload)
+func (m *UavcanNodeInfo) Read(frame mavlink2.Frame) (err error) {
+	version := frame.GetVersion()
 
-	m.FrameVersion = version
-	err = binary.Read(reader, binary.LittleEndian, &m.TimeUsec)
-	if err != nil {
+	// Ensure only Version 1 or Version 2 were specified
+	if version != 1 && version != 2 {
+		err = mavlink2.ErrUnsupportedVersion
 		return
 	}
 
-	err = binary.Read(reader, binary.LittleEndian, &m.UptimeSec)
-	if err != nil {
+	// Don't attempt to Read V2 messages from V1 frames
+	if m.GetID() > 255 && version < 2 {
+		err = mavlink2.ErrDecodeV2MessageV1Frame
 		return
 	}
 
-	err = binary.Read(reader, binary.LittleEndian, &m.SwVcsCommit)
-	if err != nil {
-		return
+	// binary.Read can panic; swallow the panic and return a sane error
+	defer func() {
+		if r := recover(); r != nil {
+			err = mavlink2.ErrPrivateField
+		}
+	}()
+
+	// Get a slice of bytes long enough for the all the UavcanNodeInfo fields
+	// binary.Read requires enough bytes in the reader to read all fields, even if
+	// the fields are just zero values. This also simplifies handling MAVLink2
+	// extensions and trailing zero truncation.
+	ioSlice := m.getIOSlice()
+
+	copy(ioSlice, frame.GetMessageBytes())
+
+	// Indicate if
+	if version == 2 && m.HasExtensionFields() {
+		ioSlice[len(ioSlice)-1] = 1
 	}
 
-	err = binary.Read(reader, binary.LittleEndian, &m.Name)
-	if err != nil {
-		return
-	}
+	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, &m.HwVersionMajor)
-	if err != nil {
-		return
-	}
-
-	err = binary.Read(reader, binary.LittleEndian, &m.HwVersionMinor)
-	if err != nil {
-		return
-	}
-
-	err = binary.Read(reader, binary.LittleEndian, &m.HwUniqueID)
-	if err != nil {
-		return
-	}
-
-	err = binary.Read(reader, binary.LittleEndian, &m.SwVersionMajor)
-	if err != nil {
-		return
-	}
-
-	err = binary.Read(reader, binary.LittleEndian, &m.SwVersionMinor)
-	if err != nil {
-		return
-	}
+	err = binary.Read(reader, binary.LittleEndian, *m)
 
 	return
 }
 
 // Write encodes the field values of the message to a byte array
-func (m *UavcanNodeInfo) Write(version int) ([]byte, error) {
+func (m *UavcanNodeInfo) Write(version int) (output []byte, err error) {
 	var buffer bytes.Buffer
 	var err error
-	err = binary.Write(&buffer, binary.LittleEndian, m.TimeUsec)
-	if err != nil {
-		return nil, err
+
+	// Ensure only Version 1 or Version 2 were specified
+	if version != 1 && version != 2 {
+		err = mavlink2.ErrUnsupportedVersion
+		return
 	}
 
-	err = binary.Write(&buffer, binary.LittleEndian, m.UptimeSec)
-	if err != nil {
-		return nil, err
+	// Don't attempt to Write V2 messages to V1 bodies
+	if m.GetID() > 255 && version < 2 {
+		err = mavlink2.ErrEncodeV2MessageV1Frame
+		return
 	}
 
-	err = binary.Write(&buffer, binary.LittleEndian, m.SwVcsCommit)
+	err = binary.Write(&buffer, binary.LittleEndian, *m)
 	if err != nil {
-		return nil, err
+		return
 	}
 
-	err = binary.Write(&buffer, binary.LittleEndian, m.Name)
-	if err != nil {
-		return nil, err
+	// V1 uses fixed message lengths and does not include any extension fields
+	// Truncate the byte slice to the correct length
+	if version == 1 {
+		output = buffer.Bytes()[:m.getV1Length()]
 	}
 
-	err = binary.Write(&buffer, binary.LittleEndian, m.HwVersionMajor)
-	if err != nil {
-		return nil, err
+	// V2 uses variable message lengths and includes extension fields
+	// The variable length is caused by truncating any trailing zeroes from
+	// the end of the message before it is added to a frame
+	if version == 2 {
+		output = util.TruncateV2(buffer.Bytes())
 	}
 
-	err = binary.Write(&buffer, binary.LittleEndian, m.HwVersionMinor)
-	if err != nil {
-		return nil, err
-	}
+	return
 
-	err = binary.Write(&buffer, binary.LittleEndian, m.HwUniqueID)
-	if err != nil {
-		return nil, err
-	}
-
-	err = binary.Write(&buffer, binary.LittleEndian, m.SwVersionMajor)
-	if err != nil {
-		return nil, err
-	}
-
-	err = binary.Write(&buffer, binary.LittleEndian, m.SwVersionMinor)
-	if err != nil {
-		return nil, err
-	}
-
-	return buffer.Bytes(), nil
 }

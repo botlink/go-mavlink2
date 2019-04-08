@@ -27,20 +27,56 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"math"
+
+	mavlink2 "github.com/queue-b/go-mavlink2"
+	"github.com/queue-b/go-mavlink2/util"
 )
 
 /*PlayTune Control vehicle tone generation (buzzer) */
 type PlayTune struct {
-	/*FrameVersion indicates the wire format of the frame this message was read from */
-	FrameVersion int
 	/*TargetSystem System ID */
 	TargetSystem uint8
 	/*TargetComponent Component ID */
 	TargetComponent uint8
 	/*Tune tune in board specific format */
-	Tune []byte
+	Tune [30]byte
 	/*Tune2 tune extension (appended to tune) */
-	Tune2 []byte
+	Tune2 [200]byte
+	/*HasExtensionFieldValues indicates if this message has any extensions and  */
+	HasExtensionFieldValues bool
+}
+
+// SetTune encodes the input string to the Tune array
+func (m *PlayTune) SetTune(input string) (err error) {
+	m.Tune = []byte(input)[:math.Min(len(input), 30)]
+
+	if len(input) > 30 {
+		err = mavlink2.ErrStringTooLong
+	}
+
+	return
+}
+
+// GetTune decodes the null-terminated string in the Tune
+func (m *PlayTune) GetTune() string {
+	return string(m.Tune[:util.CStrLen(m.Tune)])
+}
+
+// SetTune2 encodes the input string to the Tune2 array
+func (m *PlayTune) SetTune2(input string) (err error) {
+	m.Tune2 = []byte(input)[:math.Min(len(input), 200)]
+
+	if len(input) > 200 {
+		err = mavlink2.ErrStringTooLong
+	}
+
+	return
+}
+
+// GetTune2 decodes the null-terminated string in the Tune2
+func (m *PlayTune) GetTune2() string {
+	return string(m.Tune2[:util.CStrLen(m.Tune2)])
 }
 
 // GetVersion gets the MAVLink version of the Message contents
@@ -63,62 +99,97 @@ func (m *PlayTune) GetID() uint32 {
 	return 258
 }
 
+// HasExtensionFields returns true if the message definition contained extensions; false otherwise
+func (m *PlayTune) HasExtensionFields() bool {
+	return true
+}
+
+func (m *PlayTune) getV1Length() int {
+	return 32
+}
+
+func (m *PlayTune) getIOSlice() []byte {
+	return make([]byte, 232+1)
+}
+
 // Read sets the field values of the message from the raw message payload
-func (m *PlayTune) Read(version int, payload []byte) (err error) {
-	reader := bytes.NewReader(payload)
+func (m *PlayTune) Read(frame mavlink2.Frame) (err error) {
+	version := frame.GetVersion()
 
-	m.FrameVersion = version
-	err = binary.Read(reader, binary.LittleEndian, &m.TargetSystem)
-	if err != nil {
+	// Ensure only Version 1 or Version 2 were specified
+	if version != 1 && version != 2 {
+		err = mavlink2.ErrUnsupportedVersion
 		return
 	}
 
-	err = binary.Read(reader, binary.LittleEndian, &m.TargetComponent)
-	if err != nil {
+	// Don't attempt to Read V2 messages from V1 frames
+	if m.GetID() > 255 && version < 2 {
+		err = mavlink2.ErrDecodeV2MessageV1Frame
 		return
 	}
 
-	err = binary.Read(reader, binary.LittleEndian, &m.Tune)
-	if err != nil {
-		return
-	}
-
-	if version == 2 {
-		err = binary.Read(reader, binary.LittleEndian, &m.Tune2)
-		if err != nil {
-			return
+	// binary.Read can panic; swallow the panic and return a sane error
+	defer func() {
+		if r := recover(); r != nil {
+			err = mavlink2.ErrPrivateField
 		}
+	}()
 
+	// Get a slice of bytes long enough for the all the PlayTune fields
+	// binary.Read requires enough bytes in the reader to read all fields, even if
+	// the fields are just zero values. This also simplifies handling MAVLink2
+	// extensions and trailing zero truncation.
+	ioSlice := m.getIOSlice()
+
+	copy(ioSlice, frame.GetMessageBytes())
+
+	// Indicate if
+	if version == 2 && m.HasExtensionFields() {
+		ioSlice[len(ioSlice)-1] = 1
 	}
+
+	reader := bytes.NewReader(ioSlice)
+
+	err = binary.Read(reader, binary.LittleEndian, *m)
+
 	return
 }
 
 // Write encodes the field values of the message to a byte array
-func (m *PlayTune) Write(version int) ([]byte, error) {
+func (m *PlayTune) Write(version int) (output []byte, err error) {
 	var buffer bytes.Buffer
 	var err error
-	err = binary.Write(&buffer, binary.LittleEndian, m.TargetSystem)
-	if err != nil {
-		return nil, err
+
+	// Ensure only Version 1 or Version 2 were specified
+	if version != 1 && version != 2 {
+		err = mavlink2.ErrUnsupportedVersion
+		return
 	}
 
-	err = binary.Write(&buffer, binary.LittleEndian, m.TargetComponent)
-	if err != nil {
-		return nil, err
+	// Don't attempt to Write V2 messages to V1 bodies
+	if m.GetID() > 255 && version < 2 {
+		err = mavlink2.ErrEncodeV2MessageV1Frame
+		return
 	}
 
-	err = binary.Write(&buffer, binary.LittleEndian, m.Tune)
+	err = binary.Write(&buffer, binary.LittleEndian, *m)
 	if err != nil {
-		return nil, err
+		return
 	}
 
+	// V1 uses fixed message lengths and does not include any extension fields
+	// Truncate the byte slice to the correct length
+	if version == 1 {
+		output = buffer.Bytes()[:m.getV1Length()]
+	}
+
+	// V2 uses variable message lengths and includes extension fields
+	// The variable length is caused by truncating any trailing zeroes from
+	// the end of the message before it is added to a frame
 	if version == 2 {
-		err = binary.Write(&buffer, binary.LittleEndian, m.Tune)
-		if err != nil {
-			return nil, err
-		}
-
+		output = util.TruncateV2(buffer.Bytes())
 	}
 
-	return buffer.Bytes(), nil
+	return
+
 }

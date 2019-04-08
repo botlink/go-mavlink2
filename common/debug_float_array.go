@@ -27,20 +27,40 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"math"
+
+	mavlink2 "github.com/queue-b/go-mavlink2"
+	"github.com/queue-b/go-mavlink2/util"
 )
 
 /*DebugFloatArray Large debug/prototyping array. The message uses the maximum available payload for data. The array_id and name fields are used to discriminate between messages in code and in user interfaces (respectively). Do not use in production code. */
 type DebugFloatArray struct {
-	/*FrameVersion indicates the wire format of the frame this message was read from */
-	FrameVersion int
 	/*TimeUsec Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude the number. */
 	TimeUsec uint64
 	/*ArrayID Unique ID used to discriminate between arrays */
 	ArrayID uint16
 	/*Name Name, for human-friendly display in a Ground Control Station */
-	Name []byte
+	Name [10]byte
 	/*Data data */
-	Data []float32
+	Data [58]float32
+	/*HasExtensionFieldValues indicates if this message has any extensions and  */
+	HasExtensionFieldValues bool
+}
+
+// SetName encodes the input string to the Name array
+func (m *DebugFloatArray) SetName(input string) (err error) {
+	m.Name = []byte(input)[:math.Min(len(input), 10)]
+
+	if len(input) > 10 {
+		err = mavlink2.ErrStringTooLong
+	}
+
+	return
+}
+
+// GetName decodes the null-terminated string in the Name
+func (m *DebugFloatArray) GetName() string {
+	return string(m.Name[:util.CStrLen(m.Name)])
 }
 
 // GetVersion gets the MAVLink version of the Message contents
@@ -63,62 +83,97 @@ func (m *DebugFloatArray) GetID() uint32 {
 	return 350
 }
 
+// HasExtensionFields returns true if the message definition contained extensions; false otherwise
+func (m *DebugFloatArray) HasExtensionFields() bool {
+	return true
+}
+
+func (m *DebugFloatArray) getV1Length() int {
+	return 20
+}
+
+func (m *DebugFloatArray) getIOSlice() []byte {
+	return make([]byte, 252+1)
+}
+
 // Read sets the field values of the message from the raw message payload
-func (m *DebugFloatArray) Read(version int, payload []byte) (err error) {
-	reader := bytes.NewReader(payload)
+func (m *DebugFloatArray) Read(frame mavlink2.Frame) (err error) {
+	version := frame.GetVersion()
 
-	m.FrameVersion = version
-	err = binary.Read(reader, binary.LittleEndian, &m.TimeUsec)
-	if err != nil {
+	// Ensure only Version 1 or Version 2 were specified
+	if version != 1 && version != 2 {
+		err = mavlink2.ErrUnsupportedVersion
 		return
 	}
 
-	err = binary.Read(reader, binary.LittleEndian, &m.ArrayID)
-	if err != nil {
+	// Don't attempt to Read V2 messages from V1 frames
+	if m.GetID() > 255 && version < 2 {
+		err = mavlink2.ErrDecodeV2MessageV1Frame
 		return
 	}
 
-	err = binary.Read(reader, binary.LittleEndian, &m.Name)
-	if err != nil {
-		return
-	}
-
-	if version == 2 {
-		err = binary.Read(reader, binary.LittleEndian, &m.Data)
-		if err != nil {
-			return
+	// binary.Read can panic; swallow the panic and return a sane error
+	defer func() {
+		if r := recover(); r != nil {
+			err = mavlink2.ErrPrivateField
 		}
+	}()
 
+	// Get a slice of bytes long enough for the all the DebugFloatArray fields
+	// binary.Read requires enough bytes in the reader to read all fields, even if
+	// the fields are just zero values. This also simplifies handling MAVLink2
+	// extensions and trailing zero truncation.
+	ioSlice := m.getIOSlice()
+
+	copy(ioSlice, frame.GetMessageBytes())
+
+	// Indicate if
+	if version == 2 && m.HasExtensionFields() {
+		ioSlice[len(ioSlice)-1] = 1
 	}
+
+	reader := bytes.NewReader(ioSlice)
+
+	err = binary.Read(reader, binary.LittleEndian, *m)
+
 	return
 }
 
 // Write encodes the field values of the message to a byte array
-func (m *DebugFloatArray) Write(version int) ([]byte, error) {
+func (m *DebugFloatArray) Write(version int) (output []byte, err error) {
 	var buffer bytes.Buffer
 	var err error
-	err = binary.Write(&buffer, binary.LittleEndian, m.TimeUsec)
-	if err != nil {
-		return nil, err
+
+	// Ensure only Version 1 or Version 2 were specified
+	if version != 1 && version != 2 {
+		err = mavlink2.ErrUnsupportedVersion
+		return
 	}
 
-	err = binary.Write(&buffer, binary.LittleEndian, m.ArrayID)
-	if err != nil {
-		return nil, err
+	// Don't attempt to Write V2 messages to V1 bodies
+	if m.GetID() > 255 && version < 2 {
+		err = mavlink2.ErrEncodeV2MessageV1Frame
+		return
 	}
 
-	err = binary.Write(&buffer, binary.LittleEndian, m.Name)
+	err = binary.Write(&buffer, binary.LittleEndian, *m)
 	if err != nil {
-		return nil, err
+		return
 	}
 
+	// V1 uses fixed message lengths and does not include any extension fields
+	// Truncate the byte slice to the correct length
+	if version == 1 {
+		output = buffer.Bytes()[:m.getV1Length()]
+	}
+
+	// V2 uses variable message lengths and includes extension fields
+	// The variable length is caused by truncating any trailing zeroes from
+	// the end of the message before it is added to a frame
 	if version == 2 {
-		err = binary.Write(&buffer, binary.LittleEndian, m.Name)
-		if err != nil {
-			return nil, err
-		}
-
+		output = util.TruncateV2(buffer.Bytes())
 	}
 
-	return buffer.Bytes(), nil
+	return
+
 }

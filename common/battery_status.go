@@ -27,12 +27,13 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+
+	mavlink2 "github.com/queue-b/go-mavlink2"
+	"github.com/queue-b/go-mavlink2/util"
 )
 
 /*BatteryStatus Battery information. Updates GCS with flight controller battery status. Use SMART_BATTERY_* messages instead for smart batteries. */
 type BatteryStatus struct {
-	/*FrameVersion indicates the wire format of the frame this message was read from */
-	FrameVersion int
 	/*CurrentConsumed Consumed charge, -1: autopilot does not provide consumption estimate */
 	CurrentConsumed int32
 	/*EnergyConsumed Consumed energy, -1: autopilot does not provide energy consumption estimate */
@@ -40,7 +41,7 @@ type BatteryStatus struct {
 	/*Temperature Temperature of the battery. INT16_MAX for unknown temperature. */
 	Temperature int16
 	/*Voltages Battery voltage of cells. Cells above the valid cell count for this battery should have the UINT16_MAX value. */
-	Voltages []uint16
+	Voltages [10]uint16
 	/*CurrentBattery Battery current, -1: autopilot does not measure the current */
 	CurrentBattery int16
 	/*ID Battery ID */
@@ -55,6 +56,8 @@ type BatteryStatus struct {
 	TimeRemaining int32
 	/*ChargeState State for extent of discharge, provided by autopilot for warning or external reactions */
 	ChargeState uint8
+	/*HasExtensionFieldValues indicates if this message has any extensions and  */
+	HasExtensionFieldValues bool
 }
 
 // GetVersion gets the MAVLink version of the Message contents
@@ -77,132 +80,97 @@ func (m *BatteryStatus) GetID() uint32 {
 	return 147
 }
 
+// HasExtensionFields returns true if the message definition contained extensions; false otherwise
+func (m *BatteryStatus) HasExtensionFields() bool {
+	return true
+}
+
+func (m *BatteryStatus) getV1Length() int {
+	return 36
+}
+
+func (m *BatteryStatus) getIOSlice() []byte {
+	return make([]byte, 41+1)
+}
+
 // Read sets the field values of the message from the raw message payload
-func (m *BatteryStatus) Read(version int, payload []byte) (err error) {
-	reader := bytes.NewReader(payload)
+func (m *BatteryStatus) Read(frame mavlink2.Frame) (err error) {
+	version := frame.GetVersion()
 
-	m.FrameVersion = version
-	err = binary.Read(reader, binary.LittleEndian, &m.CurrentConsumed)
-	if err != nil {
+	// Ensure only Version 1 or Version 2 were specified
+	if version != 1 && version != 2 {
+		err = mavlink2.ErrUnsupportedVersion
 		return
 	}
 
-	err = binary.Read(reader, binary.LittleEndian, &m.EnergyConsumed)
-	if err != nil {
+	// Don't attempt to Read V2 messages from V1 frames
+	if m.GetID() > 255 && version < 2 {
+		err = mavlink2.ErrDecodeV2MessageV1Frame
 		return
 	}
 
-	err = binary.Read(reader, binary.LittleEndian, &m.Temperature)
-	if err != nil {
-		return
-	}
-
-	err = binary.Read(reader, binary.LittleEndian, &m.Voltages)
-	if err != nil {
-		return
-	}
-
-	err = binary.Read(reader, binary.LittleEndian, &m.CurrentBattery)
-	if err != nil {
-		return
-	}
-
-	err = binary.Read(reader, binary.LittleEndian, &m.ID)
-	if err != nil {
-		return
-	}
-
-	err = binary.Read(reader, binary.LittleEndian, &m.BatteryFunction)
-	if err != nil {
-		return
-	}
-
-	err = binary.Read(reader, binary.LittleEndian, &m.Type)
-	if err != nil {
-		return
-	}
-
-	err = binary.Read(reader, binary.LittleEndian, &m.BatteryRemaining)
-	if err != nil {
-		return
-	}
-
-	if version == 2 {
-		err = binary.Read(reader, binary.LittleEndian, &m.TimeRemaining)
-		if err != nil {
-			return
+	// binary.Read can panic; swallow the panic and return a sane error
+	defer func() {
+		if r := recover(); r != nil {
+			err = mavlink2.ErrPrivateField
 		}
+	}()
 
-		err = binary.Read(reader, binary.LittleEndian, &m.ChargeState)
-		if err != nil {
-			return
-		}
+	// Get a slice of bytes long enough for the all the BatteryStatus fields
+	// binary.Read requires enough bytes in the reader to read all fields, even if
+	// the fields are just zero values. This also simplifies handling MAVLink2
+	// extensions and trailing zero truncation.
+	ioSlice := m.getIOSlice()
 
+	copy(ioSlice, frame.GetMessageBytes())
+
+	// Indicate if
+	if version == 2 && m.HasExtensionFields() {
+		ioSlice[len(ioSlice)-1] = 1
 	}
+
+	reader := bytes.NewReader(ioSlice)
+
+	err = binary.Read(reader, binary.LittleEndian, *m)
+
 	return
 }
 
 // Write encodes the field values of the message to a byte array
-func (m *BatteryStatus) Write(version int) ([]byte, error) {
+func (m *BatteryStatus) Write(version int) (output []byte, err error) {
 	var buffer bytes.Buffer
 	var err error
-	err = binary.Write(&buffer, binary.LittleEndian, m.CurrentConsumed)
-	if err != nil {
-		return nil, err
+
+	// Ensure only Version 1 or Version 2 were specified
+	if version != 1 && version != 2 {
+		err = mavlink2.ErrUnsupportedVersion
+		return
 	}
 
-	err = binary.Write(&buffer, binary.LittleEndian, m.EnergyConsumed)
-	if err != nil {
-		return nil, err
+	// Don't attempt to Write V2 messages to V1 bodies
+	if m.GetID() > 255 && version < 2 {
+		err = mavlink2.ErrEncodeV2MessageV1Frame
+		return
 	}
 
-	err = binary.Write(&buffer, binary.LittleEndian, m.Temperature)
+	err = binary.Write(&buffer, binary.LittleEndian, *m)
 	if err != nil {
-		return nil, err
+		return
 	}
 
-	err = binary.Write(&buffer, binary.LittleEndian, m.Voltages)
-	if err != nil {
-		return nil, err
+	// V1 uses fixed message lengths and does not include any extension fields
+	// Truncate the byte slice to the correct length
+	if version == 1 {
+		output = buffer.Bytes()[:m.getV1Length()]
 	}
 
-	err = binary.Write(&buffer, binary.LittleEndian, m.CurrentBattery)
-	if err != nil {
-		return nil, err
-	}
-
-	err = binary.Write(&buffer, binary.LittleEndian, m.ID)
-	if err != nil {
-		return nil, err
-	}
-
-	err = binary.Write(&buffer, binary.LittleEndian, m.BatteryFunction)
-	if err != nil {
-		return nil, err
-	}
-
-	err = binary.Write(&buffer, binary.LittleEndian, m.Type)
-	if err != nil {
-		return nil, err
-	}
-
-	err = binary.Write(&buffer, binary.LittleEndian, m.BatteryRemaining)
-	if err != nil {
-		return nil, err
-	}
-
+	// V2 uses variable message lengths and includes extension fields
+	// The variable length is caused by truncating any trailing zeroes from
+	// the end of the message before it is added to a frame
 	if version == 2 {
-		err = binary.Write(&buffer, binary.LittleEndian, m.BatteryRemaining)
-		if err != nil {
-			return nil, err
-		}
-
-		err = binary.Write(&buffer, binary.LittleEndian, m.BatteryRemaining)
-		if err != nil {
-			return nil, err
-		}
-
+		output = util.TruncateV2(buffer.Bytes())
 	}
 
-	return buffer.Bytes(), nil
+	return
+
 }
