@@ -61,8 +61,9 @@ func (d Dialects) Validate(frame Frame) error {
 		return err
 	}
 
-	// Check if the message is too short
-	if frame.GetMessageLength() < meta.MinimumLength {
+	// For V1 Frames, check if the message is too short
+	// V2 Frames truncate any zero bytes at the end of the payload, so a min length isn't really a valid tool
+	if frame.GetVersion() == 1 && frame.GetMessageLength() < meta.MinimumLength {
 		return ErrMessageTooShort
 	}
 
