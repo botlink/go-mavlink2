@@ -38,16 +38,51 @@ const V1StartByte = 0xfe
 // CompatibilityFlagSignature is the flag indicating that a V2 Frame is signed
 const CompatibilityFlagSignature = 0x01
 
-// FrameStream represents a stream of MAVLink Frames
-type FrameStream struct {
-	Version int
-	reader  bufio.ReadWriter
+// MAVLinkStream represents a stream of MAVLink Frames
+type MAVLinkStream struct {
+	Version  int
+	Dialects Dialects
+	Frames   chan Frame
+	Messages chan Messages
 }
 
-func (s *FrameStream) peekHeader() (frameLength int, err error) {
+func (s *MAVLinkStream) Run(reader *bufio.ReadWriter) {
+	// Read Frames & Messages
+	go func() {
+		for {
+			frame, err := readFrame(reader)
+
+			if err != nil {
+				fmt.Println(err)
+				continue
+			}
+
+			select {
+			case s.Frames <- frame:
+			default:
+				fmt.Println("Dropped frame")
+			}
+
+			message, err := s.Dialects.GetMessage(frame)
+
+			if err != nil && err != ErrUnknownMessage {
+				fmt.Println(err)
+				continue
+			}
+
+			select {
+			case s.Messages <- message:
+			default:
+				fmt.Println("Dropped message")
+			}
+		}
+	}()
+}
+
+func peekHeader(reader *bufio.Reader) (frameLength int, err error) {
 	for {
 		var headerBytes []byte
-		headerBytes, err = s.reader.Peek(3)
+		headerBytes, err = reader.Peek(3)
 
 		if err != nil {
 			return
@@ -69,7 +104,7 @@ func (s *FrameStream) peekHeader() (frameLength int, err error) {
 
 			return
 		} else {
-			_, err = s.reader.ReadByte()
+			_, err = reader.ReadByte()
 
 			if err != nil {
 				return
@@ -78,8 +113,8 @@ func (s *FrameStream) peekHeader() (frameLength int, err error) {
 	}
 }
 
-func (s *FrameStream) readFrame() (frame Frame, err error) {
-	frameLength, err := s.peekHeader()
+func readFrame(reader *bufio.ReadWriter) (frame Frame, err error) {
+	frameLength, err := peekHeader()
 
 	if err != nil {
 		return
@@ -87,7 +122,7 @@ func (s *FrameStream) readFrame() (frame Frame, err error) {
 
 	frameBytes := make([]byte, frameLength)
 
-	_, err = io.ReadFull(s.reader, frameBytes)
+	_, err = io.ReadFull(reader, frameBytes)
 
 	if err != nil {
 		return
