@@ -27,6 +27,8 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
+	"strings"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -52,6 +54,34 @@ type AttitudeTarget struct {
 	HasExtensionFieldValues bool
 }
 
+func (m *AttitudeTarget) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("Name:\t%v/%v\n")
+	// Output field values based on the decoded message type
+	builder.WriteString("TimeBootMs:\t%v [ms]\n")
+	builder.WriteString("Q:\t%v \n")
+	builder.WriteString("BodyRollRate:\t%v [rad/s]\n")
+	builder.WriteString("BodyPitchRate:\t%v [rad/s]\n")
+	builder.WriteString("BodyYawRate:\t%v [rad/s]\n")
+	builder.WriteString("Thrust:\t%v \n")
+	builder.WriteString("TypeMask:\t%v \n")
+	format := builder.String()
+
+	return fmt.Sprintf(
+		format,
+		m.GetDialect(),
+		m.GetMessageName(),
+		m.TimeBootMs,
+		m.Q,
+		m.BodyRollRate,
+		m.BodyPitchRate,
+		m.BodyYawRate,
+		m.Thrust,
+		m.TypeMask,
+	)
+}
+
 // GetVersion gets the MAVLink version of the Message contents
 func (m *AttitudeTarget) GetVersion() int {
 	if m.HasExtensionFieldValues {
@@ -66,7 +96,7 @@ func (m *AttitudeTarget) GetDialect() string {
 	return "common"
 }
 
-// GetName gets the name of the Message
+// GetMessageName gets the name of the Message
 func (m *AttitudeTarget) GetMessageName() string {
 	return "AttitudeTarget"
 }
@@ -127,7 +157,7 @@ func (m *AttitudeTarget) Read(frame mavlink2.Frame) (err error) {
 
 	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, *m)
+	err = binary.Read(reader, binary.LittleEndian, m)
 
 	return
 }

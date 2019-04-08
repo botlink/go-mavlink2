@@ -27,6 +27,8 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
+	"strings"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -52,6 +54,34 @@ type RadioStatus struct {
 	HasExtensionFieldValues bool
 }
 
+func (m *RadioStatus) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("Name:\t%v/%v\n")
+	// Output field values based on the decoded message type
+	builder.WriteString("Rxerrors:\t%v \n")
+	builder.WriteString("Fixed:\t%v \n")
+	builder.WriteString("Rssi:\t%v \n")
+	builder.WriteString("Remrssi:\t%v \n")
+	builder.WriteString("Txbuf:\t%v [%]\n")
+	builder.WriteString("Noise:\t%v \n")
+	builder.WriteString("Remnoise:\t%v \n")
+	format := builder.String()
+
+	return fmt.Sprintf(
+		format,
+		m.GetDialect(),
+		m.GetMessageName(),
+		m.Rxerrors,
+		m.Fixed,
+		m.Rssi,
+		m.Remrssi,
+		m.Txbuf,
+		m.Noise,
+		m.Remnoise,
+	)
+}
+
 // GetVersion gets the MAVLink version of the Message contents
 func (m *RadioStatus) GetVersion() int {
 	if m.HasExtensionFieldValues {
@@ -66,7 +96,7 @@ func (m *RadioStatus) GetDialect() string {
 	return "common"
 }
 
-// GetName gets the name of the Message
+// GetMessageName gets the name of the Message
 func (m *RadioStatus) GetMessageName() string {
 	return "RadioStatus"
 }
@@ -127,7 +157,7 @@ func (m *RadioStatus) Read(frame mavlink2.Frame) (err error) {
 
 	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, *m)
+	err = binary.Read(reader, binary.LittleEndian, m)
 
 	return
 }

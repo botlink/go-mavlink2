@@ -27,6 +27,8 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
+	"strings"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -62,6 +64,44 @@ type OpticalFlowRad struct {
 	HasExtensionFieldValues bool
 }
 
+func (m *OpticalFlowRad) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("Name:\t%v/%v\n")
+	// Output field values based on the decoded message type
+	builder.WriteString("TimeUsec:\t%v [us]\n")
+	builder.WriteString("IntegrationTimeUs:\t%v [us]\n")
+	builder.WriteString("IntegratedX:\t%v [rad]\n")
+	builder.WriteString("IntegratedY:\t%v [rad]\n")
+	builder.WriteString("IntegratedXgyro:\t%v [rad]\n")
+	builder.WriteString("IntegratedYgyro:\t%v [rad]\n")
+	builder.WriteString("IntegratedZgyro:\t%v [rad]\n")
+	builder.WriteString("TimeDeltaDistanceUs:\t%v [us]\n")
+	builder.WriteString("Distance:\t%v [m]\n")
+	builder.WriteString("Temperature:\t%v [cdegC]\n")
+	builder.WriteString("SensorID:\t%v \n")
+	builder.WriteString("Quality:\t%v \n")
+	format := builder.String()
+
+	return fmt.Sprintf(
+		format,
+		m.GetDialect(),
+		m.GetMessageName(),
+		m.TimeUsec,
+		m.IntegrationTimeUs,
+		m.IntegratedX,
+		m.IntegratedY,
+		m.IntegratedXgyro,
+		m.IntegratedYgyro,
+		m.IntegratedZgyro,
+		m.TimeDeltaDistanceUs,
+		m.Distance,
+		m.Temperature,
+		m.SensorID,
+		m.Quality,
+	)
+}
+
 // GetVersion gets the MAVLink version of the Message contents
 func (m *OpticalFlowRad) GetVersion() int {
 	if m.HasExtensionFieldValues {
@@ -76,7 +116,7 @@ func (m *OpticalFlowRad) GetDialect() string {
 	return "common"
 }
 
-// GetName gets the name of the Message
+// GetMessageName gets the name of the Message
 func (m *OpticalFlowRad) GetMessageName() string {
 	return "OpticalFlowRad"
 }
@@ -137,7 +177,7 @@ func (m *OpticalFlowRad) Read(frame mavlink2.Frame) (err error) {
 
 	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, *m)
+	err = binary.Read(reader, binary.LittleEndian, m)
 
 	return
 }

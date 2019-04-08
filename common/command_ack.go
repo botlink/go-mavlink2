@@ -27,6 +27,8 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
+	"strings"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -50,6 +52,44 @@ type CommandAck struct {
 	HasExtensionFieldValues bool
 }
 
+func (m *CommandAck) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("Name:\t%v/%v\n")
+	// Output field values based on the decoded message type
+	builder.WriteString("Command:\t%v \n")
+	builder.WriteString("Result:\t%v \n")
+	if m.HasExtensionFieldValues {
+		builder.WriteString("Progress:\t%v\n")
+		builder.WriteString("ResultParam2:\t%v\n")
+		builder.WriteString("TargetSystem:\t%v\n")
+		builder.WriteString("TargetComponent:\t%v\n")
+	}
+	format := builder.String()
+
+	if m.HasExtensionFieldValues {
+		return fmt.Sprintf(
+			format,
+			m.GetDialect(),
+			m.GetMessageName(),
+			m.Command,
+			m.Result,
+			m.Progress,
+			m.ResultParam2,
+			m.TargetSystem,
+			m.TargetComponent,
+		)
+	}
+
+	return fmt.Sprintf(
+		format,
+		m.GetDialect(),
+		m.GetMessageName(),
+		m.Command,
+		m.Result,
+	)
+}
+
 // GetVersion gets the MAVLink version of the Message contents
 func (m *CommandAck) GetVersion() int {
 	if m.HasExtensionFieldValues {
@@ -64,7 +104,7 @@ func (m *CommandAck) GetDialect() string {
 	return "common"
 }
 
-// GetName gets the name of the Message
+// GetMessageName gets the name of the Message
 func (m *CommandAck) GetMessageName() string {
 	return "CommandAck"
 }
@@ -125,7 +165,7 @@ func (m *CommandAck) Read(frame mavlink2.Frame) (err error) {
 
 	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, *m)
+	err = binary.Read(reader, binary.LittleEndian, m)
 
 	return
 }

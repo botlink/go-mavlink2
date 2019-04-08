@@ -27,6 +27,8 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
+	"strings"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -48,6 +50,44 @@ type MountOrientation struct {
 	HasExtensionFieldValues bool
 }
 
+func (m *MountOrientation) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("Name:\t%v/%v\n")
+	// Output field values based on the decoded message type
+	builder.WriteString("TimeBootMs:\t%v [ms]\n")
+	builder.WriteString("Roll:\t%v [deg]\n")
+	builder.WriteString("Pitch:\t%v [deg]\n")
+	builder.WriteString("Yaw:\t%v [deg]\n")
+	if m.HasExtensionFieldValues {
+		builder.WriteString("YawAbsolute:\t%v\n")
+	}
+	format := builder.String()
+
+	if m.HasExtensionFieldValues {
+		return fmt.Sprintf(
+			format,
+			m.GetDialect(),
+			m.GetMessageName(),
+			m.TimeBootMs,
+			m.Roll,
+			m.Pitch,
+			m.Yaw,
+			m.YawAbsolute,
+		)
+	}
+
+	return fmt.Sprintf(
+		format,
+		m.GetDialect(),
+		m.GetMessageName(),
+		m.TimeBootMs,
+		m.Roll,
+		m.Pitch,
+		m.Yaw,
+	)
+}
+
 // GetVersion gets the MAVLink version of the Message contents
 func (m *MountOrientation) GetVersion() int {
 	if m.HasExtensionFieldValues {
@@ -62,7 +102,7 @@ func (m *MountOrientation) GetDialect() string {
 	return "common"
 }
 
-// GetName gets the name of the Message
+// GetMessageName gets the name of the Message
 func (m *MountOrientation) GetMessageName() string {
 	return "MountOrientation"
 }
@@ -123,7 +163,7 @@ func (m *MountOrientation) Read(frame mavlink2.Frame) (err error) {
 
 	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, *m)
+	err = binary.Read(reader, binary.LittleEndian, m)
 
 	return
 }

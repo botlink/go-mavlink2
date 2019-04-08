@@ -27,6 +27,8 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
+	"strings"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -60,6 +62,42 @@ type FollowTarget struct {
 	HasExtensionFieldValues bool
 }
 
+func (m *FollowTarget) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("Name:\t%v/%v\n")
+	// Output field values based on the decoded message type
+	builder.WriteString("Timestamp:\t%v [ms]\n")
+	builder.WriteString("CustomState:\t%v \n")
+	builder.WriteString("Lat:\t%v [degE7]\n")
+	builder.WriteString("Lon:\t%v [degE7]\n")
+	builder.WriteString("Alt:\t%v [m]\n")
+	builder.WriteString("Vel:\t%v [m/s]\n")
+	builder.WriteString("Acc:\t%v [m/s/s]\n")
+	builder.WriteString("AttitudeQ:\t%v \n")
+	builder.WriteString("Rates:\t%v \n")
+	builder.WriteString("PositionCov:\t%v \n")
+	builder.WriteString("EstCapabilities:\t%v \n")
+	format := builder.String()
+
+	return fmt.Sprintf(
+		format,
+		m.GetDialect(),
+		m.GetMessageName(),
+		m.Timestamp,
+		m.CustomState,
+		m.Lat,
+		m.Lon,
+		m.Alt,
+		m.Vel,
+		m.Acc,
+		m.AttitudeQ,
+		m.Rates,
+		m.PositionCov,
+		m.EstCapabilities,
+	)
+}
+
 // GetVersion gets the MAVLink version of the Message contents
 func (m *FollowTarget) GetVersion() int {
 	if m.HasExtensionFieldValues {
@@ -74,7 +112,7 @@ func (m *FollowTarget) GetDialect() string {
 	return "common"
 }
 
-// GetName gets the name of the Message
+// GetMessageName gets the name of the Message
 func (m *FollowTarget) GetMessageName() string {
 	return "FollowTarget"
 }
@@ -135,7 +173,7 @@ func (m *FollowTarget) Read(frame mavlink2.Frame) (err error) {
 
 	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, *m)
+	err = binary.Read(reader, binary.LittleEndian, m)
 
 	return
 }

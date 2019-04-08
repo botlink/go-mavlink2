@@ -27,6 +27,8 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
+	"strings"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -54,6 +56,36 @@ type SmartBatteryStatus struct {
 	HasExtensionFieldValues bool
 }
 
+func (m *SmartBatteryStatus) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("Name:\t%v/%v\n")
+	// Output field values based on the decoded message type
+	builder.WriteString("FaultBitmask:\t%v \n")
+	builder.WriteString("TimeRemaining:\t%v [s]\n")
+	builder.WriteString("ID:\t%v \n")
+	builder.WriteString("CapacityRemaining:\t%v [%]\n")
+	builder.WriteString("Current:\t%v [cA]\n")
+	builder.WriteString("Temperature:\t%v [cdegC]\n")
+	builder.WriteString("CellOffset:\t%v \n")
+	builder.WriteString("Voltages:\t%v [mV]\n")
+	format := builder.String()
+
+	return fmt.Sprintf(
+		format,
+		m.GetDialect(),
+		m.GetMessageName(),
+		m.FaultBitmask,
+		m.TimeRemaining,
+		m.ID,
+		m.CapacityRemaining,
+		m.Current,
+		m.Temperature,
+		m.CellOffset,
+		m.Voltages,
+	)
+}
+
 // GetVersion gets the MAVLink version of the Message contents
 func (m *SmartBatteryStatus) GetVersion() int {
 	if m.HasExtensionFieldValues {
@@ -68,7 +100,7 @@ func (m *SmartBatteryStatus) GetDialect() string {
 	return "common"
 }
 
-// GetName gets the name of the Message
+// GetMessageName gets the name of the Message
 func (m *SmartBatteryStatus) GetMessageName() string {
 	return "SmartBatteryStatus"
 }
@@ -129,7 +161,7 @@ func (m *SmartBatteryStatus) Read(frame mavlink2.Frame) (err error) {
 
 	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, *m)
+	err = binary.Read(reader, binary.LittleEndian, m)
 
 	return
 }

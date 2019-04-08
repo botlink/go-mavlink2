@@ -27,6 +27,8 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
+	"strings"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -54,6 +56,36 @@ type VIDeoStreamStatus struct {
 	HasExtensionFieldValues bool
 }
 
+func (m *VIDeoStreamStatus) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("Name:\t%v/%v\n")
+	// Output field values based on the decoded message type
+	builder.WriteString("Framerate:\t%v [Hz]\n")
+	builder.WriteString("Bitrate:\t%v [bits/s]\n")
+	builder.WriteString("Flags:\t%v \n")
+	builder.WriteString("ResolutionH:\t%v [pix]\n")
+	builder.WriteString("ResolutionV:\t%v [pix]\n")
+	builder.WriteString("Rotation:\t%v [deg]\n")
+	builder.WriteString("Hfov:\t%v [deg]\n")
+	builder.WriteString("StreamID:\t%v \n")
+	format := builder.String()
+
+	return fmt.Sprintf(
+		format,
+		m.GetDialect(),
+		m.GetMessageName(),
+		m.Framerate,
+		m.Bitrate,
+		m.Flags,
+		m.ResolutionH,
+		m.ResolutionV,
+		m.Rotation,
+		m.Hfov,
+		m.StreamID,
+	)
+}
+
 // GetVersion gets the MAVLink version of the Message contents
 func (m *VIDeoStreamStatus) GetVersion() int {
 	if m.HasExtensionFieldValues {
@@ -68,7 +100,7 @@ func (m *VIDeoStreamStatus) GetDialect() string {
 	return "common"
 }
 
-// GetName gets the name of the Message
+// GetMessageName gets the name of the Message
 func (m *VIDeoStreamStatus) GetMessageName() string {
 	return "VIDeoStreamStatus"
 }
@@ -129,7 +161,7 @@ func (m *VIDeoStreamStatus) Read(frame mavlink2.Frame) (err error) {
 
 	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, *m)
+	err = binary.Read(reader, binary.LittleEndian, m)
 
 	return
 }

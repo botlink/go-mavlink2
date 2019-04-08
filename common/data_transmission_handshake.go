@@ -27,6 +27,8 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
+	"strings"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -52,6 +54,34 @@ type DataTransmissionHandshake struct {
 	HasExtensionFieldValues bool
 }
 
+func (m *DataTransmissionHandshake) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("Name:\t%v/%v\n")
+	// Output field values based on the decoded message type
+	builder.WriteString("Size:\t%v [bytes]\n")
+	builder.WriteString("WIDth:\t%v \n")
+	builder.WriteString("Height:\t%v \n")
+	builder.WriteString("Packets:\t%v \n")
+	builder.WriteString("Type:\t%v \n")
+	builder.WriteString("Payload:\t%v [bytes]\n")
+	builder.WriteString("JpgQuality:\t%v [%]\n")
+	format := builder.String()
+
+	return fmt.Sprintf(
+		format,
+		m.GetDialect(),
+		m.GetMessageName(),
+		m.Size,
+		m.WIDth,
+		m.Height,
+		m.Packets,
+		m.Type,
+		m.Payload,
+		m.JpgQuality,
+	)
+}
+
 // GetVersion gets the MAVLink version of the Message contents
 func (m *DataTransmissionHandshake) GetVersion() int {
 	if m.HasExtensionFieldValues {
@@ -66,7 +96,7 @@ func (m *DataTransmissionHandshake) GetDialect() string {
 	return "common"
 }
 
-// GetName gets the name of the Message
+// GetMessageName gets the name of the Message
 func (m *DataTransmissionHandshake) GetMessageName() string {
 	return "DataTransmissionHandshake"
 }
@@ -127,7 +157,7 @@ func (m *DataTransmissionHandshake) Read(frame mavlink2.Frame) (err error) {
 
 	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, *m)
+	err = binary.Read(reader, binary.LittleEndian, m)
 
 	return
 }

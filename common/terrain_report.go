@@ -27,6 +27,8 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
+	"strings"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -52,6 +54,34 @@ type TerrainReport struct {
 	HasExtensionFieldValues bool
 }
 
+func (m *TerrainReport) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("Name:\t%v/%v\n")
+	// Output field values based on the decoded message type
+	builder.WriteString("Lat:\t%v [degE7]\n")
+	builder.WriteString("Lon:\t%v [degE7]\n")
+	builder.WriteString("TerrainHeight:\t%v [m]\n")
+	builder.WriteString("CurrentHeight:\t%v [m]\n")
+	builder.WriteString("Spacing:\t%v \n")
+	builder.WriteString("Pending:\t%v \n")
+	builder.WriteString("Loaded:\t%v \n")
+	format := builder.String()
+
+	return fmt.Sprintf(
+		format,
+		m.GetDialect(),
+		m.GetMessageName(),
+		m.Lat,
+		m.Lon,
+		m.TerrainHeight,
+		m.CurrentHeight,
+		m.Spacing,
+		m.Pending,
+		m.Loaded,
+	)
+}
+
 // GetVersion gets the MAVLink version of the Message contents
 func (m *TerrainReport) GetVersion() int {
 	if m.HasExtensionFieldValues {
@@ -66,7 +96,7 @@ func (m *TerrainReport) GetDialect() string {
 	return "common"
 }
 
-// GetName gets the name of the Message
+// GetMessageName gets the name of the Message
 func (m *TerrainReport) GetMessageName() string {
 	return "TerrainReport"
 }
@@ -127,7 +157,7 @@ func (m *TerrainReport) Read(frame mavlink2.Frame) (err error) {
 
 	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, *m)
+	err = binary.Read(reader, binary.LittleEndian, m)
 
 	return
 }

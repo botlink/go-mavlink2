@@ -27,6 +27,8 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
+	"strings"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -60,6 +62,42 @@ type HilControls struct {
 	HasExtensionFieldValues bool
 }
 
+func (m *HilControls) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("Name:\t%v/%v\n")
+	// Output field values based on the decoded message type
+	builder.WriteString("TimeUsec:\t%v [us]\n")
+	builder.WriteString("RollAilerons:\t%v \n")
+	builder.WriteString("PitchElevator:\t%v \n")
+	builder.WriteString("YawRudder:\t%v \n")
+	builder.WriteString("Throttle:\t%v \n")
+	builder.WriteString("Aux1:\t%v \n")
+	builder.WriteString("Aux2:\t%v \n")
+	builder.WriteString("Aux3:\t%v \n")
+	builder.WriteString("Aux4:\t%v \n")
+	builder.WriteString("Mode:\t%v \n")
+	builder.WriteString("NavMode:\t%v \n")
+	format := builder.String()
+
+	return fmt.Sprintf(
+		format,
+		m.GetDialect(),
+		m.GetMessageName(),
+		m.TimeUsec,
+		m.RollAilerons,
+		m.PitchElevator,
+		m.YawRudder,
+		m.Throttle,
+		m.Aux1,
+		m.Aux2,
+		m.Aux3,
+		m.Aux4,
+		m.Mode,
+		m.NavMode,
+	)
+}
+
 // GetVersion gets the MAVLink version of the Message contents
 func (m *HilControls) GetVersion() int {
 	if m.HasExtensionFieldValues {
@@ -74,7 +112,7 @@ func (m *HilControls) GetDialect() string {
 	return "common"
 }
 
-// GetName gets the name of the Message
+// GetMessageName gets the name of the Message
 func (m *HilControls) GetMessageName() string {
 	return "HilControls"
 }
@@ -135,7 +173,7 @@ func (m *HilControls) Read(frame mavlink2.Frame) (err error) {
 
 	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, *m)
+	err = binary.Read(reader, binary.LittleEndian, m)
 
 	return
 }

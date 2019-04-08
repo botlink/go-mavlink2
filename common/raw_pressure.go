@@ -27,6 +27,8 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
+	"strings"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -48,6 +50,30 @@ type RawPressure struct {
 	HasExtensionFieldValues bool
 }
 
+func (m *RawPressure) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("Name:\t%v/%v\n")
+	// Output field values based on the decoded message type
+	builder.WriteString("TimeUsec:\t%v [us]\n")
+	builder.WriteString("PressAbs:\t%v \n")
+	builder.WriteString("PressDiff1:\t%v \n")
+	builder.WriteString("PressDiff2:\t%v \n")
+	builder.WriteString("Temperature:\t%v \n")
+	format := builder.String()
+
+	return fmt.Sprintf(
+		format,
+		m.GetDialect(),
+		m.GetMessageName(),
+		m.TimeUsec,
+		m.PressAbs,
+		m.PressDiff1,
+		m.PressDiff2,
+		m.Temperature,
+	)
+}
+
 // GetVersion gets the MAVLink version of the Message contents
 func (m *RawPressure) GetVersion() int {
 	if m.HasExtensionFieldValues {
@@ -62,7 +88,7 @@ func (m *RawPressure) GetDialect() string {
 	return "common"
 }
 
-// GetName gets the name of the Message
+// GetMessageName gets the name of the Message
 func (m *RawPressure) GetMessageName() string {
 	return "RawPressure"
 }
@@ -123,7 +149,7 @@ func (m *RawPressure) Read(frame mavlink2.Frame) (err error) {
 
 	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, *m)
+	err = binary.Read(reader, binary.LittleEndian, m)
 
 	return
 }

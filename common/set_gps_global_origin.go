@@ -27,6 +27,8 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
+	"strings"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -48,6 +50,44 @@ type SetGpsGlobalOrigin struct {
 	HasExtensionFieldValues bool
 }
 
+func (m *SetGpsGlobalOrigin) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("Name:\t%v/%v\n")
+	// Output field values based on the decoded message type
+	builder.WriteString("Latitude:\t%v [degE7]\n")
+	builder.WriteString("Longitude:\t%v [degE7]\n")
+	builder.WriteString("Altitude:\t%v [mm]\n")
+	builder.WriteString("TargetSystem:\t%v \n")
+	if m.HasExtensionFieldValues {
+		builder.WriteString("TimeUsec:\t%v\n")
+	}
+	format := builder.String()
+
+	if m.HasExtensionFieldValues {
+		return fmt.Sprintf(
+			format,
+			m.GetDialect(),
+			m.GetMessageName(),
+			m.Latitude,
+			m.Longitude,
+			m.Altitude,
+			m.TargetSystem,
+			m.TimeUsec,
+		)
+	}
+
+	return fmt.Sprintf(
+		format,
+		m.GetDialect(),
+		m.GetMessageName(),
+		m.Latitude,
+		m.Longitude,
+		m.Altitude,
+		m.TargetSystem,
+	)
+}
+
 // GetVersion gets the MAVLink version of the Message contents
 func (m *SetGpsGlobalOrigin) GetVersion() int {
 	if m.HasExtensionFieldValues {
@@ -62,7 +102,7 @@ func (m *SetGpsGlobalOrigin) GetDialect() string {
 	return "common"
 }
 
-// GetName gets the name of the Message
+// GetMessageName gets the name of the Message
 func (m *SetGpsGlobalOrigin) GetMessageName() string {
 	return "SetGpsGlobalOrigin"
 }
@@ -123,7 +163,7 @@ func (m *SetGpsGlobalOrigin) Read(frame mavlink2.Frame) (err error) {
 
 	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, *m)
+	err = binary.Read(reader, binary.LittleEndian, m)
 
 	return
 }

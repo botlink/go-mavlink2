@@ -27,6 +27,8 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
+	"strings"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -54,6 +56,36 @@ type AttitudeQuaternion struct {
 	HasExtensionFieldValues bool
 }
 
+func (m *AttitudeQuaternion) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("Name:\t%v/%v\n")
+	// Output field values based on the decoded message type
+	builder.WriteString("TimeBootMs:\t%v [ms]\n")
+	builder.WriteString("Q1:\t%v \n")
+	builder.WriteString("Q2:\t%v \n")
+	builder.WriteString("Q3:\t%v \n")
+	builder.WriteString("Q4:\t%v \n")
+	builder.WriteString("Rollspeed:\t%v [rad/s]\n")
+	builder.WriteString("Pitchspeed:\t%v [rad/s]\n")
+	builder.WriteString("Yawspeed:\t%v [rad/s]\n")
+	format := builder.String()
+
+	return fmt.Sprintf(
+		format,
+		m.GetDialect(),
+		m.GetMessageName(),
+		m.TimeBootMs,
+		m.Q1,
+		m.Q2,
+		m.Q3,
+		m.Q4,
+		m.Rollspeed,
+		m.Pitchspeed,
+		m.Yawspeed,
+	)
+}
+
 // GetVersion gets the MAVLink version of the Message contents
 func (m *AttitudeQuaternion) GetVersion() int {
 	if m.HasExtensionFieldValues {
@@ -68,7 +100,7 @@ func (m *AttitudeQuaternion) GetDialect() string {
 	return "common"
 }
 
-// GetName gets the name of the Message
+// GetMessageName gets the name of the Message
 func (m *AttitudeQuaternion) GetMessageName() string {
 	return "AttitudeQuaternion"
 }
@@ -129,7 +161,7 @@ func (m *AttitudeQuaternion) Read(frame mavlink2.Frame) (err error) {
 
 	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, *m)
+	err = binary.Read(reader, binary.LittleEndian, m)
 
 	return
 }

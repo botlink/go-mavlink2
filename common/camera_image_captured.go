@@ -27,7 +27,9 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
 	"math"
+	"strings"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -59,6 +61,42 @@ type CameraImageCaptured struct {
 	FileURL [205]byte
 	/*HasExtensionFieldValues indicates if this message has any extensions and  */
 	HasExtensionFieldValues bool
+}
+
+func (m *CameraImageCaptured) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("Name:\t%v/%v\n")
+	// Output field values based on the decoded message type
+	builder.WriteString("TimeUtc:\t%v [us]\n")
+	builder.WriteString("TimeBootMs:\t%v [ms]\n")
+	builder.WriteString("Lat:\t%v [degE7]\n")
+	builder.WriteString("Lon:\t%v [degE7]\n")
+	builder.WriteString("Alt:\t%v [mm]\n")
+	builder.WriteString("RelativeAlt:\t%v [mm]\n")
+	builder.WriteString("Q:\t%v \n")
+	builder.WriteString("ImageIndex:\t%v \n")
+	builder.WriteString("CameraID:\t%v \n")
+	builder.WriteString("CaptureResult:\t%v \n")
+	builder.WriteString("FileURL:\t%v \n")
+	format := builder.String()
+
+	return fmt.Sprintf(
+		format,
+		m.GetDialect(),
+		m.GetMessageName(),
+		m.TimeUtc,
+		m.TimeBootMs,
+		m.Lat,
+		m.Lon,
+		m.Alt,
+		m.RelativeAlt,
+		m.Q,
+		m.ImageIndex,
+		m.CameraID,
+		m.CaptureResult,
+		m.FileURL,
+	)
 }
 
 // SetFileURL encodes the input string to the FileURL array
@@ -94,7 +132,7 @@ func (m *CameraImageCaptured) GetDialect() string {
 	return "common"
 }
 
-// GetName gets the name of the Message
+// GetMessageName gets the name of the Message
 func (m *CameraImageCaptured) GetMessageName() string {
 	return "CameraImageCaptured"
 }
@@ -155,7 +193,7 @@ func (m *CameraImageCaptured) Read(frame mavlink2.Frame) (err error) {
 
 	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, *m)
+	err = binary.Read(reader, binary.LittleEndian, m)
 
 	return
 }

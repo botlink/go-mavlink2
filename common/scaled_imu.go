@@ -27,6 +27,8 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
+	"strings"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -58,6 +60,40 @@ type ScaledImu struct {
 	HasExtensionFieldValues bool
 }
 
+func (m *ScaledImu) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("Name:\t%v/%v\n")
+	// Output field values based on the decoded message type
+	builder.WriteString("TimeBootMs:\t%v [ms]\n")
+	builder.WriteString("Xacc:\t%v [mG]\n")
+	builder.WriteString("Yacc:\t%v [mG]\n")
+	builder.WriteString("Zacc:\t%v [mG]\n")
+	builder.WriteString("Xgyro:\t%v [mrad/s]\n")
+	builder.WriteString("Ygyro:\t%v [mrad/s]\n")
+	builder.WriteString("Zgyro:\t%v [mrad/s]\n")
+	builder.WriteString("Xmag:\t%v [mT]\n")
+	builder.WriteString("Ymag:\t%v [mT]\n")
+	builder.WriteString("Zmag:\t%v [mT]\n")
+	format := builder.String()
+
+	return fmt.Sprintf(
+		format,
+		m.GetDialect(),
+		m.GetMessageName(),
+		m.TimeBootMs,
+		m.Xacc,
+		m.Yacc,
+		m.Zacc,
+		m.Xgyro,
+		m.Ygyro,
+		m.Zgyro,
+		m.Xmag,
+		m.Ymag,
+		m.Zmag,
+	)
+}
+
 // GetVersion gets the MAVLink version of the Message contents
 func (m *ScaledImu) GetVersion() int {
 	if m.HasExtensionFieldValues {
@@ -72,7 +108,7 @@ func (m *ScaledImu) GetDialect() string {
 	return "common"
 }
 
-// GetName gets the name of the Message
+// GetMessageName gets the name of the Message
 func (m *ScaledImu) GetMessageName() string {
 	return "ScaledImu"
 }
@@ -133,7 +169,7 @@ func (m *ScaledImu) Read(frame mavlink2.Frame) (err error) {
 
 	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, *m)
+	err = binary.Read(reader, binary.LittleEndian, m)
 
 	return
 }

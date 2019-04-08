@@ -27,6 +27,8 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
+	"strings"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -40,6 +42,24 @@ type TerrainCheck struct {
 	Lon int32
 	/*HasExtensionFieldValues indicates if this message has any extensions and  */
 	HasExtensionFieldValues bool
+}
+
+func (m *TerrainCheck) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("Name:\t%v/%v\n")
+	// Output field values based on the decoded message type
+	builder.WriteString("Lat:\t%v [degE7]\n")
+	builder.WriteString("Lon:\t%v [degE7]\n")
+	format := builder.String()
+
+	return fmt.Sprintf(
+		format,
+		m.GetDialect(),
+		m.GetMessageName(),
+		m.Lat,
+		m.Lon,
+	)
 }
 
 // GetVersion gets the MAVLink version of the Message contents
@@ -56,7 +76,7 @@ func (m *TerrainCheck) GetDialect() string {
 	return "common"
 }
 
-// GetName gets the name of the Message
+// GetMessageName gets the name of the Message
 func (m *TerrainCheck) GetMessageName() string {
 	return "TerrainCheck"
 }
@@ -117,7 +137,7 @@ func (m *TerrainCheck) Read(frame mavlink2.Frame) (err error) {
 
 	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, *m)
+	err = binary.Read(reader, binary.LittleEndian, m)
 
 	return
 }

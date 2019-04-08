@@ -27,6 +27,8 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
+	"strings"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -54,6 +56,36 @@ type NavControllerOutput struct {
 	HasExtensionFieldValues bool
 }
 
+func (m *NavControllerOutput) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("Name:\t%v/%v\n")
+	// Output field values based on the decoded message type
+	builder.WriteString("NavRoll:\t%v [deg]\n")
+	builder.WriteString("NavPitch:\t%v [deg]\n")
+	builder.WriteString("AltError:\t%v [m]\n")
+	builder.WriteString("AspdError:\t%v [m/s]\n")
+	builder.WriteString("XtrackError:\t%v [m]\n")
+	builder.WriteString("NavBearing:\t%v [deg]\n")
+	builder.WriteString("TargetBearing:\t%v [deg]\n")
+	builder.WriteString("WpDist:\t%v [m]\n")
+	format := builder.String()
+
+	return fmt.Sprintf(
+		format,
+		m.GetDialect(),
+		m.GetMessageName(),
+		m.NavRoll,
+		m.NavPitch,
+		m.AltError,
+		m.AspdError,
+		m.XtrackError,
+		m.NavBearing,
+		m.TargetBearing,
+		m.WpDist,
+	)
+}
+
 // GetVersion gets the MAVLink version of the Message contents
 func (m *NavControllerOutput) GetVersion() int {
 	if m.HasExtensionFieldValues {
@@ -68,7 +100,7 @@ func (m *NavControllerOutput) GetDialect() string {
 	return "common"
 }
 
-// GetName gets the name of the Message
+// GetMessageName gets the name of the Message
 func (m *NavControllerOutput) GetMessageName() string {
 	return "NavControllerOutput"
 }
@@ -129,7 +161,7 @@ func (m *NavControllerOutput) Read(frame mavlink2.Frame) (err error) {
 
 	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, *m)
+	err = binary.Read(reader, binary.LittleEndian, m)
 
 	return
 }

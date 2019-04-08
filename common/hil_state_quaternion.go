@@ -27,6 +27,8 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
+	"strings"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -70,6 +72,52 @@ type HilStateQuaternion struct {
 	HasExtensionFieldValues bool
 }
 
+func (m *HilStateQuaternion) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("Name:\t%v/%v\n")
+	// Output field values based on the decoded message type
+	builder.WriteString("TimeUsec:\t%v [us]\n")
+	builder.WriteString("AttitudeQuaternion:\t%v \n")
+	builder.WriteString("Rollspeed:\t%v [rad/s]\n")
+	builder.WriteString("Pitchspeed:\t%v [rad/s]\n")
+	builder.WriteString("Yawspeed:\t%v [rad/s]\n")
+	builder.WriteString("Lat:\t%v [degE7]\n")
+	builder.WriteString("Lon:\t%v [degE7]\n")
+	builder.WriteString("Alt:\t%v [mm]\n")
+	builder.WriteString("Vx:\t%v [cm/s]\n")
+	builder.WriteString("Vy:\t%v [cm/s]\n")
+	builder.WriteString("Vz:\t%v [cm/s]\n")
+	builder.WriteString("IndAirspeed:\t%v [cm/s]\n")
+	builder.WriteString("TrueAirspeed:\t%v [cm/s]\n")
+	builder.WriteString("Xacc:\t%v [mG]\n")
+	builder.WriteString("Yacc:\t%v [mG]\n")
+	builder.WriteString("Zacc:\t%v [mG]\n")
+	format := builder.String()
+
+	return fmt.Sprintf(
+		format,
+		m.GetDialect(),
+		m.GetMessageName(),
+		m.TimeUsec,
+		m.AttitudeQuaternion,
+		m.Rollspeed,
+		m.Pitchspeed,
+		m.Yawspeed,
+		m.Lat,
+		m.Lon,
+		m.Alt,
+		m.Vx,
+		m.Vy,
+		m.Vz,
+		m.IndAirspeed,
+		m.TrueAirspeed,
+		m.Xacc,
+		m.Yacc,
+		m.Zacc,
+	)
+}
+
 // GetVersion gets the MAVLink version of the Message contents
 func (m *HilStateQuaternion) GetVersion() int {
 	if m.HasExtensionFieldValues {
@@ -84,7 +132,7 @@ func (m *HilStateQuaternion) GetDialect() string {
 	return "common"
 }
 
-// GetName gets the name of the Message
+// GetMessageName gets the name of the Message
 func (m *HilStateQuaternion) GetMessageName() string {
 	return "HilStateQuaternion"
 }
@@ -145,7 +193,7 @@ func (m *HilStateQuaternion) Read(frame mavlink2.Frame) (err error) {
 
 	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, *m)
+	err = binary.Read(reader, binary.LittleEndian, m)
 
 	return
 }

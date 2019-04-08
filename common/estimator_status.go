@@ -27,6 +27,8 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
+	"strings"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -58,6 +60,40 @@ type EstimatorStatus struct {
 	HasExtensionFieldValues bool
 }
 
+func (m *EstimatorStatus) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("Name:\t%v/%v\n")
+	// Output field values based on the decoded message type
+	builder.WriteString("TimeUsec:\t%v [us]\n")
+	builder.WriteString("VelRatio:\t%v \n")
+	builder.WriteString("PosHorizRatio:\t%v \n")
+	builder.WriteString("PosVertRatio:\t%v \n")
+	builder.WriteString("MagRatio:\t%v \n")
+	builder.WriteString("HaglRatio:\t%v \n")
+	builder.WriteString("TasRatio:\t%v \n")
+	builder.WriteString("PosHorizAccuracy:\t%v [m]\n")
+	builder.WriteString("PosVertAccuracy:\t%v [m]\n")
+	builder.WriteString("Flags:\t%v \n")
+	format := builder.String()
+
+	return fmt.Sprintf(
+		format,
+		m.GetDialect(),
+		m.GetMessageName(),
+		m.TimeUsec,
+		m.VelRatio,
+		m.PosHorizRatio,
+		m.PosVertRatio,
+		m.MagRatio,
+		m.HaglRatio,
+		m.TasRatio,
+		m.PosHorizAccuracy,
+		m.PosVertAccuracy,
+		m.Flags,
+	)
+}
+
 // GetVersion gets the MAVLink version of the Message contents
 func (m *EstimatorStatus) GetVersion() int {
 	if m.HasExtensionFieldValues {
@@ -72,7 +108,7 @@ func (m *EstimatorStatus) GetDialect() string {
 	return "common"
 }
 
-// GetName gets the name of the Message
+// GetMessageName gets the name of the Message
 func (m *EstimatorStatus) GetMessageName() string {
 	return "EstimatorStatus"
 }
@@ -133,7 +169,7 @@ func (m *EstimatorStatus) Read(frame mavlink2.Frame) (err error) {
 
 	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, *m)
+	err = binary.Read(reader, binary.LittleEndian, m)
 
 	return
 }

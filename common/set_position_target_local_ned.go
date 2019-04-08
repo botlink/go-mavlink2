@@ -27,6 +27,8 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
+	"strings"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -70,6 +72,52 @@ type SetPositionTargetLocalNed struct {
 	HasExtensionFieldValues bool
 }
 
+func (m *SetPositionTargetLocalNed) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("Name:\t%v/%v\n")
+	// Output field values based on the decoded message type
+	builder.WriteString("TimeBootMs:\t%v [ms]\n")
+	builder.WriteString("X:\t%v [m]\n")
+	builder.WriteString("Y:\t%v [m]\n")
+	builder.WriteString("Z:\t%v [m]\n")
+	builder.WriteString("Vx:\t%v [m/s]\n")
+	builder.WriteString("Vy:\t%v [m/s]\n")
+	builder.WriteString("Vz:\t%v [m/s]\n")
+	builder.WriteString("Afx:\t%v [m/s/s]\n")
+	builder.WriteString("Afy:\t%v [m/s/s]\n")
+	builder.WriteString("Afz:\t%v [m/s/s]\n")
+	builder.WriteString("Yaw:\t%v [rad]\n")
+	builder.WriteString("YawRate:\t%v [rad/s]\n")
+	builder.WriteString("TypeMask:\t%v \n")
+	builder.WriteString("TargetSystem:\t%v \n")
+	builder.WriteString("TargetComponent:\t%v \n")
+	builder.WriteString("CoordinateFrame:\t%v \n")
+	format := builder.String()
+
+	return fmt.Sprintf(
+		format,
+		m.GetDialect(),
+		m.GetMessageName(),
+		m.TimeBootMs,
+		m.X,
+		m.Y,
+		m.Z,
+		m.Vx,
+		m.Vy,
+		m.Vz,
+		m.Afx,
+		m.Afy,
+		m.Afz,
+		m.Yaw,
+		m.YawRate,
+		m.TypeMask,
+		m.TargetSystem,
+		m.TargetComponent,
+		m.CoordinateFrame,
+	)
+}
+
 // GetVersion gets the MAVLink version of the Message contents
 func (m *SetPositionTargetLocalNed) GetVersion() int {
 	if m.HasExtensionFieldValues {
@@ -84,7 +132,7 @@ func (m *SetPositionTargetLocalNed) GetDialect() string {
 	return "common"
 }
 
-// GetName gets the name of the Message
+// GetMessageName gets the name of the Message
 func (m *SetPositionTargetLocalNed) GetMessageName() string {
 	return "SetPositionTargetLocalNed"
 }
@@ -145,7 +193,7 @@ func (m *SetPositionTargetLocalNed) Read(frame mavlink2.Frame) (err error) {
 
 	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, *m)
+	err = binary.Read(reader, binary.LittleEndian, m)
 
 	return
 }

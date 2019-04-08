@@ -27,6 +27,8 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
+	"strings"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -60,6 +62,42 @@ type RcChannelsScaled struct {
 	HasExtensionFieldValues bool
 }
 
+func (m *RcChannelsScaled) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("Name:\t%v/%v\n")
+	// Output field values based on the decoded message type
+	builder.WriteString("TimeBootMs:\t%v [ms]\n")
+	builder.WriteString("Chan1Scaled:\t%v \n")
+	builder.WriteString("Chan2Scaled:\t%v \n")
+	builder.WriteString("Chan3Scaled:\t%v \n")
+	builder.WriteString("Chan4Scaled:\t%v \n")
+	builder.WriteString("Chan5Scaled:\t%v \n")
+	builder.WriteString("Chan6Scaled:\t%v \n")
+	builder.WriteString("Chan7Scaled:\t%v \n")
+	builder.WriteString("Chan8Scaled:\t%v \n")
+	builder.WriteString("Port:\t%v \n")
+	builder.WriteString("Rssi:\t%v \n")
+	format := builder.String()
+
+	return fmt.Sprintf(
+		format,
+		m.GetDialect(),
+		m.GetMessageName(),
+		m.TimeBootMs,
+		m.Chan1Scaled,
+		m.Chan2Scaled,
+		m.Chan3Scaled,
+		m.Chan4Scaled,
+		m.Chan5Scaled,
+		m.Chan6Scaled,
+		m.Chan7Scaled,
+		m.Chan8Scaled,
+		m.Port,
+		m.Rssi,
+	)
+}
+
 // GetVersion gets the MAVLink version of the Message contents
 func (m *RcChannelsScaled) GetVersion() int {
 	if m.HasExtensionFieldValues {
@@ -74,7 +112,7 @@ func (m *RcChannelsScaled) GetDialect() string {
 	return "common"
 }
 
-// GetName gets the name of the Message
+// GetMessageName gets the name of the Message
 func (m *RcChannelsScaled) GetMessageName() string {
 	return "RcChannelsScaled"
 }
@@ -135,7 +173,7 @@ func (m *RcChannelsScaled) Read(frame mavlink2.Frame) (err error) {
 
 	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, *m)
+	err = binary.Read(reader, binary.LittleEndian, m)
 
 	return
 }

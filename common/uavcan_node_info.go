@@ -27,7 +27,9 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
 	"math"
+	"strings"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -55,6 +57,38 @@ type UavcanNodeInfo struct {
 	SwVersionMinor uint8
 	/*HasExtensionFieldValues indicates if this message has any extensions and  */
 	HasExtensionFieldValues bool
+}
+
+func (m *UavcanNodeInfo) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("Name:\t%v/%v\n")
+	// Output field values based on the decoded message type
+	builder.WriteString("TimeUsec:\t%v [us]\n")
+	builder.WriteString("UptimeSec:\t%v [s]\n")
+	builder.WriteString("SwVcsCommit:\t%v \n")
+	builder.WriteString("Name:\t%v \n")
+	builder.WriteString("HwVersionMajor:\t%v \n")
+	builder.WriteString("HwVersionMinor:\t%v \n")
+	builder.WriteString("HwUniqueID:\t%v \n")
+	builder.WriteString("SwVersionMajor:\t%v \n")
+	builder.WriteString("SwVersionMinor:\t%v \n")
+	format := builder.String()
+
+	return fmt.Sprintf(
+		format,
+		m.GetDialect(),
+		m.GetMessageName(),
+		m.TimeUsec,
+		m.UptimeSec,
+		m.SwVcsCommit,
+		m.Name,
+		m.HwVersionMajor,
+		m.HwVersionMinor,
+		m.HwUniqueID,
+		m.SwVersionMajor,
+		m.SwVersionMinor,
+	)
 }
 
 // SetName encodes the input string to the Name array
@@ -90,7 +124,7 @@ func (m *UavcanNodeInfo) GetDialect() string {
 	return "common"
 }
 
-// GetName gets the name of the Message
+// GetMessageName gets the name of the Message
 func (m *UavcanNodeInfo) GetMessageName() string {
 	return "UavcanNodeInfo"
 }
@@ -151,7 +185,7 @@ func (m *UavcanNodeInfo) Read(frame mavlink2.Frame) (err error) {
 
 	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, *m)
+	err = binary.Read(reader, binary.LittleEndian, m)
 
 	return
 }

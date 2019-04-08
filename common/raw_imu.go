@@ -27,6 +27,8 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
+	"strings"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -58,6 +60,40 @@ type RawImu struct {
 	HasExtensionFieldValues bool
 }
 
+func (m *RawImu) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("Name:\t%v/%v\n")
+	// Output field values based on the decoded message type
+	builder.WriteString("TimeUsec:\t%v [us]\n")
+	builder.WriteString("Xacc:\t%v \n")
+	builder.WriteString("Yacc:\t%v \n")
+	builder.WriteString("Zacc:\t%v \n")
+	builder.WriteString("Xgyro:\t%v \n")
+	builder.WriteString("Ygyro:\t%v \n")
+	builder.WriteString("Zgyro:\t%v \n")
+	builder.WriteString("Xmag:\t%v \n")
+	builder.WriteString("Ymag:\t%v \n")
+	builder.WriteString("Zmag:\t%v \n")
+	format := builder.String()
+
+	return fmt.Sprintf(
+		format,
+		m.GetDialect(),
+		m.GetMessageName(),
+		m.TimeUsec,
+		m.Xacc,
+		m.Yacc,
+		m.Zacc,
+		m.Xgyro,
+		m.Ygyro,
+		m.Zgyro,
+		m.Xmag,
+		m.Ymag,
+		m.Zmag,
+	)
+}
+
 // GetVersion gets the MAVLink version of the Message contents
 func (m *RawImu) GetVersion() int {
 	if m.HasExtensionFieldValues {
@@ -72,7 +108,7 @@ func (m *RawImu) GetDialect() string {
 	return "common"
 }
 
-// GetName gets the name of the Message
+// GetMessageName gets the name of the Message
 func (m *RawImu) GetMessageName() string {
 	return "RawImu"
 }
@@ -133,7 +169,7 @@ func (m *RawImu) Read(frame mavlink2.Frame) (err error) {
 
 	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, *m)
+	err = binary.Read(reader, binary.LittleEndian, m)
 
 	return
 }

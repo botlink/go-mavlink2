@@ -27,7 +27,9 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
 	"math"
+	"strings"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -55,6 +57,38 @@ type ParamMapRc struct {
 	ParameterRcChannelIndex uint8
 	/*HasExtensionFieldValues indicates if this message has any extensions and  */
 	HasExtensionFieldValues bool
+}
+
+func (m *ParamMapRc) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("Name:\t%v/%v\n")
+	// Output field values based on the decoded message type
+	builder.WriteString("ParamValue0:\t%v \n")
+	builder.WriteString("Scale:\t%v \n")
+	builder.WriteString("ParamValueMin:\t%v \n")
+	builder.WriteString("ParamValueMax:\t%v \n")
+	builder.WriteString("ParamIndex:\t%v \n")
+	builder.WriteString("TargetSystem:\t%v \n")
+	builder.WriteString("TargetComponent:\t%v \n")
+	builder.WriteString("ParamID:\t%v \n")
+	builder.WriteString("ParameterRcChannelIndex:\t%v \n")
+	format := builder.String()
+
+	return fmt.Sprintf(
+		format,
+		m.GetDialect(),
+		m.GetMessageName(),
+		m.ParamValue0,
+		m.Scale,
+		m.ParamValueMin,
+		m.ParamValueMax,
+		m.ParamIndex,
+		m.TargetSystem,
+		m.TargetComponent,
+		m.ParamID,
+		m.ParameterRcChannelIndex,
+	)
 }
 
 // SetParamID encodes the input string to the ParamID array
@@ -90,7 +124,7 @@ func (m *ParamMapRc) GetDialect() string {
 	return "common"
 }
 
-// GetName gets the name of the Message
+// GetMessageName gets the name of the Message
 func (m *ParamMapRc) GetMessageName() string {
 	return "ParamMapRc"
 }
@@ -151,7 +185,7 @@ func (m *ParamMapRc) Read(frame mavlink2.Frame) (err error) {
 
 	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, *m)
+	err = binary.Read(reader, binary.LittleEndian, m)
 
 	return
 }

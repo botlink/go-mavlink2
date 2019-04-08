@@ -27,6 +27,8 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
+	"strings"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -56,6 +58,38 @@ type StorageInformation struct {
 	HasExtensionFieldValues bool
 }
 
+func (m *StorageInformation) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("Name:\t%v/%v\n")
+	// Output field values based on the decoded message type
+	builder.WriteString("TimeBootMs:\t%v [ms]\n")
+	builder.WriteString("TotalCapacity:\t%v [MiB]\n")
+	builder.WriteString("UsedCapacity:\t%v [MiB]\n")
+	builder.WriteString("AvailableCapacity:\t%v [MiB]\n")
+	builder.WriteString("ReadSpeed:\t%v [MiB/s]\n")
+	builder.WriteString("WriteSpeed:\t%v [MiB/s]\n")
+	builder.WriteString("StorageID:\t%v \n")
+	builder.WriteString("StorageCount:\t%v \n")
+	builder.WriteString("Status:\t%v \n")
+	format := builder.String()
+
+	return fmt.Sprintf(
+		format,
+		m.GetDialect(),
+		m.GetMessageName(),
+		m.TimeBootMs,
+		m.TotalCapacity,
+		m.UsedCapacity,
+		m.AvailableCapacity,
+		m.ReadSpeed,
+		m.WriteSpeed,
+		m.StorageID,
+		m.StorageCount,
+		m.Status,
+	)
+}
+
 // GetVersion gets the MAVLink version of the Message contents
 func (m *StorageInformation) GetVersion() int {
 	if m.HasExtensionFieldValues {
@@ -70,7 +104,7 @@ func (m *StorageInformation) GetDialect() string {
 	return "common"
 }
 
-// GetName gets the name of the Message
+// GetMessageName gets the name of the Message
 func (m *StorageInformation) GetMessageName() string {
 	return "StorageInformation"
 }
@@ -131,7 +165,7 @@ func (m *StorageInformation) Read(frame mavlink2.Frame) (err error) {
 
 	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, *m)
+	err = binary.Read(reader, binary.LittleEndian, m)
 
 	return
 }

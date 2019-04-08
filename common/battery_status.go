@@ -27,6 +27,8 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
+	"strings"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -60,6 +62,61 @@ type BatteryStatus struct {
 	HasExtensionFieldValues bool
 }
 
+func (m *BatteryStatus) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("Name:\t%v/%v\n")
+	// Output field values based on the decoded message type
+	builder.WriteString("CurrentConsumed:\t%v [mAh]\n")
+	builder.WriteString("EnergyConsumed:\t%v [hJ]\n")
+	builder.WriteString("Temperature:\t%v [cdegC]\n")
+	builder.WriteString("Voltages:\t%v [mV]\n")
+	builder.WriteString("CurrentBattery:\t%v [cA]\n")
+	builder.WriteString("ID:\t%v \n")
+	builder.WriteString("BatteryFunction:\t%v \n")
+	builder.WriteString("Type:\t%v \n")
+	builder.WriteString("BatteryRemaining:\t%v [%]\n")
+	if m.HasExtensionFieldValues {
+		builder.WriteString("TimeRemaining:\t%v\n")
+		builder.WriteString("ChargeState:\t%v\n")
+	}
+	format := builder.String()
+
+	if m.HasExtensionFieldValues {
+		return fmt.Sprintf(
+			format,
+			m.GetDialect(),
+			m.GetMessageName(),
+			m.CurrentConsumed,
+			m.EnergyConsumed,
+			m.Temperature,
+			m.Voltages,
+			m.CurrentBattery,
+			m.ID,
+			m.BatteryFunction,
+			m.Type,
+			m.BatteryRemaining,
+			m.TimeRemaining,
+			m.ChargeState,
+		)
+	}
+
+	return fmt.Sprintf(
+		format,
+		m.GetDialect(),
+		m.GetMessageName(),
+		m.CurrentConsumed,
+		m.EnergyConsumed,
+		m.Temperature,
+		m.Voltages,
+		m.CurrentBattery,
+		m.ID,
+		m.BatteryFunction,
+		m.Type,
+		m.BatteryRemaining,
+	)
+}
+
 // GetVersion gets the MAVLink version of the Message contents
 func (m *BatteryStatus) GetVersion() int {
 	if m.HasExtensionFieldValues {
@@ -74,7 +131,7 @@ func (m *BatteryStatus) GetDialect() string {
 	return "common"
 }
 
-// GetName gets the name of the Message
+// GetMessageName gets the name of the Message
 func (m *BatteryStatus) GetMessageName() string {
 	return "BatteryStatus"
 }
@@ -135,7 +192,7 @@ func (m *BatteryStatus) Read(frame mavlink2.Frame) (err error) {
 
 	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, *m)
+	err = binary.Read(reader, binary.LittleEndian, m)
 
 	return
 }

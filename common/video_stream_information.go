@@ -27,7 +27,9 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
 	"math"
+	"strings"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -61,6 +63,44 @@ type VIDeoStreamInformation struct {
 	URI [160]byte
 	/*HasExtensionFieldValues indicates if this message has any extensions and  */
 	HasExtensionFieldValues bool
+}
+
+func (m *VIDeoStreamInformation) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("Name:\t%v/%v\n")
+	// Output field values based on the decoded message type
+	builder.WriteString("Framerate:\t%v [Hz]\n")
+	builder.WriteString("Bitrate:\t%v [bits/s]\n")
+	builder.WriteString("Flags:\t%v \n")
+	builder.WriteString("ResolutionH:\t%v [pix]\n")
+	builder.WriteString("ResolutionV:\t%v [pix]\n")
+	builder.WriteString("Rotation:\t%v [deg]\n")
+	builder.WriteString("Hfov:\t%v [deg]\n")
+	builder.WriteString("StreamID:\t%v \n")
+	builder.WriteString("Count:\t%v \n")
+	builder.WriteString("Type:\t%v \n")
+	builder.WriteString("Name:\t%v \n")
+	builder.WriteString("URI:\t%v \n")
+	format := builder.String()
+
+	return fmt.Sprintf(
+		format,
+		m.GetDialect(),
+		m.GetMessageName(),
+		m.Framerate,
+		m.Bitrate,
+		m.Flags,
+		m.ResolutionH,
+		m.ResolutionV,
+		m.Rotation,
+		m.Hfov,
+		m.StreamID,
+		m.Count,
+		m.Type,
+		m.Name,
+		m.URI,
+	)
 }
 
 // SetName encodes the input string to the Name array
@@ -115,7 +155,7 @@ func (m *VIDeoStreamInformation) GetDialect() string {
 	return "common"
 }
 
-// GetName gets the name of the Message
+// GetMessageName gets the name of the Message
 func (m *VIDeoStreamInformation) GetMessageName() string {
 	return "VIDeoStreamInformation"
 }
@@ -176,7 +216,7 @@ func (m *VIDeoStreamInformation) Read(frame mavlink2.Frame) (err error) {
 
 	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, *m)
+	err = binary.Read(reader, binary.LittleEndian, m)
 
 	return
 }

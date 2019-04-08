@@ -27,6 +27,8 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
+	"strings"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -72,6 +74,54 @@ type ControlSystemState struct {
 	HasExtensionFieldValues bool
 }
 
+func (m *ControlSystemState) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("Name:\t%v/%v\n")
+	// Output field values based on the decoded message type
+	builder.WriteString("TimeUsec:\t%v [us]\n")
+	builder.WriteString("XAcc:\t%v [m/s/s]\n")
+	builder.WriteString("YAcc:\t%v [m/s/s]\n")
+	builder.WriteString("ZAcc:\t%v [m/s/s]\n")
+	builder.WriteString("XVel:\t%v [m/s]\n")
+	builder.WriteString("YVel:\t%v [m/s]\n")
+	builder.WriteString("ZVel:\t%v [m/s]\n")
+	builder.WriteString("XPos:\t%v [m]\n")
+	builder.WriteString("YPos:\t%v [m]\n")
+	builder.WriteString("ZPos:\t%v [m]\n")
+	builder.WriteString("Airspeed:\t%v [m/s]\n")
+	builder.WriteString("VelVariance:\t%v \n")
+	builder.WriteString("PosVariance:\t%v \n")
+	builder.WriteString("Q:\t%v \n")
+	builder.WriteString("RollRate:\t%v [rad/s]\n")
+	builder.WriteString("PitchRate:\t%v [rad/s]\n")
+	builder.WriteString("YawRate:\t%v [rad/s]\n")
+	format := builder.String()
+
+	return fmt.Sprintf(
+		format,
+		m.GetDialect(),
+		m.GetMessageName(),
+		m.TimeUsec,
+		m.XAcc,
+		m.YAcc,
+		m.ZAcc,
+		m.XVel,
+		m.YVel,
+		m.ZVel,
+		m.XPos,
+		m.YPos,
+		m.ZPos,
+		m.Airspeed,
+		m.VelVariance,
+		m.PosVariance,
+		m.Q,
+		m.RollRate,
+		m.PitchRate,
+		m.YawRate,
+	)
+}
+
 // GetVersion gets the MAVLink version of the Message contents
 func (m *ControlSystemState) GetVersion() int {
 	if m.HasExtensionFieldValues {
@@ -86,7 +136,7 @@ func (m *ControlSystemState) GetDialect() string {
 	return "common"
 }
 
-// GetName gets the name of the Message
+// GetMessageName gets the name of the Message
 func (m *ControlSystemState) GetMessageName() string {
 	return "ControlSystemState"
 }
@@ -147,7 +197,7 @@ func (m *ControlSystemState) Read(frame mavlink2.Frame) (err error) {
 
 	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, *m)
+	err = binary.Read(reader, binary.LittleEndian, m)
 
 	return
 }

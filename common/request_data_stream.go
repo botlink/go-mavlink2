@@ -27,6 +27,8 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
+	"strings"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -48,6 +50,30 @@ type RequestDataStream struct {
 	HasExtensionFieldValues bool
 }
 
+func (m *RequestDataStream) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("Name:\t%v/%v\n")
+	// Output field values based on the decoded message type
+	builder.WriteString("ReqMessageRate:\t%v [Hz]\n")
+	builder.WriteString("TargetSystem:\t%v \n")
+	builder.WriteString("TargetComponent:\t%v \n")
+	builder.WriteString("ReqStreamID:\t%v \n")
+	builder.WriteString("StartStop:\t%v \n")
+	format := builder.String()
+
+	return fmt.Sprintf(
+		format,
+		m.GetDialect(),
+		m.GetMessageName(),
+		m.ReqMessageRate,
+		m.TargetSystem,
+		m.TargetComponent,
+		m.ReqStreamID,
+		m.StartStop,
+	)
+}
+
 // GetVersion gets the MAVLink version of the Message contents
 func (m *RequestDataStream) GetVersion() int {
 	if m.HasExtensionFieldValues {
@@ -62,7 +88,7 @@ func (m *RequestDataStream) GetDialect() string {
 	return "common"
 }
 
-// GetName gets the name of the Message
+// GetMessageName gets the name of the Message
 func (m *RequestDataStream) GetMessageName() string {
 	return "RequestDataStream"
 }
@@ -123,7 +149,7 @@ func (m *RequestDataStream) Read(frame mavlink2.Frame) (err error) {
 
 	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, *m)
+	err = binary.Read(reader, binary.LittleEndian, m)
 
 	return
 }

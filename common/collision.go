@@ -27,6 +27,8 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
+	"strings"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -52,6 +54,34 @@ type Collision struct {
 	HasExtensionFieldValues bool
 }
 
+func (m *Collision) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("Name:\t%v/%v\n")
+	// Output field values based on the decoded message type
+	builder.WriteString("ID:\t%v \n")
+	builder.WriteString("TimeToMinimumDelta:\t%v [s]\n")
+	builder.WriteString("AltitudeMinimumDelta:\t%v [m]\n")
+	builder.WriteString("HorizontalMinimumDelta:\t%v [m]\n")
+	builder.WriteString("Src:\t%v \n")
+	builder.WriteString("Action:\t%v \n")
+	builder.WriteString("ThreatLevel:\t%v \n")
+	format := builder.String()
+
+	return fmt.Sprintf(
+		format,
+		m.GetDialect(),
+		m.GetMessageName(),
+		m.ID,
+		m.TimeToMinimumDelta,
+		m.AltitudeMinimumDelta,
+		m.HorizontalMinimumDelta,
+		m.Src,
+		m.Action,
+		m.ThreatLevel,
+	)
+}
+
 // GetVersion gets the MAVLink version of the Message contents
 func (m *Collision) GetVersion() int {
 	if m.HasExtensionFieldValues {
@@ -66,7 +96,7 @@ func (m *Collision) GetDialect() string {
 	return "common"
 }
 
-// GetName gets the name of the Message
+// GetMessageName gets the name of the Message
 func (m *Collision) GetMessageName() string {
 	return "Collision"
 }
@@ -127,7 +157,7 @@ func (m *Collision) Read(frame mavlink2.Frame) (err error) {
 
 	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, *m)
+	err = binary.Read(reader, binary.LittleEndian, m)
 
 	return
 }

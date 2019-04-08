@@ -27,6 +27,8 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
+	"strings"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -62,6 +64,44 @@ type Gps2Raw struct {
 	HasExtensionFieldValues bool
 }
 
+func (m *Gps2Raw) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("Name:\t%v/%v\n")
+	// Output field values based on the decoded message type
+	builder.WriteString("TimeUsec:\t%v [us]\n")
+	builder.WriteString("Lat:\t%v [degE7]\n")
+	builder.WriteString("Lon:\t%v [degE7]\n")
+	builder.WriteString("Alt:\t%v [mm]\n")
+	builder.WriteString("DgpsAge:\t%v [ms]\n")
+	builder.WriteString("Eph:\t%v [cm]\n")
+	builder.WriteString("Epv:\t%v [cm]\n")
+	builder.WriteString("Vel:\t%v [cm/s]\n")
+	builder.WriteString("Cog:\t%v [cdeg]\n")
+	builder.WriteString("FixType:\t%v \n")
+	builder.WriteString("SatellitesVisible:\t%v \n")
+	builder.WriteString("DgpsNumch:\t%v \n")
+	format := builder.String()
+
+	return fmt.Sprintf(
+		format,
+		m.GetDialect(),
+		m.GetMessageName(),
+		m.TimeUsec,
+		m.Lat,
+		m.Lon,
+		m.Alt,
+		m.DgpsAge,
+		m.Eph,
+		m.Epv,
+		m.Vel,
+		m.Cog,
+		m.FixType,
+		m.SatellitesVisible,
+		m.DgpsNumch,
+	)
+}
+
 // GetVersion gets the MAVLink version of the Message contents
 func (m *Gps2Raw) GetVersion() int {
 	if m.HasExtensionFieldValues {
@@ -76,7 +116,7 @@ func (m *Gps2Raw) GetDialect() string {
 	return "common"
 }
 
-// GetName gets the name of the Message
+// GetMessageName gets the name of the Message
 func (m *Gps2Raw) GetMessageName() string {
 	return "Gps2Raw"
 }
@@ -137,7 +177,7 @@ func (m *Gps2Raw) Read(frame mavlink2.Frame) (err error) {
 
 	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, *m)
+	err = binary.Read(reader, binary.LittleEndian, m)
 
 	return
 }

@@ -27,6 +27,8 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
+	"strings"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -92,6 +94,74 @@ type HighLatency2 struct {
 	HasExtensionFieldValues bool
 }
 
+func (m *HighLatency2) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("Name:\t%v/%v\n")
+	// Output field values based on the decoded message type
+	builder.WriteString("Timestamp:\t%v [ms]\n")
+	builder.WriteString("Latitude:\t%v [degE7]\n")
+	builder.WriteString("Longitude:\t%v [degE7]\n")
+	builder.WriteString("CustomMode:\t%v \n")
+	builder.WriteString("Altitude:\t%v [m]\n")
+	builder.WriteString("TargetAltitude:\t%v [m]\n")
+	builder.WriteString("TargetDistance:\t%v [dam]\n")
+	builder.WriteString("WpNum:\t%v \n")
+	builder.WriteString("FailureFlags:\t%v \n")
+	builder.WriteString("Type:\t%v \n")
+	builder.WriteString("Autopilot:\t%v \n")
+	builder.WriteString("Heading:\t%v [deg/2]\n")
+	builder.WriteString("TargetHeading:\t%v [deg/2]\n")
+	builder.WriteString("Throttle:\t%v [%]\n")
+	builder.WriteString("Airspeed:\t%v [m/s*5]\n")
+	builder.WriteString("AirspeedSp:\t%v [m/s*5]\n")
+	builder.WriteString("Groundspeed:\t%v [m/s*5]\n")
+	builder.WriteString("Windspeed:\t%v [m/s*5]\n")
+	builder.WriteString("WindHeading:\t%v [deg/2]\n")
+	builder.WriteString("Eph:\t%v [dm]\n")
+	builder.WriteString("Epv:\t%v [dm]\n")
+	builder.WriteString("TemperatureAir:\t%v [degC]\n")
+	builder.WriteString("ClimbRate:\t%v [dm/s]\n")
+	builder.WriteString("Battery:\t%v [%]\n")
+	builder.WriteString("Custom0:\t%v \n")
+	builder.WriteString("Custom1:\t%v \n")
+	builder.WriteString("Custom2:\t%v \n")
+	format := builder.String()
+
+	return fmt.Sprintf(
+		format,
+		m.GetDialect(),
+		m.GetMessageName(),
+		m.Timestamp,
+		m.Latitude,
+		m.Longitude,
+		m.CustomMode,
+		m.Altitude,
+		m.TargetAltitude,
+		m.TargetDistance,
+		m.WpNum,
+		m.FailureFlags,
+		m.Type,
+		m.Autopilot,
+		m.Heading,
+		m.TargetHeading,
+		m.Throttle,
+		m.Airspeed,
+		m.AirspeedSp,
+		m.Groundspeed,
+		m.Windspeed,
+		m.WindHeading,
+		m.Eph,
+		m.Epv,
+		m.TemperatureAir,
+		m.ClimbRate,
+		m.Battery,
+		m.Custom0,
+		m.Custom1,
+		m.Custom2,
+	)
+}
+
 // GetVersion gets the MAVLink version of the Message contents
 func (m *HighLatency2) GetVersion() int {
 	if m.HasExtensionFieldValues {
@@ -106,7 +176,7 @@ func (m *HighLatency2) GetDialect() string {
 	return "common"
 }
 
-// GetName gets the name of the Message
+// GetMessageName gets the name of the Message
 func (m *HighLatency2) GetMessageName() string {
 	return "HighLatency2"
 }
@@ -167,7 +237,7 @@ func (m *HighLatency2) Read(frame mavlink2.Frame) (err error) {
 
 	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, *m)
+	err = binary.Read(reader, binary.LittleEndian, m)
 
 	return
 }

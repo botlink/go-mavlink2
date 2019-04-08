@@ -27,6 +27,8 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
+	"strings"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -60,6 +62,42 @@ type CommandLong struct {
 	HasExtensionFieldValues bool
 }
 
+func (m *CommandLong) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("Name:\t%v/%v\n")
+	// Output field values based on the decoded message type
+	builder.WriteString("Param1:\t%v \n")
+	builder.WriteString("Param2:\t%v \n")
+	builder.WriteString("Param3:\t%v \n")
+	builder.WriteString("Param4:\t%v \n")
+	builder.WriteString("Param5:\t%v \n")
+	builder.WriteString("Param6:\t%v \n")
+	builder.WriteString("Param7:\t%v \n")
+	builder.WriteString("Command:\t%v \n")
+	builder.WriteString("TargetSystem:\t%v \n")
+	builder.WriteString("TargetComponent:\t%v \n")
+	builder.WriteString("Confirmation:\t%v \n")
+	format := builder.String()
+
+	return fmt.Sprintf(
+		format,
+		m.GetDialect(),
+		m.GetMessageName(),
+		m.Param1,
+		m.Param2,
+		m.Param3,
+		m.Param4,
+		m.Param5,
+		m.Param6,
+		m.Param7,
+		m.Command,
+		m.TargetSystem,
+		m.TargetComponent,
+		m.Confirmation,
+	)
+}
+
 // GetVersion gets the MAVLink version of the Message contents
 func (m *CommandLong) GetVersion() int {
 	if m.HasExtensionFieldValues {
@@ -74,7 +112,7 @@ func (m *CommandLong) GetDialect() string {
 	return "common"
 }
 
-// GetName gets the name of the Message
+// GetMessageName gets the name of the Message
 func (m *CommandLong) GetMessageName() string {
 	return "CommandLong"
 }
@@ -135,7 +173,7 @@ func (m *CommandLong) Read(frame mavlink2.Frame) (err error) {
 
 	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, *m)
+	err = binary.Read(reader, binary.LittleEndian, m)
 
 	return
 }

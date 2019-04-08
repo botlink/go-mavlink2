@@ -27,6 +27,8 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
+	"strings"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -56,6 +58,38 @@ type WindCov struct {
 	HasExtensionFieldValues bool
 }
 
+func (m *WindCov) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("Name:\t%v/%v\n")
+	// Output field values based on the decoded message type
+	builder.WriteString("TimeUsec:\t%v [us]\n")
+	builder.WriteString("WindX:\t%v [m/s]\n")
+	builder.WriteString("WindY:\t%v [m/s]\n")
+	builder.WriteString("WindZ:\t%v [m/s]\n")
+	builder.WriteString("VarHoriz:\t%v [m/s]\n")
+	builder.WriteString("VarVert:\t%v [m/s]\n")
+	builder.WriteString("WindAlt:\t%v [m]\n")
+	builder.WriteString("HorizAccuracy:\t%v [m]\n")
+	builder.WriteString("VertAccuracy:\t%v [m]\n")
+	format := builder.String()
+
+	return fmt.Sprintf(
+		format,
+		m.GetDialect(),
+		m.GetMessageName(),
+		m.TimeUsec,
+		m.WindX,
+		m.WindY,
+		m.WindZ,
+		m.VarHoriz,
+		m.VarVert,
+		m.WindAlt,
+		m.HorizAccuracy,
+		m.VertAccuracy,
+	)
+}
+
 // GetVersion gets the MAVLink version of the Message contents
 func (m *WindCov) GetVersion() int {
 	if m.HasExtensionFieldValues {
@@ -70,7 +104,7 @@ func (m *WindCov) GetDialect() string {
 	return "common"
 }
 
-// GetName gets the name of the Message
+// GetMessageName gets the name of the Message
 func (m *WindCov) GetMessageName() string {
 	return "WindCov"
 }
@@ -131,7 +165,7 @@ func (m *WindCov) Read(frame mavlink2.Frame) (err error) {
 
 	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, *m)
+	err = binary.Read(reader, binary.LittleEndian, m)
 
 	return
 }

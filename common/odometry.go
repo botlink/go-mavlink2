@@ -27,6 +27,8 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
+	"strings"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -68,6 +70,50 @@ type Odometry struct {
 	HasExtensionFieldValues bool
 }
 
+func (m *Odometry) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("Name:\t%v/%v\n")
+	// Output field values based on the decoded message type
+	builder.WriteString("TimeUsec:\t%v [us]\n")
+	builder.WriteString("X:\t%v [m]\n")
+	builder.WriteString("Y:\t%v [m]\n")
+	builder.WriteString("Z:\t%v [m]\n")
+	builder.WriteString("Q:\t%v \n")
+	builder.WriteString("Vx:\t%v [m/s]\n")
+	builder.WriteString("Vy:\t%v [m/s]\n")
+	builder.WriteString("Vz:\t%v [m/s]\n")
+	builder.WriteString("Rollspeed:\t%v [rad/s]\n")
+	builder.WriteString("Pitchspeed:\t%v [rad/s]\n")
+	builder.WriteString("Yawspeed:\t%v [rad/s]\n")
+	builder.WriteString("PoseCovariance:\t%v \n")
+	builder.WriteString("VelocityCovariance:\t%v \n")
+	builder.WriteString("FrameID:\t%v \n")
+	builder.WriteString("ChildFrameID:\t%v \n")
+	format := builder.String()
+
+	return fmt.Sprintf(
+		format,
+		m.GetDialect(),
+		m.GetMessageName(),
+		m.TimeUsec,
+		m.X,
+		m.Y,
+		m.Z,
+		m.Q,
+		m.Vx,
+		m.Vy,
+		m.Vz,
+		m.Rollspeed,
+		m.Pitchspeed,
+		m.Yawspeed,
+		m.PoseCovariance,
+		m.VelocityCovariance,
+		m.FrameID,
+		m.ChildFrameID,
+	)
+}
+
 // GetVersion gets the MAVLink version of the Message contents
 func (m *Odometry) GetVersion() int {
 	if m.HasExtensionFieldValues {
@@ -82,7 +128,7 @@ func (m *Odometry) GetDialect() string {
 	return "common"
 }
 
-// GetName gets the name of the Message
+// GetMessageName gets the name of the Message
 func (m *Odometry) GetMessageName() string {
 	return "Odometry"
 }
@@ -143,7 +189,7 @@ func (m *Odometry) Read(frame mavlink2.Frame) (err error) {
 
 	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, *m)
+	err = binary.Read(reader, binary.LittleEndian, m)
 
 	return
 }

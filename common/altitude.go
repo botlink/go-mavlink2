@@ -27,6 +27,8 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
+	"strings"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -52,6 +54,34 @@ type Altitude struct {
 	HasExtensionFieldValues bool
 }
 
+func (m *Altitude) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("Name:\t%v/%v\n")
+	// Output field values based on the decoded message type
+	builder.WriteString("TimeUsec:\t%v [us]\n")
+	builder.WriteString("AltitudeMonotonic:\t%v [m]\n")
+	builder.WriteString("AltitudeAmsl:\t%v [m]\n")
+	builder.WriteString("AltitudeLocal:\t%v [m]\n")
+	builder.WriteString("AltitudeRelative:\t%v [m]\n")
+	builder.WriteString("AltitudeTerrain:\t%v [m]\n")
+	builder.WriteString("BottomClearance:\t%v [m]\n")
+	format := builder.String()
+
+	return fmt.Sprintf(
+		format,
+		m.GetDialect(),
+		m.GetMessageName(),
+		m.TimeUsec,
+		m.AltitudeMonotonic,
+		m.AltitudeAmsl,
+		m.AltitudeLocal,
+		m.AltitudeRelative,
+		m.AltitudeTerrain,
+		m.BottomClearance,
+	)
+}
+
 // GetVersion gets the MAVLink version of the Message contents
 func (m *Altitude) GetVersion() int {
 	if m.HasExtensionFieldValues {
@@ -66,7 +96,7 @@ func (m *Altitude) GetDialect() string {
 	return "common"
 }
 
-// GetName gets the name of the Message
+// GetMessageName gets the name of the Message
 func (m *Altitude) GetMessageName() string {
 	return "Altitude"
 }
@@ -127,7 +157,7 @@ func (m *Altitude) Read(frame mavlink2.Frame) (err error) {
 
 	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, *m)
+	err = binary.Read(reader, binary.LittleEndian, m)
 
 	return
 }

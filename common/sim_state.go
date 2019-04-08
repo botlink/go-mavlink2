@@ -27,6 +27,8 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
+	"strings"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -80,6 +82,62 @@ type SimState struct {
 	HasExtensionFieldValues bool
 }
 
+func (m *SimState) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("Name:\t%v/%v\n")
+	// Output field values based on the decoded message type
+	builder.WriteString("Q1:\t%v \n")
+	builder.WriteString("Q2:\t%v \n")
+	builder.WriteString("Q3:\t%v \n")
+	builder.WriteString("Q4:\t%v \n")
+	builder.WriteString("Roll:\t%v \n")
+	builder.WriteString("Pitch:\t%v \n")
+	builder.WriteString("Yaw:\t%v \n")
+	builder.WriteString("Xacc:\t%v [m/s/s]\n")
+	builder.WriteString("Yacc:\t%v [m/s/s]\n")
+	builder.WriteString("Zacc:\t%v [m/s/s]\n")
+	builder.WriteString("Xgyro:\t%v [rad/s]\n")
+	builder.WriteString("Ygyro:\t%v [rad/s]\n")
+	builder.WriteString("Zgyro:\t%v [rad/s]\n")
+	builder.WriteString("Lat:\t%v [deg]\n")
+	builder.WriteString("Lon:\t%v [deg]\n")
+	builder.WriteString("Alt:\t%v [m]\n")
+	builder.WriteString("StdDevHorz:\t%v \n")
+	builder.WriteString("StdDevVert:\t%v \n")
+	builder.WriteString("Vn:\t%v [m/s]\n")
+	builder.WriteString("Ve:\t%v [m/s]\n")
+	builder.WriteString("Vd:\t%v [m/s]\n")
+	format := builder.String()
+
+	return fmt.Sprintf(
+		format,
+		m.GetDialect(),
+		m.GetMessageName(),
+		m.Q1,
+		m.Q2,
+		m.Q3,
+		m.Q4,
+		m.Roll,
+		m.Pitch,
+		m.Yaw,
+		m.Xacc,
+		m.Yacc,
+		m.Zacc,
+		m.Xgyro,
+		m.Ygyro,
+		m.Zgyro,
+		m.Lat,
+		m.Lon,
+		m.Alt,
+		m.StdDevHorz,
+		m.StdDevVert,
+		m.Vn,
+		m.Ve,
+		m.Vd,
+	)
+}
+
 // GetVersion gets the MAVLink version of the Message contents
 func (m *SimState) GetVersion() int {
 	if m.HasExtensionFieldValues {
@@ -94,7 +152,7 @@ func (m *SimState) GetDialect() string {
 	return "common"
 }
 
-// GetName gets the name of the Message
+// GetMessageName gets the name of the Message
 func (m *SimState) GetMessageName() string {
 	return "SimState"
 }
@@ -155,7 +213,7 @@ func (m *SimState) Read(frame mavlink2.Frame) (err error) {
 
 	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, *m)
+	err = binary.Read(reader, binary.LittleEndian, m)
 
 	return
 }

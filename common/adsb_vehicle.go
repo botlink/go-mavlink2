@@ -27,7 +27,9 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
 	"math"
+	"strings"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -65,6 +67,46 @@ type AdsbVehicle struct {
 	HasExtensionFieldValues bool
 }
 
+func (m *AdsbVehicle) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("Name:\t%v/%v\n")
+	// Output field values based on the decoded message type
+	builder.WriteString("IcaoAddress:\t%v \n")
+	builder.WriteString("Lat:\t%v [degE7]\n")
+	builder.WriteString("Lon:\t%v [degE7]\n")
+	builder.WriteString("Altitude:\t%v [mm]\n")
+	builder.WriteString("Heading:\t%v [cdeg]\n")
+	builder.WriteString("HorVelocity:\t%v [cm/s]\n")
+	builder.WriteString("VerVelocity:\t%v [cm/s]\n")
+	builder.WriteString("Flags:\t%v \n")
+	builder.WriteString("Squawk:\t%v \n")
+	builder.WriteString("AltitudeType:\t%v \n")
+	builder.WriteString("Callsign:\t%v \n")
+	builder.WriteString("EmitterType:\t%v \n")
+	builder.WriteString("Tslc:\t%v [s]\n")
+	format := builder.String()
+
+	return fmt.Sprintf(
+		format,
+		m.GetDialect(),
+		m.GetMessageName(),
+		m.IcaoAddress,
+		m.Lat,
+		m.Lon,
+		m.Altitude,
+		m.Heading,
+		m.HorVelocity,
+		m.VerVelocity,
+		m.Flags,
+		m.Squawk,
+		m.AltitudeType,
+		m.Callsign,
+		m.EmitterType,
+		m.Tslc,
+	)
+}
+
 // SetCallsign encodes the input string to the Callsign array
 func (m *AdsbVehicle) SetCallsign(input string) (err error) {
 	clen := int(math.Min(float64(len(input)), float64(9)))
@@ -98,7 +140,7 @@ func (m *AdsbVehicle) GetDialect() string {
 	return "common"
 }
 
-// GetName gets the name of the Message
+// GetMessageName gets the name of the Message
 func (m *AdsbVehicle) GetMessageName() string {
 	return "AdsbVehicle"
 }
@@ -159,7 +201,7 @@ func (m *AdsbVehicle) Read(frame mavlink2.Frame) (err error) {
 
 	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, *m)
+	err = binary.Read(reader, binary.LittleEndian, m)
 
 	return
 }

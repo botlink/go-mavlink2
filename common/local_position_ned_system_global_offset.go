@@ -27,6 +27,8 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
+	"strings"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -52,6 +54,34 @@ type LocalPositionNedSystemGlobalOffset struct {
 	HasExtensionFieldValues bool
 }
 
+func (m *LocalPositionNedSystemGlobalOffset) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("Name:\t%v/%v\n")
+	// Output field values based on the decoded message type
+	builder.WriteString("TimeBootMs:\t%v [ms]\n")
+	builder.WriteString("X:\t%v [m]\n")
+	builder.WriteString("Y:\t%v [m]\n")
+	builder.WriteString("Z:\t%v [m]\n")
+	builder.WriteString("Roll:\t%v [rad]\n")
+	builder.WriteString("Pitch:\t%v [rad]\n")
+	builder.WriteString("Yaw:\t%v [rad]\n")
+	format := builder.String()
+
+	return fmt.Sprintf(
+		format,
+		m.GetDialect(),
+		m.GetMessageName(),
+		m.TimeBootMs,
+		m.X,
+		m.Y,
+		m.Z,
+		m.Roll,
+		m.Pitch,
+		m.Yaw,
+	)
+}
+
 // GetVersion gets the MAVLink version of the Message contents
 func (m *LocalPositionNedSystemGlobalOffset) GetVersion() int {
 	if m.HasExtensionFieldValues {
@@ -66,7 +96,7 @@ func (m *LocalPositionNedSystemGlobalOffset) GetDialect() string {
 	return "common"
 }
 
-// GetName gets the name of the Message
+// GetMessageName gets the name of the Message
 func (m *LocalPositionNedSystemGlobalOffset) GetMessageName() string {
 	return "LocalPositionNedSystemGlobalOffset"
 }
@@ -127,7 +157,7 @@ func (m *LocalPositionNedSystemGlobalOffset) Read(frame mavlink2.Frame) (err err
 
 	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, *m)
+	err = binary.Read(reader, binary.LittleEndian, m)
 
 	return
 }

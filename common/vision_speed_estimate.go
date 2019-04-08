@@ -27,6 +27,8 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
+	"strings"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -48,6 +50,44 @@ type VisionSpeedEstimate struct {
 	HasExtensionFieldValues bool
 }
 
+func (m *VisionSpeedEstimate) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("Name:\t%v/%v\n")
+	// Output field values based on the decoded message type
+	builder.WriteString("Usec:\t%v [us]\n")
+	builder.WriteString("X:\t%v [m/s]\n")
+	builder.WriteString("Y:\t%v [m/s]\n")
+	builder.WriteString("Z:\t%v [m/s]\n")
+	if m.HasExtensionFieldValues {
+		builder.WriteString("Covariance:\t%v\n")
+	}
+	format := builder.String()
+
+	if m.HasExtensionFieldValues {
+		return fmt.Sprintf(
+			format,
+			m.GetDialect(),
+			m.GetMessageName(),
+			m.Usec,
+			m.X,
+			m.Y,
+			m.Z,
+			m.Covariance,
+		)
+	}
+
+	return fmt.Sprintf(
+		format,
+		m.GetDialect(),
+		m.GetMessageName(),
+		m.Usec,
+		m.X,
+		m.Y,
+		m.Z,
+	)
+}
+
 // GetVersion gets the MAVLink version of the Message contents
 func (m *VisionSpeedEstimate) GetVersion() int {
 	if m.HasExtensionFieldValues {
@@ -62,7 +102,7 @@ func (m *VisionSpeedEstimate) GetDialect() string {
 	return "common"
 }
 
-// GetName gets the name of the Message
+// GetMessageName gets the name of the Message
 func (m *VisionSpeedEstimate) GetMessageName() string {
 	return "VisionSpeedEstimate"
 }
@@ -123,7 +163,7 @@ func (m *VisionSpeedEstimate) Read(frame mavlink2.Frame) (err error) {
 
 	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, *m)
+	err = binary.Read(reader, binary.LittleEndian, m)
 
 	return
 }

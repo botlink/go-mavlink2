@@ -27,6 +27,8 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
+	"strings"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -64,6 +66,46 @@ type Gps2Rtk struct {
 	HasExtensionFieldValues bool
 }
 
+func (m *Gps2Rtk) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("Name:\t%v/%v\n")
+	// Output field values based on the decoded message type
+	builder.WriteString("TimeLastBaselineMs:\t%v [ms]\n")
+	builder.WriteString("Tow:\t%v [ms]\n")
+	builder.WriteString("BaselineAMm:\t%v [mm]\n")
+	builder.WriteString("BaselineBMm:\t%v [mm]\n")
+	builder.WriteString("BaselineCMm:\t%v [mm]\n")
+	builder.WriteString("Accuracy:\t%v \n")
+	builder.WriteString("IarNumHypotheses:\t%v \n")
+	builder.WriteString("Wn:\t%v \n")
+	builder.WriteString("RtkReceiverID:\t%v \n")
+	builder.WriteString("RtkHealth:\t%v \n")
+	builder.WriteString("RtkRate:\t%v [Hz]\n")
+	builder.WriteString("Nsats:\t%v \n")
+	builder.WriteString("BaselineCoordsType:\t%v \n")
+	format := builder.String()
+
+	return fmt.Sprintf(
+		format,
+		m.GetDialect(),
+		m.GetMessageName(),
+		m.TimeLastBaselineMs,
+		m.Tow,
+		m.BaselineAMm,
+		m.BaselineBMm,
+		m.BaselineCMm,
+		m.Accuracy,
+		m.IarNumHypotheses,
+		m.Wn,
+		m.RtkReceiverID,
+		m.RtkHealth,
+		m.RtkRate,
+		m.Nsats,
+		m.BaselineCoordsType,
+	)
+}
+
 // GetVersion gets the MAVLink version of the Message contents
 func (m *Gps2Rtk) GetVersion() int {
 	if m.HasExtensionFieldValues {
@@ -78,7 +120,7 @@ func (m *Gps2Rtk) GetDialect() string {
 	return "common"
 }
 
-// GetName gets the name of the Message
+// GetMessageName gets the name of the Message
 func (m *Gps2Rtk) GetMessageName() string {
 	return "Gps2Rtk"
 }
@@ -139,7 +181,7 @@ func (m *Gps2Rtk) Read(frame mavlink2.Frame) (err error) {
 
 	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, *m)
+	err = binary.Read(reader, binary.LittleEndian, m)
 
 	return
 }

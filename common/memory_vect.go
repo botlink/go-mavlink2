@@ -27,6 +27,8 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
+	"strings"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -46,6 +48,28 @@ type MemoryVect struct {
 	HasExtensionFieldValues bool
 }
 
+func (m *MemoryVect) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("Name:\t%v/%v\n")
+	// Output field values based on the decoded message type
+	builder.WriteString("Address:\t%v \n")
+	builder.WriteString("Ver:\t%v \n")
+	builder.WriteString("Type:\t%v \n")
+	builder.WriteString("Value:\t%v \n")
+	format := builder.String()
+
+	return fmt.Sprintf(
+		format,
+		m.GetDialect(),
+		m.GetMessageName(),
+		m.Address,
+		m.Ver,
+		m.Type,
+		m.Value,
+	)
+}
+
 // GetVersion gets the MAVLink version of the Message contents
 func (m *MemoryVect) GetVersion() int {
 	if m.HasExtensionFieldValues {
@@ -60,7 +84,7 @@ func (m *MemoryVect) GetDialect() string {
 	return "common"
 }
 
-// GetName gets the name of the Message
+// GetMessageName gets the name of the Message
 func (m *MemoryVect) GetMessageName() string {
 	return "MemoryVect"
 }
@@ -121,7 +145,7 @@ func (m *MemoryVect) Read(frame mavlink2.Frame) (err error) {
 
 	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, *m)
+	err = binary.Read(reader, binary.LittleEndian, m)
 
 	return
 }

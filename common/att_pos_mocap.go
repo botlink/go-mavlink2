@@ -27,6 +27,8 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
+	"strings"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -50,6 +52,47 @@ type AttPosMocap struct {
 	HasExtensionFieldValues bool
 }
 
+func (m *AttPosMocap) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("Name:\t%v/%v\n")
+	// Output field values based on the decoded message type
+	builder.WriteString("TimeUsec:\t%v [us]\n")
+	builder.WriteString("Q:\t%v \n")
+	builder.WriteString("X:\t%v [m]\n")
+	builder.WriteString("Y:\t%v [m]\n")
+	builder.WriteString("Z:\t%v [m]\n")
+	if m.HasExtensionFieldValues {
+		builder.WriteString("Covariance:\t%v\n")
+	}
+	format := builder.String()
+
+	if m.HasExtensionFieldValues {
+		return fmt.Sprintf(
+			format,
+			m.GetDialect(),
+			m.GetMessageName(),
+			m.TimeUsec,
+			m.Q,
+			m.X,
+			m.Y,
+			m.Z,
+			m.Covariance,
+		)
+	}
+
+	return fmt.Sprintf(
+		format,
+		m.GetDialect(),
+		m.GetMessageName(),
+		m.TimeUsec,
+		m.Q,
+		m.X,
+		m.Y,
+		m.Z,
+	)
+}
+
 // GetVersion gets the MAVLink version of the Message contents
 func (m *AttPosMocap) GetVersion() int {
 	if m.HasExtensionFieldValues {
@@ -64,7 +107,7 @@ func (m *AttPosMocap) GetDialect() string {
 	return "common"
 }
 
-// GetName gets the name of the Message
+// GetMessageName gets the name of the Message
 func (m *AttPosMocap) GetMessageName() string {
 	return "AttPosMocap"
 }
@@ -125,7 +168,7 @@ func (m *AttPosMocap) Read(frame mavlink2.Frame) (err error) {
 
 	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, *m)
+	err = binary.Read(reader, binary.LittleEndian, m)
 
 	return
 }

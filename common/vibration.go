@@ -27,6 +27,8 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
+	"strings"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -52,6 +54,34 @@ type Vibration struct {
 	HasExtensionFieldValues bool
 }
 
+func (m *Vibration) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("Name:\t%v/%v\n")
+	// Output field values based on the decoded message type
+	builder.WriteString("TimeUsec:\t%v [us]\n")
+	builder.WriteString("VibrationX:\t%v \n")
+	builder.WriteString("VibrationY:\t%v \n")
+	builder.WriteString("VibrationZ:\t%v \n")
+	builder.WriteString("Clipping0:\t%v \n")
+	builder.WriteString("Clipping1:\t%v \n")
+	builder.WriteString("Clipping2:\t%v \n")
+	format := builder.String()
+
+	return fmt.Sprintf(
+		format,
+		m.GetDialect(),
+		m.GetMessageName(),
+		m.TimeUsec,
+		m.VibrationX,
+		m.VibrationY,
+		m.VibrationZ,
+		m.Clipping0,
+		m.Clipping1,
+		m.Clipping2,
+	)
+}
+
 // GetVersion gets the MAVLink version of the Message contents
 func (m *Vibration) GetVersion() int {
 	if m.HasExtensionFieldValues {
@@ -66,7 +96,7 @@ func (m *Vibration) GetDialect() string {
 	return "common"
 }
 
-// GetName gets the name of the Message
+// GetMessageName gets the name of the Message
 func (m *Vibration) GetMessageName() string {
 	return "Vibration"
 }
@@ -127,7 +157,7 @@ func (m *Vibration) Read(frame mavlink2.Frame) (err error) {
 
 	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, *m)
+	err = binary.Read(reader, binary.LittleEndian, m)
 
 	return
 }

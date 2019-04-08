@@ -27,6 +27,8 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
+	"strings"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -58,6 +60,58 @@ type OpticalFlow struct {
 	HasExtensionFieldValues bool
 }
 
+func (m *OpticalFlow) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("Name:\t%v/%v\n")
+	// Output field values based on the decoded message type
+	builder.WriteString("TimeUsec:\t%v [us]\n")
+	builder.WriteString("FlowCompMX:\t%v [m]\n")
+	builder.WriteString("FlowCompMY:\t%v [m]\n")
+	builder.WriteString("GroundDistance:\t%v [m]\n")
+	builder.WriteString("FlowX:\t%v [dpix]\n")
+	builder.WriteString("FlowY:\t%v [dpix]\n")
+	builder.WriteString("SensorID:\t%v \n")
+	builder.WriteString("Quality:\t%v \n")
+	if m.HasExtensionFieldValues {
+		builder.WriteString("FlowRateX:\t%v\n")
+		builder.WriteString("FlowRateY:\t%v\n")
+	}
+	format := builder.String()
+
+	if m.HasExtensionFieldValues {
+		return fmt.Sprintf(
+			format,
+			m.GetDialect(),
+			m.GetMessageName(),
+			m.TimeUsec,
+			m.FlowCompMX,
+			m.FlowCompMY,
+			m.GroundDistance,
+			m.FlowX,
+			m.FlowY,
+			m.SensorID,
+			m.Quality,
+			m.FlowRateX,
+			m.FlowRateY,
+		)
+	}
+
+	return fmt.Sprintf(
+		format,
+		m.GetDialect(),
+		m.GetMessageName(),
+		m.TimeUsec,
+		m.FlowCompMX,
+		m.FlowCompMY,
+		m.GroundDistance,
+		m.FlowX,
+		m.FlowY,
+		m.SensorID,
+		m.Quality,
+	)
+}
+
 // GetVersion gets the MAVLink version of the Message contents
 func (m *OpticalFlow) GetVersion() int {
 	if m.HasExtensionFieldValues {
@@ -72,7 +126,7 @@ func (m *OpticalFlow) GetDialect() string {
 	return "common"
 }
 
-// GetName gets the name of the Message
+// GetMessageName gets the name of the Message
 func (m *OpticalFlow) GetMessageName() string {
 	return "OpticalFlow"
 }
@@ -133,7 +187,7 @@ func (m *OpticalFlow) Read(frame mavlink2.Frame) (err error) {
 
 	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, *m)
+	err = binary.Read(reader, binary.LittleEndian, m)
 
 	return
 }

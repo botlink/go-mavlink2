@@ -27,6 +27,8 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
+	"strings"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -64,6 +66,46 @@ type SysStatus struct {
 	HasExtensionFieldValues bool
 }
 
+func (m *SysStatus) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("Name:\t%v/%v\n")
+	// Output field values based on the decoded message type
+	builder.WriteString("OnboardControlSensorsPresent:\t%v \n")
+	builder.WriteString("OnboardControlSensorsEnabled:\t%v \n")
+	builder.WriteString("OnboardControlSensorsHealth:\t%v \n")
+	builder.WriteString("Load:\t%v [d%]\n")
+	builder.WriteString("VoltageBattery:\t%v [mV]\n")
+	builder.WriteString("CurrentBattery:\t%v [cA]\n")
+	builder.WriteString("DropRateComm:\t%v [c%]\n")
+	builder.WriteString("ErrorsComm:\t%v \n")
+	builder.WriteString("ErrorsCount1:\t%v \n")
+	builder.WriteString("ErrorsCount2:\t%v \n")
+	builder.WriteString("ErrorsCount3:\t%v \n")
+	builder.WriteString("ErrorsCount4:\t%v \n")
+	builder.WriteString("BatteryRemaining:\t%v [%]\n")
+	format := builder.String()
+
+	return fmt.Sprintf(
+		format,
+		m.GetDialect(),
+		m.GetMessageName(),
+		m.OnboardControlSensorsPresent,
+		m.OnboardControlSensorsEnabled,
+		m.OnboardControlSensorsHealth,
+		m.Load,
+		m.VoltageBattery,
+		m.CurrentBattery,
+		m.DropRateComm,
+		m.ErrorsComm,
+		m.ErrorsCount1,
+		m.ErrorsCount2,
+		m.ErrorsCount3,
+		m.ErrorsCount4,
+		m.BatteryRemaining,
+	)
+}
+
 // GetVersion gets the MAVLink version of the Message contents
 func (m *SysStatus) GetVersion() int {
 	if m.HasExtensionFieldValues {
@@ -78,7 +120,7 @@ func (m *SysStatus) GetDialect() string {
 	return "common"
 }
 
-// GetName gets the name of the Message
+// GetMessageName gets the name of the Message
 func (m *SysStatus) GetMessageName() string {
 	return "SysStatus"
 }
@@ -139,7 +181,7 @@ func (m *SysStatus) Read(frame mavlink2.Frame) (err error) {
 
 	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, *m)
+	err = binary.Read(reader, binary.LittleEndian, m)
 
 	return
 }

@@ -27,6 +27,8 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
+	"strings"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -68,6 +70,50 @@ type HighresImu struct {
 	HasExtensionFieldValues bool
 }
 
+func (m *HighresImu) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("Name:\t%v/%v\n")
+	// Output field values based on the decoded message type
+	builder.WriteString("TimeUsec:\t%v [us]\n")
+	builder.WriteString("Xacc:\t%v [m/s/s]\n")
+	builder.WriteString("Yacc:\t%v [m/s/s]\n")
+	builder.WriteString("Zacc:\t%v [m/s/s]\n")
+	builder.WriteString("Xgyro:\t%v [rad/s]\n")
+	builder.WriteString("Ygyro:\t%v [rad/s]\n")
+	builder.WriteString("Zgyro:\t%v [rad/s]\n")
+	builder.WriteString("Xmag:\t%v [gauss]\n")
+	builder.WriteString("Ymag:\t%v [gauss]\n")
+	builder.WriteString("Zmag:\t%v [gauss]\n")
+	builder.WriteString("AbsPressure:\t%v [mbar]\n")
+	builder.WriteString("DiffPressure:\t%v [mbar]\n")
+	builder.WriteString("PressureAlt:\t%v \n")
+	builder.WriteString("Temperature:\t%v [degC]\n")
+	builder.WriteString("FieldsUpdated:\t%v \n")
+	format := builder.String()
+
+	return fmt.Sprintf(
+		format,
+		m.GetDialect(),
+		m.GetMessageName(),
+		m.TimeUsec,
+		m.Xacc,
+		m.Yacc,
+		m.Zacc,
+		m.Xgyro,
+		m.Ygyro,
+		m.Zgyro,
+		m.Xmag,
+		m.Ymag,
+		m.Zmag,
+		m.AbsPressure,
+		m.DiffPressure,
+		m.PressureAlt,
+		m.Temperature,
+		m.FieldsUpdated,
+	)
+}
+
 // GetVersion gets the MAVLink version of the Message contents
 func (m *HighresImu) GetVersion() int {
 	if m.HasExtensionFieldValues {
@@ -82,7 +128,7 @@ func (m *HighresImu) GetDialect() string {
 	return "common"
 }
 
-// GetName gets the name of the Message
+// GetMessageName gets the name of the Message
 func (m *HighresImu) GetMessageName() string {
 	return "HighresImu"
 }
@@ -143,7 +189,7 @@ func (m *HighresImu) Read(frame mavlink2.Frame) (err error) {
 
 	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, *m)
+	err = binary.Read(reader, binary.LittleEndian, m)
 
 	return
 }

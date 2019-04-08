@@ -27,6 +27,8 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
+	"strings"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -52,6 +54,34 @@ type TrajectoryRepresentationBezier struct {
 	HasExtensionFieldValues bool
 }
 
+func (m *TrajectoryRepresentationBezier) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("Name:\t%v/%v\n")
+	// Output field values based on the decoded message type
+	builder.WriteString("TimeUsec:\t%v [us]\n")
+	builder.WriteString("PosX:\t%v [m]\n")
+	builder.WriteString("PosY:\t%v [m]\n")
+	builder.WriteString("PosZ:\t%v [m]\n")
+	builder.WriteString("Delta:\t%v [s]\n")
+	builder.WriteString("PosYaw:\t%v [rad]\n")
+	builder.WriteString("ValIDPoints:\t%v \n")
+	format := builder.String()
+
+	return fmt.Sprintf(
+		format,
+		m.GetDialect(),
+		m.GetMessageName(),
+		m.TimeUsec,
+		m.PosX,
+		m.PosY,
+		m.PosZ,
+		m.Delta,
+		m.PosYaw,
+		m.ValIDPoints,
+	)
+}
+
 // GetVersion gets the MAVLink version of the Message contents
 func (m *TrajectoryRepresentationBezier) GetVersion() int {
 	if m.HasExtensionFieldValues {
@@ -66,7 +96,7 @@ func (m *TrajectoryRepresentationBezier) GetDialect() string {
 	return "common"
 }
 
-// GetName gets the name of the Message
+// GetMessageName gets the name of the Message
 func (m *TrajectoryRepresentationBezier) GetMessageName() string {
 	return "TrajectoryRepresentationBezier"
 }
@@ -127,7 +157,7 @@ func (m *TrajectoryRepresentationBezier) Read(frame mavlink2.Frame) (err error) 
 
 	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, *m)
+	err = binary.Read(reader, binary.LittleEndian, m)
 
 	return
 }

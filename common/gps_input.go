@@ -27,6 +27,8 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
+	"strings"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -74,6 +76,56 @@ type GpsInput struct {
 	HasExtensionFieldValues bool
 }
 
+func (m *GpsInput) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("Name:\t%v/%v\n")
+	// Output field values based on the decoded message type
+	builder.WriteString("TimeUsec:\t%v [us]\n")
+	builder.WriteString("TimeWeekMs:\t%v [ms]\n")
+	builder.WriteString("Lat:\t%v [degE7]\n")
+	builder.WriteString("Lon:\t%v [degE7]\n")
+	builder.WriteString("Alt:\t%v [m]\n")
+	builder.WriteString("Hdop:\t%v [m]\n")
+	builder.WriteString("Vdop:\t%v [m]\n")
+	builder.WriteString("Vn:\t%v [m/s]\n")
+	builder.WriteString("Ve:\t%v [m/s]\n")
+	builder.WriteString("Vd:\t%v [m/s]\n")
+	builder.WriteString("SpeedAccuracy:\t%v [m/s]\n")
+	builder.WriteString("HorizAccuracy:\t%v [m]\n")
+	builder.WriteString("VertAccuracy:\t%v [m]\n")
+	builder.WriteString("IgnoreFlags:\t%v \n")
+	builder.WriteString("TimeWeek:\t%v \n")
+	builder.WriteString("GpsID:\t%v \n")
+	builder.WriteString("FixType:\t%v \n")
+	builder.WriteString("SatellitesVisible:\t%v \n")
+	format := builder.String()
+
+	return fmt.Sprintf(
+		format,
+		m.GetDialect(),
+		m.GetMessageName(),
+		m.TimeUsec,
+		m.TimeWeekMs,
+		m.Lat,
+		m.Lon,
+		m.Alt,
+		m.Hdop,
+		m.Vdop,
+		m.Vn,
+		m.Ve,
+		m.Vd,
+		m.SpeedAccuracy,
+		m.HorizAccuracy,
+		m.VertAccuracy,
+		m.IgnoreFlags,
+		m.TimeWeek,
+		m.GpsID,
+		m.FixType,
+		m.SatellitesVisible,
+	)
+}
+
 // GetVersion gets the MAVLink version of the Message contents
 func (m *GpsInput) GetVersion() int {
 	if m.HasExtensionFieldValues {
@@ -88,7 +140,7 @@ func (m *GpsInput) GetDialect() string {
 	return "common"
 }
 
-// GetName gets the name of the Message
+// GetMessageName gets the name of the Message
 func (m *GpsInput) GetMessageName() string {
 	return "GpsInput"
 }
@@ -149,7 +201,7 @@ func (m *GpsInput) Read(frame mavlink2.Frame) (err error) {
 
 	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, *m)
+	err = binary.Read(reader, binary.LittleEndian, m)
 
 	return
 }

@@ -27,6 +27,8 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
+	"strings"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -44,6 +46,26 @@ type SetMode struct {
 	HasExtensionFieldValues bool
 }
 
+func (m *SetMode) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("Name:\t%v/%v\n")
+	// Output field values based on the decoded message type
+	builder.WriteString("CustomMode:\t%v \n")
+	builder.WriteString("TargetSystem:\t%v \n")
+	builder.WriteString("BaseMode:\t%v \n")
+	format := builder.String()
+
+	return fmt.Sprintf(
+		format,
+		m.GetDialect(),
+		m.GetMessageName(),
+		m.CustomMode,
+		m.TargetSystem,
+		m.BaseMode,
+	)
+}
+
 // GetVersion gets the MAVLink version of the Message contents
 func (m *SetMode) GetVersion() int {
 	if m.HasExtensionFieldValues {
@@ -58,7 +80,7 @@ func (m *SetMode) GetDialect() string {
 	return "common"
 }
 
-// GetName gets the name of the Message
+// GetMessageName gets the name of the Message
 func (m *SetMode) GetMessageName() string {
 	return "SetMode"
 }
@@ -119,7 +141,7 @@ func (m *SetMode) Read(frame mavlink2.Frame) (err error) {
 
 	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, *m)
+	err = binary.Read(reader, binary.LittleEndian, m)
 
 	return
 }

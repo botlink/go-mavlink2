@@ -27,6 +27,8 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
+	"strings"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -52,6 +54,34 @@ type CellularStatus struct {
 	HasExtensionFieldValues bool
 }
 
+func (m *CellularStatus) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("Name:\t%v/%v\n")
+	// Output field values based on the decoded message type
+	builder.WriteString("CID:\t%v \n")
+	builder.WriteString("Status:\t%v \n")
+	builder.WriteString("Mcc:\t%v \n")
+	builder.WriteString("Mnc:\t%v \n")
+	builder.WriteString("Lac:\t%v \n")
+	builder.WriteString("Type:\t%v \n")
+	builder.WriteString("Quality:\t%v \n")
+	format := builder.String()
+
+	return fmt.Sprintf(
+		format,
+		m.GetDialect(),
+		m.GetMessageName(),
+		m.CID,
+		m.Status,
+		m.Mcc,
+		m.Mnc,
+		m.Lac,
+		m.Type,
+		m.Quality,
+	)
+}
+
 // GetVersion gets the MAVLink version of the Message contents
 func (m *CellularStatus) GetVersion() int {
 	if m.HasExtensionFieldValues {
@@ -66,7 +96,7 @@ func (m *CellularStatus) GetDialect() string {
 	return "common"
 }
 
-// GetName gets the name of the Message
+// GetMessageName gets the name of the Message
 func (m *CellularStatus) GetMessageName() string {
 	return "CellularStatus"
 }
@@ -127,7 +157,7 @@ func (m *CellularStatus) Read(frame mavlink2.Frame) (err error) {
 
 	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, *m)
+	err = binary.Read(reader, binary.LittleEndian, m)
 
 	return
 }

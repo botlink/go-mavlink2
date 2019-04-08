@@ -27,6 +27,8 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
+	"strings"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -50,6 +52,32 @@ type SerialControl struct {
 	HasExtensionFieldValues bool
 }
 
+func (m *SerialControl) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("Name:\t%v/%v\n")
+	// Output field values based on the decoded message type
+	builder.WriteString("Baudrate:\t%v [bits/s]\n")
+	builder.WriteString("Timeout:\t%v [ms]\n")
+	builder.WriteString("Device:\t%v \n")
+	builder.WriteString("Flags:\t%v \n")
+	builder.WriteString("Count:\t%v [bytes]\n")
+	builder.WriteString("Data:\t%v \n")
+	format := builder.String()
+
+	return fmt.Sprintf(
+		format,
+		m.GetDialect(),
+		m.GetMessageName(),
+		m.Baudrate,
+		m.Timeout,
+		m.Device,
+		m.Flags,
+		m.Count,
+		m.Data,
+	)
+}
+
 // GetVersion gets the MAVLink version of the Message contents
 func (m *SerialControl) GetVersion() int {
 	if m.HasExtensionFieldValues {
@@ -64,7 +92,7 @@ func (m *SerialControl) GetDialect() string {
 	return "common"
 }
 
-// GetName gets the name of the Message
+// GetMessageName gets the name of the Message
 func (m *SerialControl) GetMessageName() string {
 	return "SerialControl"
 }
@@ -125,7 +153,7 @@ func (m *SerialControl) Read(frame mavlink2.Frame) (err error) {
 
 	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, *m)
+	err = binary.Read(reader, binary.LittleEndian, m)
 
 	return
 }

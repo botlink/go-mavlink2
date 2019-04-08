@@ -27,6 +27,8 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
+	"strings"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -50,6 +52,32 @@ type GpsStatus struct {
 	HasExtensionFieldValues bool
 }
 
+func (m *GpsStatus) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("Name:\t%v/%v\n")
+	// Output field values based on the decoded message type
+	builder.WriteString("SatellitesVisible:\t%v \n")
+	builder.WriteString("SatellitePrn:\t%v \n")
+	builder.WriteString("SatelliteUsed:\t%v \n")
+	builder.WriteString("SatelliteElevation:\t%v [deg]\n")
+	builder.WriteString("SatelliteAzimuth:\t%v [deg]\n")
+	builder.WriteString("SatelliteSnr:\t%v [dB]\n")
+	format := builder.String()
+
+	return fmt.Sprintf(
+		format,
+		m.GetDialect(),
+		m.GetMessageName(),
+		m.SatellitesVisible,
+		m.SatellitePrn,
+		m.SatelliteUsed,
+		m.SatelliteElevation,
+		m.SatelliteAzimuth,
+		m.SatelliteSnr,
+	)
+}
+
 // GetVersion gets the MAVLink version of the Message contents
 func (m *GpsStatus) GetVersion() int {
 	if m.HasExtensionFieldValues {
@@ -64,7 +92,7 @@ func (m *GpsStatus) GetDialect() string {
 	return "common"
 }
 
-// GetName gets the name of the Message
+// GetMessageName gets the name of the Message
 func (m *GpsStatus) GetMessageName() string {
 	return "GpsStatus"
 }
@@ -125,7 +153,7 @@ func (m *GpsStatus) Read(frame mavlink2.Frame) (err error) {
 
 	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, *m)
+	err = binary.Read(reader, binary.LittleEndian, m)
 
 	return
 }

@@ -27,6 +27,8 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
+	"strings"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -46,6 +48,28 @@ type TerrainRequest struct {
 	HasExtensionFieldValues bool
 }
 
+func (m *TerrainRequest) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("Name:\t%v/%v\n")
+	// Output field values based on the decoded message type
+	builder.WriteString("Mask:\t%v \n")
+	builder.WriteString("Lat:\t%v [degE7]\n")
+	builder.WriteString("Lon:\t%v [degE7]\n")
+	builder.WriteString("GrIDSpacing:\t%v [m]\n")
+	format := builder.String()
+
+	return fmt.Sprintf(
+		format,
+		m.GetDialect(),
+		m.GetMessageName(),
+		m.Mask,
+		m.Lat,
+		m.Lon,
+		m.GrIDSpacing,
+	)
+}
+
 // GetVersion gets the MAVLink version of the Message contents
 func (m *TerrainRequest) GetVersion() int {
 	if m.HasExtensionFieldValues {
@@ -60,7 +84,7 @@ func (m *TerrainRequest) GetDialect() string {
 	return "common"
 }
 
-// GetName gets the name of the Message
+// GetMessageName gets the name of the Message
 func (m *TerrainRequest) GetMessageName() string {
 	return "TerrainRequest"
 }
@@ -121,7 +145,7 @@ func (m *TerrainRequest) Read(frame mavlink2.Frame) (err error) {
 
 	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, *m)
+	err = binary.Read(reader, binary.LittleEndian, m)
 
 	return
 }

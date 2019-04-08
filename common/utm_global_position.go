@@ -27,6 +27,8 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
+	"strings"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -74,6 +76,56 @@ type UtmGlobalPosition struct {
 	HasExtensionFieldValues bool
 }
 
+func (m *UtmGlobalPosition) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("Name:\t%v/%v\n")
+	// Output field values based on the decoded message type
+	builder.WriteString("Time:\t%v [us]\n")
+	builder.WriteString("Lat:\t%v [degE7]\n")
+	builder.WriteString("Lon:\t%v [degE7]\n")
+	builder.WriteString("Alt:\t%v [mm]\n")
+	builder.WriteString("RelativeAlt:\t%v [mm]\n")
+	builder.WriteString("NextLat:\t%v [degE7]\n")
+	builder.WriteString("NextLon:\t%v [degE7]\n")
+	builder.WriteString("NextAlt:\t%v [mm]\n")
+	builder.WriteString("Vx:\t%v [cm/s]\n")
+	builder.WriteString("Vy:\t%v [cm/s]\n")
+	builder.WriteString("Vz:\t%v [cm/s]\n")
+	builder.WriteString("HAcc:\t%v [mm]\n")
+	builder.WriteString("VAcc:\t%v [mm]\n")
+	builder.WriteString("VelAcc:\t%v [cm/s]\n")
+	builder.WriteString("UpdateRate:\t%v [cs]\n")
+	builder.WriteString("UasID:\t%v \n")
+	builder.WriteString("FlightState:\t%v \n")
+	builder.WriteString("Flags:\t%v \n")
+	format := builder.String()
+
+	return fmt.Sprintf(
+		format,
+		m.GetDialect(),
+		m.GetMessageName(),
+		m.Time,
+		m.Lat,
+		m.Lon,
+		m.Alt,
+		m.RelativeAlt,
+		m.NextLat,
+		m.NextLon,
+		m.NextAlt,
+		m.Vx,
+		m.Vy,
+		m.Vz,
+		m.HAcc,
+		m.VAcc,
+		m.VelAcc,
+		m.UpdateRate,
+		m.UasID,
+		m.FlightState,
+		m.Flags,
+	)
+}
+
 // GetVersion gets the MAVLink version of the Message contents
 func (m *UtmGlobalPosition) GetVersion() int {
 	if m.HasExtensionFieldValues {
@@ -88,7 +140,7 @@ func (m *UtmGlobalPosition) GetDialect() string {
 	return "common"
 }
 
-// GetName gets the name of the Message
+// GetMessageName gets the name of the Message
 func (m *UtmGlobalPosition) GetMessageName() string {
 	return "UtmGlobalPosition"
 }
@@ -149,7 +201,7 @@ func (m *UtmGlobalPosition) Read(frame mavlink2.Frame) (err error) {
 
 	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, *m)
+	err = binary.Read(reader, binary.LittleEndian, m)
 
 	return
 }

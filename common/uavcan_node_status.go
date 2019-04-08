@@ -27,6 +27,8 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
+	"strings"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -50,6 +52,32 @@ type UavcanNodeStatus struct {
 	HasExtensionFieldValues bool
 }
 
+func (m *UavcanNodeStatus) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("Name:\t%v/%v\n")
+	// Output field values based on the decoded message type
+	builder.WriteString("TimeUsec:\t%v [us]\n")
+	builder.WriteString("UptimeSec:\t%v [s]\n")
+	builder.WriteString("VendorSpecificStatusCode:\t%v \n")
+	builder.WriteString("Health:\t%v \n")
+	builder.WriteString("Mode:\t%v \n")
+	builder.WriteString("SubMode:\t%v \n")
+	format := builder.String()
+
+	return fmt.Sprintf(
+		format,
+		m.GetDialect(),
+		m.GetMessageName(),
+		m.TimeUsec,
+		m.UptimeSec,
+		m.VendorSpecificStatusCode,
+		m.Health,
+		m.Mode,
+		m.SubMode,
+	)
+}
+
 // GetVersion gets the MAVLink version of the Message contents
 func (m *UavcanNodeStatus) GetVersion() int {
 	if m.HasExtensionFieldValues {
@@ -64,7 +92,7 @@ func (m *UavcanNodeStatus) GetDialect() string {
 	return "common"
 }
 
-// GetName gets the name of the Message
+// GetMessageName gets the name of the Message
 func (m *UavcanNodeStatus) GetMessageName() string {
 	return "UavcanNodeStatus"
 }
@@ -125,7 +153,7 @@ func (m *UavcanNodeStatus) Read(frame mavlink2.Frame) (err error) {
 
 	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, *m)
+	err = binary.Read(reader, binary.LittleEndian, m)
 
 	return
 }

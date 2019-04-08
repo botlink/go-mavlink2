@@ -27,6 +27,8 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
+	"strings"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -48,6 +50,30 @@ type ResourceRequest struct {
 	HasExtensionFieldValues bool
 }
 
+func (m *ResourceRequest) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("Name:\t%v/%v\n")
+	// Output field values based on the decoded message type
+	builder.WriteString("RequestID:\t%v \n")
+	builder.WriteString("URIType:\t%v \n")
+	builder.WriteString("URI:\t%v \n")
+	builder.WriteString("TransferType:\t%v \n")
+	builder.WriteString("Storage:\t%v \n")
+	format := builder.String()
+
+	return fmt.Sprintf(
+		format,
+		m.GetDialect(),
+		m.GetMessageName(),
+		m.RequestID,
+		m.URIType,
+		m.URI,
+		m.TransferType,
+		m.Storage,
+	)
+}
+
 // GetVersion gets the MAVLink version of the Message contents
 func (m *ResourceRequest) GetVersion() int {
 	if m.HasExtensionFieldValues {
@@ -62,7 +88,7 @@ func (m *ResourceRequest) GetDialect() string {
 	return "common"
 }
 
-// GetName gets the name of the Message
+// GetMessageName gets the name of the Message
 func (m *ResourceRequest) GetMessageName() string {
 	return "ResourceRequest"
 }
@@ -123,7 +149,7 @@ func (m *ResourceRequest) Read(frame mavlink2.Frame) (err error) {
 
 	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, *m)
+	err = binary.Read(reader, binary.LittleEndian, m)
 
 	return
 }

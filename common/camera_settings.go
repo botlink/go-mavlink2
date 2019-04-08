@@ -27,6 +27,8 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
+	"strings"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -46,6 +48,40 @@ type CameraSettings struct {
 	HasExtensionFieldValues bool
 }
 
+func (m *CameraSettings) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("Name:\t%v/%v\n")
+	// Output field values based on the decoded message type
+	builder.WriteString("TimeBootMs:\t%v [ms]\n")
+	builder.WriteString("ModeID:\t%v \n")
+	if m.HasExtensionFieldValues {
+		builder.WriteString("Zoomlevel:\t%v\n")
+		builder.WriteString("Focuslevel:\t%v\n")
+	}
+	format := builder.String()
+
+	if m.HasExtensionFieldValues {
+		return fmt.Sprintf(
+			format,
+			m.GetDialect(),
+			m.GetMessageName(),
+			m.TimeBootMs,
+			m.ModeID,
+			m.Zoomlevel,
+			m.Focuslevel,
+		)
+	}
+
+	return fmt.Sprintf(
+		format,
+		m.GetDialect(),
+		m.GetMessageName(),
+		m.TimeBootMs,
+		m.ModeID,
+	)
+}
+
 // GetVersion gets the MAVLink version of the Message contents
 func (m *CameraSettings) GetVersion() int {
 	if m.HasExtensionFieldValues {
@@ -60,7 +96,7 @@ func (m *CameraSettings) GetDialect() string {
 	return "common"
 }
 
-// GetName gets the name of the Message
+// GetMessageName gets the name of the Message
 func (m *CameraSettings) GetMessageName() string {
 	return "CameraSettings"
 }
@@ -121,7 +157,7 @@ func (m *CameraSettings) Read(frame mavlink2.Frame) (err error) {
 
 	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, *m)
+	err = binary.Read(reader, binary.LittleEndian, m)
 
 	return
 }

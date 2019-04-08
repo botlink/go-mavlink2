@@ -27,6 +27,8 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
+	"strings"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -64,6 +66,46 @@ type TrajectoryRepresentationWaypoints struct {
 	HasExtensionFieldValues bool
 }
 
+func (m *TrajectoryRepresentationWaypoints) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("Name:\t%v/%v\n")
+	// Output field values based on the decoded message type
+	builder.WriteString("TimeUsec:\t%v [us]\n")
+	builder.WriteString("PosX:\t%v [m]\n")
+	builder.WriteString("PosY:\t%v [m]\n")
+	builder.WriteString("PosZ:\t%v [m]\n")
+	builder.WriteString("VelX:\t%v [m/s]\n")
+	builder.WriteString("VelY:\t%v [m/s]\n")
+	builder.WriteString("VelZ:\t%v [m/s]\n")
+	builder.WriteString("AccX:\t%v [m/s/s]\n")
+	builder.WriteString("AccY:\t%v [m/s/s]\n")
+	builder.WriteString("AccZ:\t%v [m/s/s]\n")
+	builder.WriteString("PosYaw:\t%v [rad]\n")
+	builder.WriteString("VelYaw:\t%v [rad/s]\n")
+	builder.WriteString("ValIDPoints:\t%v \n")
+	format := builder.String()
+
+	return fmt.Sprintf(
+		format,
+		m.GetDialect(),
+		m.GetMessageName(),
+		m.TimeUsec,
+		m.PosX,
+		m.PosY,
+		m.PosZ,
+		m.VelX,
+		m.VelY,
+		m.VelZ,
+		m.AccX,
+		m.AccY,
+		m.AccZ,
+		m.PosYaw,
+		m.VelYaw,
+		m.ValIDPoints,
+	)
+}
+
 // GetVersion gets the MAVLink version of the Message contents
 func (m *TrajectoryRepresentationWaypoints) GetVersion() int {
 	if m.HasExtensionFieldValues {
@@ -78,7 +120,7 @@ func (m *TrajectoryRepresentationWaypoints) GetDialect() string {
 	return "common"
 }
 
-// GetName gets the name of the Message
+// GetMessageName gets the name of the Message
 func (m *TrajectoryRepresentationWaypoints) GetMessageName() string {
 	return "TrajectoryRepresentationWaypoints"
 }
@@ -139,7 +181,7 @@ func (m *TrajectoryRepresentationWaypoints) Read(frame mavlink2.Frame) (err erro
 
 	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, *m)
+	err = binary.Read(reader, binary.LittleEndian, m)
 
 	return
 }

@@ -27,6 +27,8 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
+	"strings"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -50,6 +52,32 @@ type ObstacleDistance struct {
 	HasExtensionFieldValues bool
 }
 
+func (m *ObstacleDistance) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("Name:\t%v/%v\n")
+	// Output field values based on the decoded message type
+	builder.WriteString("TimeUsec:\t%v [us]\n")
+	builder.WriteString("Distances:\t%v [cm]\n")
+	builder.WriteString("MinDistance:\t%v [cm]\n")
+	builder.WriteString("MaxDistance:\t%v [cm]\n")
+	builder.WriteString("SensorType:\t%v \n")
+	builder.WriteString("Increment:\t%v [deg]\n")
+	format := builder.String()
+
+	return fmt.Sprintf(
+		format,
+		m.GetDialect(),
+		m.GetMessageName(),
+		m.TimeUsec,
+		m.Distances,
+		m.MinDistance,
+		m.MaxDistance,
+		m.SensorType,
+		m.Increment,
+	)
+}
+
 // GetVersion gets the MAVLink version of the Message contents
 func (m *ObstacleDistance) GetVersion() int {
 	if m.HasExtensionFieldValues {
@@ -64,7 +92,7 @@ func (m *ObstacleDistance) GetDialect() string {
 	return "common"
 }
 
-// GetName gets the name of the Message
+// GetMessageName gets the name of the Message
 func (m *ObstacleDistance) GetMessageName() string {
 	return "ObstacleDistance"
 }
@@ -125,7 +153,7 @@ func (m *ObstacleDistance) Read(frame mavlink2.Frame) (err error) {
 
 	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, *m)
+	err = binary.Read(reader, binary.LittleEndian, m)
 
 	return
 }

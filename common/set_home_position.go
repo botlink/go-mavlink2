@@ -27,6 +27,8 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
+	"strings"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -62,6 +64,65 @@ type SetHomePosition struct {
 	HasExtensionFieldValues bool
 }
 
+func (m *SetHomePosition) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("Name:\t%v/%v\n")
+	// Output field values based on the decoded message type
+	builder.WriteString("Latitude:\t%v [degE7]\n")
+	builder.WriteString("Longitude:\t%v [degE7]\n")
+	builder.WriteString("Altitude:\t%v [mm]\n")
+	builder.WriteString("X:\t%v [m]\n")
+	builder.WriteString("Y:\t%v [m]\n")
+	builder.WriteString("Z:\t%v [m]\n")
+	builder.WriteString("Q:\t%v \n")
+	builder.WriteString("ApproachX:\t%v [m]\n")
+	builder.WriteString("ApproachY:\t%v [m]\n")
+	builder.WriteString("ApproachZ:\t%v [m]\n")
+	builder.WriteString("TargetSystem:\t%v \n")
+	if m.HasExtensionFieldValues {
+		builder.WriteString("TimeUsec:\t%v\n")
+	}
+	format := builder.String()
+
+	if m.HasExtensionFieldValues {
+		return fmt.Sprintf(
+			format,
+			m.GetDialect(),
+			m.GetMessageName(),
+			m.Latitude,
+			m.Longitude,
+			m.Altitude,
+			m.X,
+			m.Y,
+			m.Z,
+			m.Q,
+			m.ApproachX,
+			m.ApproachY,
+			m.ApproachZ,
+			m.TargetSystem,
+			m.TimeUsec,
+		)
+	}
+
+	return fmt.Sprintf(
+		format,
+		m.GetDialect(),
+		m.GetMessageName(),
+		m.Latitude,
+		m.Longitude,
+		m.Altitude,
+		m.X,
+		m.Y,
+		m.Z,
+		m.Q,
+		m.ApproachX,
+		m.ApproachY,
+		m.ApproachZ,
+		m.TargetSystem,
+	)
+}
+
 // GetVersion gets the MAVLink version of the Message contents
 func (m *SetHomePosition) GetVersion() int {
 	if m.HasExtensionFieldValues {
@@ -76,7 +137,7 @@ func (m *SetHomePosition) GetDialect() string {
 	return "common"
 }
 
-// GetName gets the name of the Message
+// GetMessageName gets the name of the Message
 func (m *SetHomePosition) GetMessageName() string {
 	return "SetHomePosition"
 }
@@ -137,7 +198,7 @@ func (m *SetHomePosition) Read(frame mavlink2.Frame) (err error) {
 
 	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, *m)
+	err = binary.Read(reader, binary.LittleEndian, m)
 
 	return
 }

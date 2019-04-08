@@ -27,6 +27,8 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
+	"strings"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -46,6 +48,28 @@ type ScaledPressure3 struct {
 	HasExtensionFieldValues bool
 }
 
+func (m *ScaledPressure3) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("Name:\t%v/%v\n")
+	// Output field values based on the decoded message type
+	builder.WriteString("TimeBootMs:\t%v [ms]\n")
+	builder.WriteString("PressAbs:\t%v [hPa]\n")
+	builder.WriteString("PressDiff:\t%v [hPa]\n")
+	builder.WriteString("Temperature:\t%v [cdegC]\n")
+	format := builder.String()
+
+	return fmt.Sprintf(
+		format,
+		m.GetDialect(),
+		m.GetMessageName(),
+		m.TimeBootMs,
+		m.PressAbs,
+		m.PressDiff,
+		m.Temperature,
+	)
+}
+
 // GetVersion gets the MAVLink version of the Message contents
 func (m *ScaledPressure3) GetVersion() int {
 	if m.HasExtensionFieldValues {
@@ -60,7 +84,7 @@ func (m *ScaledPressure3) GetDialect() string {
 	return "common"
 }
 
-// GetName gets the name of the Message
+// GetMessageName gets the name of the Message
 func (m *ScaledPressure3) GetMessageName() string {
 	return "ScaledPressure3"
 }
@@ -121,7 +145,7 @@ func (m *ScaledPressure3) Read(frame mavlink2.Frame) (err error) {
 
 	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, *m)
+	err = binary.Read(reader, binary.LittleEndian, m)
 
 	return
 }

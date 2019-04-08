@@ -27,6 +27,8 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
+	"strings"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -58,6 +60,40 @@ type GlobalPositionIntCov struct {
 	HasExtensionFieldValues bool
 }
 
+func (m *GlobalPositionIntCov) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("Name:\t%v/%v\n")
+	// Output field values based on the decoded message type
+	builder.WriteString("TimeUsec:\t%v [us]\n")
+	builder.WriteString("Lat:\t%v [degE7]\n")
+	builder.WriteString("Lon:\t%v [degE7]\n")
+	builder.WriteString("Alt:\t%v [mm]\n")
+	builder.WriteString("RelativeAlt:\t%v [mm]\n")
+	builder.WriteString("Vx:\t%v [m/s]\n")
+	builder.WriteString("Vy:\t%v [m/s]\n")
+	builder.WriteString("Vz:\t%v [m/s]\n")
+	builder.WriteString("Covariance:\t%v \n")
+	builder.WriteString("EstimatorType:\t%v \n")
+	format := builder.String()
+
+	return fmt.Sprintf(
+		format,
+		m.GetDialect(),
+		m.GetMessageName(),
+		m.TimeUsec,
+		m.Lat,
+		m.Lon,
+		m.Alt,
+		m.RelativeAlt,
+		m.Vx,
+		m.Vy,
+		m.Vz,
+		m.Covariance,
+		m.EstimatorType,
+	)
+}
+
 // GetVersion gets the MAVLink version of the Message contents
 func (m *GlobalPositionIntCov) GetVersion() int {
 	if m.HasExtensionFieldValues {
@@ -72,7 +108,7 @@ func (m *GlobalPositionIntCov) GetDialect() string {
 	return "common"
 }
 
-// GetName gets the name of the Message
+// GetMessageName gets the name of the Message
 func (m *GlobalPositionIntCov) GetMessageName() string {
 	return "GlobalPositionIntCov"
 }
@@ -133,7 +169,7 @@ func (m *GlobalPositionIntCov) Read(frame mavlink2.Frame) (err error) {
 
 	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, *m)
+	err = binary.Read(reader, binary.LittleEndian, m)
 
 	return
 }

@@ -27,7 +27,9 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
 	"math"
+	"strings"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -57,6 +59,40 @@ type SmartBatteryInfo struct {
 	DeviceName [50]byte
 	/*HasExtensionFieldValues indicates if this message has any extensions and  */
 	HasExtensionFieldValues bool
+}
+
+func (m *SmartBatteryInfo) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("Name:\t%v/%v\n")
+	// Output field values based on the decoded message type
+	builder.WriteString("CapacityFullSpecification:\t%v [mAh]\n")
+	builder.WriteString("CapacityFull:\t%v [mAh]\n")
+	builder.WriteString("SerialNumber:\t%v \n")
+	builder.WriteString("CycleCount:\t%v \n")
+	builder.WriteString("Weight:\t%v [g]\n")
+	builder.WriteString("DischargeMinimumVoltage:\t%v [mV]\n")
+	builder.WriteString("ChargingMinimumVoltage:\t%v [mV]\n")
+	builder.WriteString("RestingMinimumVoltage:\t%v [mV]\n")
+	builder.WriteString("ID:\t%v \n")
+	builder.WriteString("DeviceName:\t%v \n")
+	format := builder.String()
+
+	return fmt.Sprintf(
+		format,
+		m.GetDialect(),
+		m.GetMessageName(),
+		m.CapacityFullSpecification,
+		m.CapacityFull,
+		m.SerialNumber,
+		m.CycleCount,
+		m.Weight,
+		m.DischargeMinimumVoltage,
+		m.ChargingMinimumVoltage,
+		m.RestingMinimumVoltage,
+		m.ID,
+		m.DeviceName,
+	)
 }
 
 // SetDeviceName encodes the input string to the DeviceName array
@@ -92,7 +128,7 @@ func (m *SmartBatteryInfo) GetDialect() string {
 	return "common"
 }
 
-// GetName gets the name of the Message
+// GetMessageName gets the name of the Message
 func (m *SmartBatteryInfo) GetMessageName() string {
 	return "SmartBatteryInfo"
 }
@@ -153,7 +189,7 @@ func (m *SmartBatteryInfo) Read(frame mavlink2.Frame) (err error) {
 
 	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, *m)
+	err = binary.Read(reader, binary.LittleEndian, m)
 
 	return
 }

@@ -27,6 +27,8 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
+	"strings"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -48,6 +50,30 @@ type LogEntry struct {
 	HasExtensionFieldValues bool
 }
 
+func (m *LogEntry) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("Name:\t%v/%v\n")
+	// Output field values based on the decoded message type
+	builder.WriteString("TimeUtc:\t%v [s]\n")
+	builder.WriteString("Size:\t%v [bytes]\n")
+	builder.WriteString("ID:\t%v \n")
+	builder.WriteString("NumLogs:\t%v \n")
+	builder.WriteString("LastLogNum:\t%v \n")
+	format := builder.String()
+
+	return fmt.Sprintf(
+		format,
+		m.GetDialect(),
+		m.GetMessageName(),
+		m.TimeUtc,
+		m.Size,
+		m.ID,
+		m.NumLogs,
+		m.LastLogNum,
+	)
+}
+
 // GetVersion gets the MAVLink version of the Message contents
 func (m *LogEntry) GetVersion() int {
 	if m.HasExtensionFieldValues {
@@ -62,7 +88,7 @@ func (m *LogEntry) GetDialect() string {
 	return "common"
 }
 
-// GetName gets the name of the Message
+// GetMessageName gets the name of the Message
 func (m *LogEntry) GetMessageName() string {
 	return "LogEntry"
 }
@@ -123,7 +149,7 @@ func (m *LogEntry) Read(frame mavlink2.Frame) (err error) {
 
 	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, *m)
+	err = binary.Read(reader, binary.LittleEndian, m)
 
 	return
 }

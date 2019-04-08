@@ -27,6 +27,8 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
+	"strings"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -69,6 +71,74 @@ type MissionItemInt struct {
 	HasExtensionFieldValues bool
 }
 
+func (m *MissionItemInt) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("Name:\t%v/%v\n")
+	// Output field values based on the decoded message type
+	builder.WriteString("Param1:\t%v \n")
+	builder.WriteString("Param2:\t%v \n")
+	builder.WriteString("Param3:\t%v \n")
+	builder.WriteString("Param4:\t%v \n")
+	builder.WriteString("X:\t%v \n")
+	builder.WriteString("Y:\t%v \n")
+	builder.WriteString("Z:\t%v \n")
+	builder.WriteString("Seq:\t%v \n")
+	builder.WriteString("Command:\t%v \n")
+	builder.WriteString("TargetSystem:\t%v \n")
+	builder.WriteString("TargetComponent:\t%v \n")
+	builder.WriteString("Frame:\t%v \n")
+	builder.WriteString("Current:\t%v \n")
+	builder.WriteString("Autocontinue:\t%v \n")
+	if m.HasExtensionFieldValues {
+		builder.WriteString("MissionType:\t%v\n")
+	}
+	format := builder.String()
+
+	if m.HasExtensionFieldValues {
+		return fmt.Sprintf(
+			format,
+			m.GetDialect(),
+			m.GetMessageName(),
+			m.Param1,
+			m.Param2,
+			m.Param3,
+			m.Param4,
+			m.X,
+			m.Y,
+			m.Z,
+			m.Seq,
+			m.Command,
+			m.TargetSystem,
+			m.TargetComponent,
+			m.Frame,
+			m.Current,
+			m.Autocontinue,
+			m.MissionType,
+		)
+	}
+
+	return fmt.Sprintf(
+		format,
+		m.GetDialect(),
+		m.GetMessageName(),
+		m.Param1,
+		m.Param2,
+		m.Param3,
+		m.Param4,
+		m.X,
+		m.Y,
+		m.Z,
+		m.Seq,
+		m.Command,
+		m.TargetSystem,
+		m.TargetComponent,
+		m.Frame,
+		m.Current,
+		m.Autocontinue,
+	)
+}
+
 // GetVersion gets the MAVLink version of the Message contents
 func (m *MissionItemInt) GetVersion() int {
 	if m.HasExtensionFieldValues {
@@ -83,7 +153,7 @@ func (m *MissionItemInt) GetDialect() string {
 	return "common"
 }
 
-// GetName gets the name of the Message
+// GetMessageName gets the name of the Message
 func (m *MissionItemInt) GetMessageName() string {
 	return "MissionItemInt"
 }
@@ -144,7 +214,7 @@ func (m *MissionItemInt) Read(frame mavlink2.Frame) (err error) {
 
 	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, *m)
+	err = binary.Read(reader, binary.LittleEndian, m)
 
 	return
 }

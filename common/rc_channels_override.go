@@ -27,6 +27,8 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
+	"strings"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -78,6 +80,80 @@ type RcChannelsOverrIDe struct {
 	HasExtensionFieldValues bool
 }
 
+func (m *RcChannelsOverrIDe) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("Name:\t%v/%v\n")
+	// Output field values based on the decoded message type
+	builder.WriteString("Chan1Raw:\t%v [us]\n")
+	builder.WriteString("Chan2Raw:\t%v [us]\n")
+	builder.WriteString("Chan3Raw:\t%v [us]\n")
+	builder.WriteString("Chan4Raw:\t%v [us]\n")
+	builder.WriteString("Chan5Raw:\t%v [us]\n")
+	builder.WriteString("Chan6Raw:\t%v [us]\n")
+	builder.WriteString("Chan7Raw:\t%v [us]\n")
+	builder.WriteString("Chan8Raw:\t%v [us]\n")
+	builder.WriteString("TargetSystem:\t%v \n")
+	builder.WriteString("TargetComponent:\t%v \n")
+	if m.HasExtensionFieldValues {
+		builder.WriteString("Chan9Raw:\t%v\n")
+		builder.WriteString("Chan10Raw:\t%v\n")
+		builder.WriteString("Chan11Raw:\t%v\n")
+		builder.WriteString("Chan12Raw:\t%v\n")
+		builder.WriteString("Chan13Raw:\t%v\n")
+		builder.WriteString("Chan14Raw:\t%v\n")
+		builder.WriteString("Chan15Raw:\t%v\n")
+		builder.WriteString("Chan16Raw:\t%v\n")
+		builder.WriteString("Chan17Raw:\t%v\n")
+		builder.WriteString("Chan18Raw:\t%v\n")
+	}
+	format := builder.String()
+
+	if m.HasExtensionFieldValues {
+		return fmt.Sprintf(
+			format,
+			m.GetDialect(),
+			m.GetMessageName(),
+			m.Chan1Raw,
+			m.Chan2Raw,
+			m.Chan3Raw,
+			m.Chan4Raw,
+			m.Chan5Raw,
+			m.Chan6Raw,
+			m.Chan7Raw,
+			m.Chan8Raw,
+			m.TargetSystem,
+			m.TargetComponent,
+			m.Chan9Raw,
+			m.Chan10Raw,
+			m.Chan11Raw,
+			m.Chan12Raw,
+			m.Chan13Raw,
+			m.Chan14Raw,
+			m.Chan15Raw,
+			m.Chan16Raw,
+			m.Chan17Raw,
+			m.Chan18Raw,
+		)
+	}
+
+	return fmt.Sprintf(
+		format,
+		m.GetDialect(),
+		m.GetMessageName(),
+		m.Chan1Raw,
+		m.Chan2Raw,
+		m.Chan3Raw,
+		m.Chan4Raw,
+		m.Chan5Raw,
+		m.Chan6Raw,
+		m.Chan7Raw,
+		m.Chan8Raw,
+		m.TargetSystem,
+		m.TargetComponent,
+	)
+}
+
 // GetVersion gets the MAVLink version of the Message contents
 func (m *RcChannelsOverrIDe) GetVersion() int {
 	if m.HasExtensionFieldValues {
@@ -92,7 +168,7 @@ func (m *RcChannelsOverrIDe) GetDialect() string {
 	return "common"
 }
 
-// GetName gets the name of the Message
+// GetMessageName gets the name of the Message
 func (m *RcChannelsOverrIDe) GetMessageName() string {
 	return "RcChannelsOverrIDe"
 }
@@ -153,7 +229,7 @@ func (m *RcChannelsOverrIDe) Read(frame mavlink2.Frame) (err error) {
 
 	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, *m)
+	err = binary.Read(reader, binary.LittleEndian, m)
 
 	return
 }

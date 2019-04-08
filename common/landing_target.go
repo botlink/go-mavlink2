@@ -27,6 +27,8 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
+	"strings"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -66,6 +68,66 @@ type LandingTarget struct {
 	HasExtensionFieldValues bool
 }
 
+func (m *LandingTarget) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("Name:\t%v/%v\n")
+	// Output field values based on the decoded message type
+	builder.WriteString("TimeUsec:\t%v [us]\n")
+	builder.WriteString("AngleX:\t%v [rad]\n")
+	builder.WriteString("AngleY:\t%v [rad]\n")
+	builder.WriteString("Distance:\t%v [m]\n")
+	builder.WriteString("SizeX:\t%v [rad]\n")
+	builder.WriteString("SizeY:\t%v [rad]\n")
+	builder.WriteString("TargetNum:\t%v \n")
+	builder.WriteString("Frame:\t%v \n")
+	if m.HasExtensionFieldValues {
+		builder.WriteString("X:\t%v\n")
+		builder.WriteString("Y:\t%v\n")
+		builder.WriteString("Z:\t%v\n")
+		builder.WriteString("Q:\t%v\n")
+		builder.WriteString("Type:\t%v\n")
+		builder.WriteString("PositionValID:\t%v\n")
+	}
+	format := builder.String()
+
+	if m.HasExtensionFieldValues {
+		return fmt.Sprintf(
+			format,
+			m.GetDialect(),
+			m.GetMessageName(),
+			m.TimeUsec,
+			m.AngleX,
+			m.AngleY,
+			m.Distance,
+			m.SizeX,
+			m.SizeY,
+			m.TargetNum,
+			m.Frame,
+			m.X,
+			m.Y,
+			m.Z,
+			m.Q,
+			m.Type,
+			m.PositionValID,
+		)
+	}
+
+	return fmt.Sprintf(
+		format,
+		m.GetDialect(),
+		m.GetMessageName(),
+		m.TimeUsec,
+		m.AngleX,
+		m.AngleY,
+		m.Distance,
+		m.SizeX,
+		m.SizeY,
+		m.TargetNum,
+		m.Frame,
+	)
+}
+
 // GetVersion gets the MAVLink version of the Message contents
 func (m *LandingTarget) GetVersion() int {
 	if m.HasExtensionFieldValues {
@@ -80,7 +142,7 @@ func (m *LandingTarget) GetDialect() string {
 	return "common"
 }
 
-// GetName gets the name of the Message
+// GetMessageName gets the name of the Message
 func (m *LandingTarget) GetMessageName() string {
 	return "LandingTarget"
 }
@@ -141,7 +203,7 @@ func (m *LandingTarget) Read(frame mavlink2.Frame) (err error) {
 
 	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, *m)
+	err = binary.Read(reader, binary.LittleEndian, m)
 
 	return
 }

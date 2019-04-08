@@ -27,7 +27,9 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
 	"math"
+	"strings"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -45,6 +47,28 @@ type ParamExtAck struct {
 	ParamResult uint8
 	/*HasExtensionFieldValues indicates if this message has any extensions and  */
 	HasExtensionFieldValues bool
+}
+
+func (m *ParamExtAck) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("Name:\t%v/%v\n")
+	// Output field values based on the decoded message type
+	builder.WriteString("ParamID:\t%v \n")
+	builder.WriteString("ParamValue:\t%v \n")
+	builder.WriteString("ParamType:\t%v \n")
+	builder.WriteString("ParamResult:\t%v \n")
+	format := builder.String()
+
+	return fmt.Sprintf(
+		format,
+		m.GetDialect(),
+		m.GetMessageName(),
+		m.ParamID,
+		m.ParamValue,
+		m.ParamType,
+		m.ParamResult,
+	)
 }
 
 // SetParamID encodes the input string to the ParamID array
@@ -99,7 +123,7 @@ func (m *ParamExtAck) GetDialect() string {
 	return "common"
 }
 
-// GetName gets the name of the Message
+// GetMessageName gets the name of the Message
 func (m *ParamExtAck) GetMessageName() string {
 	return "ParamExtAck"
 }
@@ -160,7 +184,7 @@ func (m *ParamExtAck) Read(frame mavlink2.Frame) (err error) {
 
 	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, *m)
+	err = binary.Read(reader, binary.LittleEndian, m)
 
 	return
 }

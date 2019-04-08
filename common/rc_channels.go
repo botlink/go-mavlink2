@@ -27,6 +27,8 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
+	"strings"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -80,6 +82,62 @@ type RcChannels struct {
 	HasExtensionFieldValues bool
 }
 
+func (m *RcChannels) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("Name:\t%v/%v\n")
+	// Output field values based on the decoded message type
+	builder.WriteString("TimeBootMs:\t%v [ms]\n")
+	builder.WriteString("Chan1Raw:\t%v [us]\n")
+	builder.WriteString("Chan2Raw:\t%v [us]\n")
+	builder.WriteString("Chan3Raw:\t%v [us]\n")
+	builder.WriteString("Chan4Raw:\t%v [us]\n")
+	builder.WriteString("Chan5Raw:\t%v [us]\n")
+	builder.WriteString("Chan6Raw:\t%v [us]\n")
+	builder.WriteString("Chan7Raw:\t%v [us]\n")
+	builder.WriteString("Chan8Raw:\t%v [us]\n")
+	builder.WriteString("Chan9Raw:\t%v [us]\n")
+	builder.WriteString("Chan10Raw:\t%v [us]\n")
+	builder.WriteString("Chan11Raw:\t%v [us]\n")
+	builder.WriteString("Chan12Raw:\t%v [us]\n")
+	builder.WriteString("Chan13Raw:\t%v [us]\n")
+	builder.WriteString("Chan14Raw:\t%v [us]\n")
+	builder.WriteString("Chan15Raw:\t%v [us]\n")
+	builder.WriteString("Chan16Raw:\t%v [us]\n")
+	builder.WriteString("Chan17Raw:\t%v [us]\n")
+	builder.WriteString("Chan18Raw:\t%v [us]\n")
+	builder.WriteString("Chancount:\t%v \n")
+	builder.WriteString("Rssi:\t%v \n")
+	format := builder.String()
+
+	return fmt.Sprintf(
+		format,
+		m.GetDialect(),
+		m.GetMessageName(),
+		m.TimeBootMs,
+		m.Chan1Raw,
+		m.Chan2Raw,
+		m.Chan3Raw,
+		m.Chan4Raw,
+		m.Chan5Raw,
+		m.Chan6Raw,
+		m.Chan7Raw,
+		m.Chan8Raw,
+		m.Chan9Raw,
+		m.Chan10Raw,
+		m.Chan11Raw,
+		m.Chan12Raw,
+		m.Chan13Raw,
+		m.Chan14Raw,
+		m.Chan15Raw,
+		m.Chan16Raw,
+		m.Chan17Raw,
+		m.Chan18Raw,
+		m.Chancount,
+		m.Rssi,
+	)
+}
+
 // GetVersion gets the MAVLink version of the Message contents
 func (m *RcChannels) GetVersion() int {
 	if m.HasExtensionFieldValues {
@@ -94,7 +152,7 @@ func (m *RcChannels) GetDialect() string {
 	return "common"
 }
 
-// GetName gets the name of the Message
+// GetMessageName gets the name of the Message
 func (m *RcChannels) GetMessageName() string {
 	return "RcChannels"
 }
@@ -155,7 +213,7 @@ func (m *RcChannels) Read(frame mavlink2.Frame) (err error) {
 
 	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, *m)
+	err = binary.Read(reader, binary.LittleEndian, m)
 
 	return
 }

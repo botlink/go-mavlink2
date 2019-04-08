@@ -27,6 +27,8 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
+	"strings"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -74,6 +76,76 @@ type ServoOutputRaw struct {
 	HasExtensionFieldValues bool
 }
 
+func (m *ServoOutputRaw) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("Name:\t%v/%v\n")
+	// Output field values based on the decoded message type
+	builder.WriteString("TimeUsec:\t%v [us]\n")
+	builder.WriteString("Servo1Raw:\t%v [us]\n")
+	builder.WriteString("Servo2Raw:\t%v [us]\n")
+	builder.WriteString("Servo3Raw:\t%v [us]\n")
+	builder.WriteString("Servo4Raw:\t%v [us]\n")
+	builder.WriteString("Servo5Raw:\t%v [us]\n")
+	builder.WriteString("Servo6Raw:\t%v [us]\n")
+	builder.WriteString("Servo7Raw:\t%v [us]\n")
+	builder.WriteString("Servo8Raw:\t%v [us]\n")
+	builder.WriteString("Port:\t%v \n")
+	if m.HasExtensionFieldValues {
+		builder.WriteString("Servo9Raw:\t%v\n")
+		builder.WriteString("Servo10Raw:\t%v\n")
+		builder.WriteString("Servo11Raw:\t%v\n")
+		builder.WriteString("Servo12Raw:\t%v\n")
+		builder.WriteString("Servo13Raw:\t%v\n")
+		builder.WriteString("Servo14Raw:\t%v\n")
+		builder.WriteString("Servo15Raw:\t%v\n")
+		builder.WriteString("Servo16Raw:\t%v\n")
+	}
+	format := builder.String()
+
+	if m.HasExtensionFieldValues {
+		return fmt.Sprintf(
+			format,
+			m.GetDialect(),
+			m.GetMessageName(),
+			m.TimeUsec,
+			m.Servo1Raw,
+			m.Servo2Raw,
+			m.Servo3Raw,
+			m.Servo4Raw,
+			m.Servo5Raw,
+			m.Servo6Raw,
+			m.Servo7Raw,
+			m.Servo8Raw,
+			m.Port,
+			m.Servo9Raw,
+			m.Servo10Raw,
+			m.Servo11Raw,
+			m.Servo12Raw,
+			m.Servo13Raw,
+			m.Servo14Raw,
+			m.Servo15Raw,
+			m.Servo16Raw,
+		)
+	}
+
+	return fmt.Sprintf(
+		format,
+		m.GetDialect(),
+		m.GetMessageName(),
+		m.TimeUsec,
+		m.Servo1Raw,
+		m.Servo2Raw,
+		m.Servo3Raw,
+		m.Servo4Raw,
+		m.Servo5Raw,
+		m.Servo6Raw,
+		m.Servo7Raw,
+		m.Servo8Raw,
+		m.Port,
+	)
+}
+
 // GetVersion gets the MAVLink version of the Message contents
 func (m *ServoOutputRaw) GetVersion() int {
 	if m.HasExtensionFieldValues {
@@ -88,7 +160,7 @@ func (m *ServoOutputRaw) GetDialect() string {
 	return "common"
 }
 
-// GetName gets the name of the Message
+// GetMessageName gets the name of the Message
 func (m *ServoOutputRaw) GetMessageName() string {
 	return "ServoOutputRaw"
 }
@@ -149,7 +221,7 @@ func (m *ServoOutputRaw) Read(frame mavlink2.Frame) (err error) {
 
 	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, *m)
+	err = binary.Read(reader, binary.LittleEndian, m)
 
 	return
 }

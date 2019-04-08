@@ -27,6 +27,8 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
+	"strings"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -65,6 +67,46 @@ type HilGps struct {
 	HasExtensionFieldValues bool
 }
 
+func (m *HilGps) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("Name:\t%v/%v\n")
+	// Output field values based on the decoded message type
+	builder.WriteString("TimeUsec:\t%v [us]\n")
+	builder.WriteString("Lat:\t%v [degE7]\n")
+	builder.WriteString("Lon:\t%v [degE7]\n")
+	builder.WriteString("Alt:\t%v [mm]\n")
+	builder.WriteString("Eph:\t%v [cm]\n")
+	builder.WriteString("Epv:\t%v [cm]\n")
+	builder.WriteString("Vel:\t%v [cm/s]\n")
+	builder.WriteString("Vn:\t%v [cm/s]\n")
+	builder.WriteString("Ve:\t%v [cm/s]\n")
+	builder.WriteString("Vd:\t%v [cm/s]\n")
+	builder.WriteString("Cog:\t%v [cdeg]\n")
+	builder.WriteString("FixType:\t%v \n")
+	builder.WriteString("SatellitesVisible:\t%v \n")
+	format := builder.String()
+
+	return fmt.Sprintf(
+		format,
+		m.GetDialect(),
+		m.GetMessageName(),
+		m.TimeUsec,
+		m.Lat,
+		m.Lon,
+		m.Alt,
+		m.Eph,
+		m.Epv,
+		m.Vel,
+		m.Vn,
+		m.Ve,
+		m.Vd,
+		m.Cog,
+		m.FixType,
+		m.SatellitesVisible,
+	)
+}
+
 // GetVersion gets the MAVLink version of the Message contents
 func (m *HilGps) GetVersion() int {
 	if m.HasExtensionFieldValues {
@@ -79,7 +121,7 @@ func (m *HilGps) GetDialect() string {
 	return "common"
 }
 
-// GetName gets the name of the Message
+// GetMessageName gets the name of the Message
 func (m *HilGps) GetMessageName() string {
 	return "HilGps"
 }
@@ -140,7 +182,7 @@ func (m *HilGps) Read(frame mavlink2.Frame) (err error) {
 
 	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, *m)
+	err = binary.Read(reader, binary.LittleEndian, m)
 
 	return
 }

@@ -27,6 +27,8 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
+	"strings"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -50,6 +52,32 @@ type ManualControl struct {
 	HasExtensionFieldValues bool
 }
 
+func (m *ManualControl) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("Name:\t%v/%v\n")
+	// Output field values based on the decoded message type
+	builder.WriteString("X:\t%v \n")
+	builder.WriteString("Y:\t%v \n")
+	builder.WriteString("Z:\t%v \n")
+	builder.WriteString("R:\t%v \n")
+	builder.WriteString("Buttons:\t%v \n")
+	builder.WriteString("Target:\t%v \n")
+	format := builder.String()
+
+	return fmt.Sprintf(
+		format,
+		m.GetDialect(),
+		m.GetMessageName(),
+		m.X,
+		m.Y,
+		m.Z,
+		m.R,
+		m.Buttons,
+		m.Target,
+	)
+}
+
 // GetVersion gets the MAVLink version of the Message contents
 func (m *ManualControl) GetVersion() int {
 	if m.HasExtensionFieldValues {
@@ -64,7 +92,7 @@ func (m *ManualControl) GetDialect() string {
 	return "common"
 }
 
-// GetName gets the name of the Message
+// GetMessageName gets the name of the Message
 func (m *ManualControl) GetMessageName() string {
 	return "ManualControl"
 }
@@ -125,7 +153,7 @@ func (m *ManualControl) Read(frame mavlink2.Frame) (err error) {
 
 	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, *m)
+	err = binary.Read(reader, binary.LittleEndian, m)
 
 	return
 }

@@ -27,7 +27,9 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
 	"math"
+	"strings"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -65,6 +67,46 @@ type CameraInformation struct {
 	HasExtensionFieldValues bool
 }
 
+func (m *CameraInformation) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("Name:\t%v/%v\n")
+	// Output field values based on the decoded message type
+	builder.WriteString("TimeBootMs:\t%v [ms]\n")
+	builder.WriteString("FirmwareVersion:\t%v \n")
+	builder.WriteString("FocalLength:\t%v [mm]\n")
+	builder.WriteString("SensorSizeH:\t%v [mm]\n")
+	builder.WriteString("SensorSizeV:\t%v [mm]\n")
+	builder.WriteString("Flags:\t%v \n")
+	builder.WriteString("ResolutionH:\t%v [pix]\n")
+	builder.WriteString("ResolutionV:\t%v [pix]\n")
+	builder.WriteString("CamDefinitionVersion:\t%v \n")
+	builder.WriteString("VendorName:\t%v \n")
+	builder.WriteString("ModelName:\t%v \n")
+	builder.WriteString("LensID:\t%v \n")
+	builder.WriteString("CamDefinitionURI:\t%v \n")
+	format := builder.String()
+
+	return fmt.Sprintf(
+		format,
+		m.GetDialect(),
+		m.GetMessageName(),
+		m.TimeBootMs,
+		m.FirmwareVersion,
+		m.FocalLength,
+		m.SensorSizeH,
+		m.SensorSizeV,
+		m.Flags,
+		m.ResolutionH,
+		m.ResolutionV,
+		m.CamDefinitionVersion,
+		m.VendorName,
+		m.ModelName,
+		m.LensID,
+		m.CamDefinitionURI,
+	)
+}
+
 // SetCamDefinitionURI encodes the input string to the CamDefinitionURI array
 func (m *CameraInformation) SetCamDefinitionURI(input string) (err error) {
 	clen := int(math.Min(float64(len(input)), float64(140)))
@@ -98,7 +140,7 @@ func (m *CameraInformation) GetDialect() string {
 	return "common"
 }
 
-// GetName gets the name of the Message
+// GetMessageName gets the name of the Message
 func (m *CameraInformation) GetMessageName() string {
 	return "CameraInformation"
 }
@@ -159,7 +201,7 @@ func (m *CameraInformation) Read(frame mavlink2.Frame) (err error) {
 
 	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, *m)
+	err = binary.Read(reader, binary.LittleEndian, m)
 
 	return
 }

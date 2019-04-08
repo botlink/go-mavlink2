@@ -27,6 +27,8 @@ IN THE GENERATED SOFTWARE.
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
+	"strings"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -62,6 +64,65 @@ type AutopilotVersion struct {
 	HasExtensionFieldValues bool
 }
 
+func (m *AutopilotVersion) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("Name:\t%v/%v\n")
+	// Output field values based on the decoded message type
+	builder.WriteString("Capabilities:\t%v \n")
+	builder.WriteString("UID:\t%v \n")
+	builder.WriteString("FlightSwVersion:\t%v \n")
+	builder.WriteString("MIDdlewareSwVersion:\t%v \n")
+	builder.WriteString("OsSwVersion:\t%v \n")
+	builder.WriteString("BoardVersion:\t%v \n")
+	builder.WriteString("VendorID:\t%v \n")
+	builder.WriteString("ProductID:\t%v \n")
+	builder.WriteString("FlightCustomVersion:\t%v \n")
+	builder.WriteString("MIDdlewareCustomVersion:\t%v \n")
+	builder.WriteString("OsCustomVersion:\t%v \n")
+	if m.HasExtensionFieldValues {
+		builder.WriteString("UID2:\t%v\n")
+	}
+	format := builder.String()
+
+	if m.HasExtensionFieldValues {
+		return fmt.Sprintf(
+			format,
+			m.GetDialect(),
+			m.GetMessageName(),
+			m.Capabilities,
+			m.UID,
+			m.FlightSwVersion,
+			m.MIDdlewareSwVersion,
+			m.OsSwVersion,
+			m.BoardVersion,
+			m.VendorID,
+			m.ProductID,
+			m.FlightCustomVersion,
+			m.MIDdlewareCustomVersion,
+			m.OsCustomVersion,
+			m.UID2,
+		)
+	}
+
+	return fmt.Sprintf(
+		format,
+		m.GetDialect(),
+		m.GetMessageName(),
+		m.Capabilities,
+		m.UID,
+		m.FlightSwVersion,
+		m.MIDdlewareSwVersion,
+		m.OsSwVersion,
+		m.BoardVersion,
+		m.VendorID,
+		m.ProductID,
+		m.FlightCustomVersion,
+		m.MIDdlewareCustomVersion,
+		m.OsCustomVersion,
+	)
+}
+
 // GetVersion gets the MAVLink version of the Message contents
 func (m *AutopilotVersion) GetVersion() int {
 	if m.HasExtensionFieldValues {
@@ -76,7 +137,7 @@ func (m *AutopilotVersion) GetDialect() string {
 	return "common"
 }
 
-// GetName gets the name of the Message
+// GetMessageName gets the name of the Message
 func (m *AutopilotVersion) GetMessageName() string {
 	return "AutopilotVersion"
 }
@@ -137,7 +198,7 @@ func (m *AutopilotVersion) Read(frame mavlink2.Frame) (err error) {
 
 	reader := bytes.NewReader(ioSlice)
 
-	err = binary.Read(reader, binary.LittleEndian, *m)
+	err = binary.Read(reader, binary.LittleEndian, m)
 
 	return
 }
