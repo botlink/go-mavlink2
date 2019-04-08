@@ -35,6 +35,25 @@ type Dialect interface {
 // Dialects represents a collection of Dialects
 type Dialects []Dialect
 
+func (d Dialects) GetMessage(frame Frame) (message Message, err error) {
+	for _, dialect := range d {
+		message, err = dialect.GetMessage(frame)
+
+		if err == ErrUnknownMessage {
+			continue
+		} else {
+			return
+		}
+	}
+
+	if err == ErrUnknownMessage {
+		message = &UnknownMessage{}
+		message.Read(frame)
+	}
+
+	return
+}
+
 // Validate checks the frame to see if there are any obvious errors
 func (d Dialects) Validate(frame Frame) error {
 	checksum := new(X25CRC)
