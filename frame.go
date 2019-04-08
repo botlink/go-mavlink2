@@ -209,12 +209,41 @@ func (frame FrameV2) String() string {
 	return format
 }
 
-var ErrFrameTooShort = fmt.Errorf("Frame too short")
-var ErrUnknownStartByte = fmt.Errorf("Unknown start byte")
+// ErrFrameTooShort indicates the Frame did not contain enough bytes to complete the requested operation
+var ErrFrameTooShort = fmt.Errorf("Not enough bytes in Frame")
+
+// ErrUnknownStartByte indicates the Frame started with an unknown start byte (magic byte)
+var ErrUnknownStartByte = fmt.Errorf("Start byte is not 0x%x (V1) or 0x%x (V2)", V1StartByte, V2StartByte)
+
+// ErrMessageTooShort indicates that the Message length in the header is shorter than the
+// minimum length allowed for the Message
 var ErrMessageTooShort = fmt.Errorf("Message too short")
+
+// ErrMessageTooLong indicates that the Message length in the header is longer than the
+// maximum length allowed for the Message
 var ErrMessageTooLong = fmt.Errorf("Message too long")
+
+// ErrInvalidChecksum indicates that the Message checksum is invalid
 var ErrInvalidChecksum = fmt.Errorf("Invalid checksum")
+
+// ErrUnknownMessage indicates that the Message is not defined in one of the loaded Dialects
 var ErrUnknownMessage = fmt.Errorf("Unknown message")
+
+// ErrPrivateField indicates that a Message contains private fields and cannot be unmarshalled using binary.Read
+var ErrPrivateField = fmt.Errorf("Struct contains one or more private fields that cannot be unmarshalled using binary.Read")
+
+// ErrUnsupportedVersion indicates that the version requested is not supported by this library
+var ErrUnsupportedVersion = fmt.Errorf("The version requested is not supported by this library")
+
+// ErrDecodeV2MessageV1Frame indicates that a request was made to decode a V2 Message from a V1 Frame
+var ErrDecodeV2MessageV1Frame = fmt.Errorf("Unable to decode a V2 message from a V1 Frame")
+
+// ErrEncodeV2MessageV1Frame indicates that a request was made to encode a V2 Message for use with a V1 Frame
+var ErrEncodeV2MessageV1Frame = fmt.Errorf("Unable to encode a V2 message to a V1 Frame")
+
+// ErrStringTooLong indicates that a Message field is unable to hold the requested string
+// and that the string was truncated to fit
+var ErrStringTooLong = fmt.Errorf("The input string was too long and was truncated")
 
 // FrameFromBytes returns a Frame containing the input bytes,
 // or an error if the first byte is not a valid frame start
