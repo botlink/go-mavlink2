@@ -51,7 +51,7 @@ type VisionPositionEstimate struct {
 	Pitch float32
 	/*Yaw Yaw angle */
 	Yaw float32
-	/*Covariance Row-major representation of pose 6x6 cross-covariance matrix upper right triangle (states: x, y, z, roll, pitch, yaw; first six entries are the first ROW, next five entries are the second ROW, etc.). If unknown, assign NaN value to first element in the array. */
+	/*Covariance Pose covariance matrix upper right triangular (first six entries are the first ROW, next five entries are the second ROW, etc.) */
 	Covariance [21]float32
 	/*HasExtensionFieldValues indicates if this message has any extensions and  */
 	HasExtensionFieldValues bool

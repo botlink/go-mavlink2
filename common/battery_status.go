@@ -35,7 +35,7 @@ import (
 	"github.com/queue-b/go-mavlink2/util"
 )
 
-/*BatteryStatus Battery information. Updates GCS with flight controller battery status. Use SMART_BATTERY_* messages instead for smart batteries. */
+/*BatteryStatus Battery information */
 type BatteryStatus struct {
 	/*CurrentConsumed Consumed charge, -1: autopilot does not provide consumption estimate */
 	CurrentConsumed int32
@@ -79,7 +79,7 @@ func (m *BatteryStatus) String() string {
 	builder.WriteString("ID:\t%v \n")
 	builder.WriteString("BatteryFunction:\t%v \n")
 	builder.WriteString("Type:\t%v \n")
-	builder.WriteString("BatteryRemaining:\t%v [%]\n")
+	builder.WriteString("BatteryRemaining:\t%v \n")
 	if m.HasExtensionFieldValues {
 		builder.WriteString("TimeRemaining:\t%v\n")
 		builder.WriteString("ChargeState:\t%v\n")

@@ -35,7 +35,7 @@ import (
 	"github.com/queue-b/go-mavlink2/util"
 )
 
-/*EncapsulatedData Data packet for images sent using the Image Transmission Protocol: https://mavlink.io/en/services/image_transmission.html. */
+/*EncapsulatedData Data packet for images sent using the Image Transmission Protocol: https://mavlink.io/en/protocol/image_transmission.html. */
 type EncapsulatedData struct {
 	/*Seqnr sequence number (starting with 0 on every transmission) */
 	Seqnr uint16

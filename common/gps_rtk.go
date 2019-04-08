@@ -35,8 +35,8 @@ import (
 	"github.com/queue-b/go-mavlink2/util"
 )
 
-/*GpsRtk RTK GPS data. Gives information on the relative baseline calculation the GPS is reporting */
-type GpsRtk struct {
+/*GPSRtk RTK GPS data. Gives information on the relative baseline calculation the GPS is reporting */
+type GPSRtk struct {
 	/*TimeLastBaselineMs Time since boot of last baseline message received. */
 	TimeLastBaselineMs uint32
 	/*Tow GPS Time of Week of last baseline */
@@ -67,7 +67,7 @@ type GpsRtk struct {
 	HasExtensionFieldValues bool
 }
 
-func (m *GpsRtk) String() string {
+func (m *GPSRtk) String() string {
 	var builder strings.Builder
 	var buffer bytes.Buffer
 
@@ -115,7 +115,7 @@ func (m *GpsRtk) String() string {
 }
 
 // GetVersion gets the MAVLink version of the Message contents
-func (m *GpsRtk) GetVersion() int {
+func (m *GPSRtk) GetVersion() int {
 	if m.HasExtensionFieldValues {
 		return 2
 	}
@@ -124,35 +124,35 @@ func (m *GpsRtk) GetVersion() int {
 }
 
 // GetDialect gets the name of the dialect that defines the Message
-func (m *GpsRtk) GetDialect() string {
+func (m *GPSRtk) GetDialect() string {
 	return "common"
 }
 
 // GetMessageName gets the name of the Message
-func (m *GpsRtk) GetMessageName() string {
-	return "GpsRtk"
+func (m *GPSRtk) GetMessageName() string {
+	return "GPSRtk"
 }
 
 // GetID gets the ID of the Message
-func (m *GpsRtk) GetID() uint32 {
+func (m *GPSRtk) GetID() uint32 {
 	return 127
 }
 
 // HasExtensionFields returns true if the message definition contained extensions; false otherwise
-func (m *GpsRtk) HasExtensionFields() bool {
+func (m *GPSRtk) HasExtensionFields() bool {
 	return false
 }
 
-func (m *GpsRtk) getV1Length() int {
+func (m *GPSRtk) getV1Length() int {
 	return 35
 }
 
-func (m *GpsRtk) getIOSlice() []byte {
+func (m *GPSRtk) getIOSlice() []byte {
 	return make([]byte, 35+1)
 }
 
 // Read sets the field values of the message from the raw message payload
-func (m *GpsRtk) Read(frame mavlink2.Frame) (err error) {
+func (m *GPSRtk) Read(frame mavlink2.Frame) (err error) {
 	version := frame.GetVersion()
 
 	// Ensure only Version 1 or Version 2 were specified
@@ -174,7 +174,7 @@ func (m *GpsRtk) Read(frame mavlink2.Frame) (err error) {
 		}
 	}()
 
-	// Get a slice of bytes long enough for the all the GpsRtk fields
+	// Get a slice of bytes long enough for the all the GPSRtk fields
 	// binary.Read requires enough bytes in the reader to read all fields, even if
 	// the fields are just zero values. This also simplifies handling MAVLink2
 	// extensions and trailing zero truncation.
@@ -195,7 +195,7 @@ func (m *GpsRtk) Read(frame mavlink2.Frame) (err error) {
 }
 
 // Write encodes the field values of the message to a byte array
-func (m *GpsRtk) Write(version int) (output []byte, err error) {
+func (m *GPSRtk) Write(version int) (output []byte, err error) {
 	var buffer bytes.Buffer
 
 	// Ensure only Version 1 or Version 2 were specified

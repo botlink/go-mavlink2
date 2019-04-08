@@ -35,7 +35,7 @@ import (
 	"github.com/queue-b/go-mavlink2/util"
 )
 
-/*DataTransmissionHandshake Handshake message to initiate, control and stop image streaming when using the Image Transmission Protocol: https://mavlink.io/en/services/image_transmission.html. */
+/*DataTransmissionHandshake Handshake message to initiate, control and stop image streaming when using the Image Transmission Protocol: https://mavlink.io/en/protocol/image_transmission.html. */
 type DataTransmissionHandshake struct {
 	/*Size total data size (set on ACK only). */
 	Size uint32
@@ -69,7 +69,7 @@ func (m *DataTransmissionHandshake) String() string {
 	builder.WriteString("Packets:\t%v \n")
 	builder.WriteString("Type:\t%v \n")
 	builder.WriteString("Payload:\t%v [bytes]\n")
-	builder.WriteString("JpgQuality:\t%v [%]\n")
+	builder.WriteString("JpgQuality:\t%v \n")
 	format := builder.String()
 
 	fmt.Fprintf(

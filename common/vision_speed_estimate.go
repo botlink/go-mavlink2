@@ -45,7 +45,7 @@ type VisionSpeedEstimate struct {
 	Y float32
 	/*Z Global Z speed */
 	Z float32
-	/*Covariance Row-major representation of 3x3 linear velocity covariance matrix (states: vx, vy, vz; 1st three entries - 1st row, etc.). If unknown, assign NaN value to first element in the array. */
+	/*Covariance Linear velocity covariance matrix (1st three entries - 1st row, etc.) */
 	Covariance [9]float32
 	/*HasExtensionFieldValues indicates if this message has any extensions and  */
 	HasExtensionFieldValues bool

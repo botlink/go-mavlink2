@@ -35,8 +35,8 @@ import (
 	"github.com/queue-b/go-mavlink2/util"
 )
 
-/*HilRcInputsRaw Sent from simulation to autopilot. The RAW values of the RC channels received. The standard PPM modulation is as follows: 1000 microseconds: 0%, 2000 microseconds: 100%. Individual receivers/transmitters might violate this specification. */
-type HilRcInputsRaw struct {
+/*HilRCInputsRaw Sent from simulation to autopilot. The RAW values of the RC channels received. The standard PPM modulation is as follows: 1000 microseconds: 0%, 2000 microseconds: 100%. Individual receivers/transmitters might violate this specification. */
+type HilRCInputsRaw struct {
 	/*TimeUsec Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude the number. */
 	TimeUsec uint64
 	/*Chan1Raw RC channel 1 value */
@@ -63,13 +63,13 @@ type HilRcInputsRaw struct {
 	Chan11Raw uint16
 	/*Chan12Raw RC channel 12 value */
 	Chan12Raw uint16
-	/*Rssi Receive signal strength indicator in device-dependent units/scale. Values: [0-254], 255: invalid/unknown. */
-	Rssi uint8
+	/*RSSI Receive signal strength indicator. Values: [0-100], 255: invalid/unknown. */
+	RSSI uint8
 	/*HasExtensionFieldValues indicates if this message has any extensions and  */
 	HasExtensionFieldValues bool
 }
 
-func (m *HilRcInputsRaw) String() string {
+func (m *HilRCInputsRaw) String() string {
 	var builder strings.Builder
 	var buffer bytes.Buffer
 
@@ -90,7 +90,7 @@ func (m *HilRcInputsRaw) String() string {
 	builder.WriteString("Chan10Raw:\t%v [us]\n")
 	builder.WriteString("Chan11Raw:\t%v [us]\n")
 	builder.WriteString("Chan12Raw:\t%v [us]\n")
-	builder.WriteString("Rssi:\t%v \n")
+	builder.WriteString("RSSI:\t%v \n")
 	format := builder.String()
 
 	fmt.Fprintf(
@@ -111,7 +111,7 @@ func (m *HilRcInputsRaw) String() string {
 		m.Chan10Raw,
 		m.Chan11Raw,
 		m.Chan12Raw,
-		m.Rssi,
+		m.RSSI,
 	)
 
 	writer.Flush()
@@ -119,7 +119,7 @@ func (m *HilRcInputsRaw) String() string {
 }
 
 // GetVersion gets the MAVLink version of the Message contents
-func (m *HilRcInputsRaw) GetVersion() int {
+func (m *HilRCInputsRaw) GetVersion() int {
 	if m.HasExtensionFieldValues {
 		return 2
 	}
@@ -128,35 +128,35 @@ func (m *HilRcInputsRaw) GetVersion() int {
 }
 
 // GetDialect gets the name of the dialect that defines the Message
-func (m *HilRcInputsRaw) GetDialect() string {
+func (m *HilRCInputsRaw) GetDialect() string {
 	return "common"
 }
 
 // GetMessageName gets the name of the Message
-func (m *HilRcInputsRaw) GetMessageName() string {
-	return "HilRcInputsRaw"
+func (m *HilRCInputsRaw) GetMessageName() string {
+	return "HilRCInputsRaw"
 }
 
 // GetID gets the ID of the Message
-func (m *HilRcInputsRaw) GetID() uint32 {
+func (m *HilRCInputsRaw) GetID() uint32 {
 	return 92
 }
 
 // HasExtensionFields returns true if the message definition contained extensions; false otherwise
-func (m *HilRcInputsRaw) HasExtensionFields() bool {
+func (m *HilRCInputsRaw) HasExtensionFields() bool {
 	return false
 }
 
-func (m *HilRcInputsRaw) getV1Length() int {
+func (m *HilRCInputsRaw) getV1Length() int {
 	return 33
 }
 
-func (m *HilRcInputsRaw) getIOSlice() []byte {
+func (m *HilRCInputsRaw) getIOSlice() []byte {
 	return make([]byte, 33+1)
 }
 
 // Read sets the field values of the message from the raw message payload
-func (m *HilRcInputsRaw) Read(frame mavlink2.Frame) (err error) {
+func (m *HilRCInputsRaw) Read(frame mavlink2.Frame) (err error) {
 	version := frame.GetVersion()
 
 	// Ensure only Version 1 or Version 2 were specified
@@ -178,7 +178,7 @@ func (m *HilRcInputsRaw) Read(frame mavlink2.Frame) (err error) {
 		}
 	}()
 
-	// Get a slice of bytes long enough for the all the HilRcInputsRaw fields
+	// Get a slice of bytes long enough for the all the HilRCInputsRaw fields
 	// binary.Read requires enough bytes in the reader to read all fields, even if
 	// the fields are just zero values. This also simplifies handling MAVLink2
 	// extensions and trailing zero truncation.
@@ -199,7 +199,7 @@ func (m *HilRcInputsRaw) Read(frame mavlink2.Frame) (err error) {
 }
 
 // Write encodes the field values of the message to a byte array
-func (m *HilRcInputsRaw) Write(version int) (output []byte, err error) {
+func (m *HilRCInputsRaw) Write(version int) (output []byte, err error) {
 	var buffer bytes.Buffer
 
 	// Ensure only Version 1 or Version 2 were specified

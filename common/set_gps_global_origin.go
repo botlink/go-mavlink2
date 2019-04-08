@@ -35,8 +35,8 @@ import (
 	"github.com/queue-b/go-mavlink2/util"
 )
 
-/*SetGpsGlobalOrigin As local waypoints exist, the global waypoint reference allows to transform between the local coordinate frame and the global (GPS) coordinate frame. This can be necessary when e.g. in- and outdoor settings are connected and the MAV should move from in- to outdoor. */
-type SetGpsGlobalOrigin struct {
+/*SetGPSGlobalOrigin As local waypoints exist, the global waypoint reference allows to transform between the local coordinate frame and the global (GPS) coordinate frame. This can be necessary when e.g. in- and outdoor settings are connected and the MAV should move from in- to outdoor. */
+type SetGPSGlobalOrigin struct {
 	/*Latitude Latitude (WGS84) */
 	Latitude int32
 	/*Longitude Longitude (WGS84) */
@@ -51,7 +51,7 @@ type SetGpsGlobalOrigin struct {
 	HasExtensionFieldValues bool
 }
 
-func (m *SetGpsGlobalOrigin) String() string {
+func (m *SetGPSGlobalOrigin) String() string {
 	var builder strings.Builder
 	var buffer bytes.Buffer
 
@@ -101,7 +101,7 @@ func (m *SetGpsGlobalOrigin) String() string {
 }
 
 // GetVersion gets the MAVLink version of the Message contents
-func (m *SetGpsGlobalOrigin) GetVersion() int {
+func (m *SetGPSGlobalOrigin) GetVersion() int {
 	if m.HasExtensionFieldValues {
 		return 2
 	}
@@ -110,35 +110,35 @@ func (m *SetGpsGlobalOrigin) GetVersion() int {
 }
 
 // GetDialect gets the name of the dialect that defines the Message
-func (m *SetGpsGlobalOrigin) GetDialect() string {
+func (m *SetGPSGlobalOrigin) GetDialect() string {
 	return "common"
 }
 
 // GetMessageName gets the name of the Message
-func (m *SetGpsGlobalOrigin) GetMessageName() string {
-	return "SetGpsGlobalOrigin"
+func (m *SetGPSGlobalOrigin) GetMessageName() string {
+	return "SetGPSGlobalOrigin"
 }
 
 // GetID gets the ID of the Message
-func (m *SetGpsGlobalOrigin) GetID() uint32 {
+func (m *SetGPSGlobalOrigin) GetID() uint32 {
 	return 48
 }
 
 // HasExtensionFields returns true if the message definition contained extensions; false otherwise
-func (m *SetGpsGlobalOrigin) HasExtensionFields() bool {
+func (m *SetGPSGlobalOrigin) HasExtensionFields() bool {
 	return true
 }
 
-func (m *SetGpsGlobalOrigin) getV1Length() int {
+func (m *SetGPSGlobalOrigin) getV1Length() int {
 	return 13
 }
 
-func (m *SetGpsGlobalOrigin) getIOSlice() []byte {
+func (m *SetGPSGlobalOrigin) getIOSlice() []byte {
 	return make([]byte, 21+1)
 }
 
 // Read sets the field values of the message from the raw message payload
-func (m *SetGpsGlobalOrigin) Read(frame mavlink2.Frame) (err error) {
+func (m *SetGPSGlobalOrigin) Read(frame mavlink2.Frame) (err error) {
 	version := frame.GetVersion()
 
 	// Ensure only Version 1 or Version 2 were specified
@@ -160,7 +160,7 @@ func (m *SetGpsGlobalOrigin) Read(frame mavlink2.Frame) (err error) {
 		}
 	}()
 
-	// Get a slice of bytes long enough for the all the SetGpsGlobalOrigin fields
+	// Get a slice of bytes long enough for the all the SetGPSGlobalOrigin fields
 	// binary.Read requires enough bytes in the reader to read all fields, even if
 	// the fields are just zero values. This also simplifies handling MAVLink2
 	// extensions and trailing zero truncation.
@@ -181,7 +181,7 @@ func (m *SetGpsGlobalOrigin) Read(frame mavlink2.Frame) (err error) {
 }
 
 // Write encodes the field values of the message to a byte array
-func (m *SetGpsGlobalOrigin) Write(version int) (output []byte, err error) {
+func (m *SetGPSGlobalOrigin) Write(version int) (output []byte, err error) {
 	var buffer bytes.Buffer
 
 	// Ensure only Version 1 or Version 2 were specified

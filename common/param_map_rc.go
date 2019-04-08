@@ -36,8 +36,8 @@ import (
 	"github.com/queue-b/go-mavlink2/util"
 )
 
-/*ParamMapRc Bind a RC channel to a parameter. The parameter should change according to the RC channel value. */
-type ParamMapRc struct {
+/*ParamMapRC Bind a RC channel to a parameter. The parameter should change according to the RC channel value. */
+type ParamMapRC struct {
 	/*ParamValue0 Initial parameter value */
 	ParamValue0 float32
 	/*Scale Scale, maps the RC range [-1, 1] to a parameter value */
@@ -54,13 +54,13 @@ type ParamMapRc struct {
 	TargetComponent uint8
 	/*ParamID Onboard parameter id, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string */
 	ParamID [16]byte
-	/*ParameterRcChannelIndex Index of parameter RC channel. Not equal to the RC channel id. Typically corresponds to a potentiometer-knob on the RC. */
-	ParameterRcChannelIndex uint8
+	/*ParameterRCChannelIndex Index of parameter RC channel. Not equal to the RC channel id. Typically corresponds to a potentiometer-knob on the RC. */
+	ParameterRCChannelIndex uint8
 	/*HasExtensionFieldValues indicates if this message has any extensions and  */
 	HasExtensionFieldValues bool
 }
 
-func (m *ParamMapRc) String() string {
+func (m *ParamMapRC) String() string {
 	var builder strings.Builder
 	var buffer bytes.Buffer
 
@@ -76,7 +76,7 @@ func (m *ParamMapRc) String() string {
 	builder.WriteString("TargetSystem:\t%v \n")
 	builder.WriteString("TargetComponent:\t%v \n")
 	builder.WriteString("ParamID:\t%v \n")
-	builder.WriteString("ParameterRcChannelIndex:\t%v \n")
+	builder.WriteString("ParameterRCChannelIndex:\t%v \n")
 	format := builder.String()
 
 	fmt.Fprintf(
@@ -92,7 +92,7 @@ func (m *ParamMapRc) String() string {
 		m.TargetSystem,
 		m.TargetComponent,
 		m.ParamID,
-		m.ParameterRcChannelIndex,
+		m.ParameterRCChannelIndex,
 	)
 
 	writer.Flush()
@@ -100,7 +100,7 @@ func (m *ParamMapRc) String() string {
 }
 
 // SetParamID encodes the input string to the ParamID array
-func (m *ParamMapRc) SetParamID(input string) (err error) {
+func (m *ParamMapRC) SetParamID(input string) (err error) {
 	clen := int(math.Min(float64(len(input)), float64(16)))
 	copy(m.ParamID[:], []byte(input)[:clen])
 
@@ -112,14 +112,14 @@ func (m *ParamMapRc) SetParamID(input string) (err error) {
 }
 
 // GetParamID decodes the null-terminated string in the ParamID
-func (m *ParamMapRc) GetParamID() string {
+func (m *ParamMapRC) GetParamID() string {
 	clen := util.CStrLen(m.ParamID[:])
 
 	return string(m.ParamID[:clen])
 }
 
 // GetVersion gets the MAVLink version of the Message contents
-func (m *ParamMapRc) GetVersion() int {
+func (m *ParamMapRC) GetVersion() int {
 	if m.HasExtensionFieldValues {
 		return 2
 	}
@@ -128,35 +128,35 @@ func (m *ParamMapRc) GetVersion() int {
 }
 
 // GetDialect gets the name of the dialect that defines the Message
-func (m *ParamMapRc) GetDialect() string {
+func (m *ParamMapRC) GetDialect() string {
 	return "common"
 }
 
 // GetMessageName gets the name of the Message
-func (m *ParamMapRc) GetMessageName() string {
-	return "ParamMapRc"
+func (m *ParamMapRC) GetMessageName() string {
+	return "ParamMapRC"
 }
 
 // GetID gets the ID of the Message
-func (m *ParamMapRc) GetID() uint32 {
+func (m *ParamMapRC) GetID() uint32 {
 	return 50
 }
 
 // HasExtensionFields returns true if the message definition contained extensions; false otherwise
-func (m *ParamMapRc) HasExtensionFields() bool {
+func (m *ParamMapRC) HasExtensionFields() bool {
 	return false
 }
 
-func (m *ParamMapRc) getV1Length() int {
+func (m *ParamMapRC) getV1Length() int {
 	return 37
 }
 
-func (m *ParamMapRc) getIOSlice() []byte {
+func (m *ParamMapRC) getIOSlice() []byte {
 	return make([]byte, 37+1)
 }
 
 // Read sets the field values of the message from the raw message payload
-func (m *ParamMapRc) Read(frame mavlink2.Frame) (err error) {
+func (m *ParamMapRC) Read(frame mavlink2.Frame) (err error) {
 	version := frame.GetVersion()
 
 	// Ensure only Version 1 or Version 2 were specified
@@ -178,7 +178,7 @@ func (m *ParamMapRc) Read(frame mavlink2.Frame) (err error) {
 		}
 	}()
 
-	// Get a slice of bytes long enough for the all the ParamMapRc fields
+	// Get a slice of bytes long enough for the all the ParamMapRC fields
 	// binary.Read requires enough bytes in the reader to read all fields, even if
 	// the fields are just zero values. This also simplifies handling MAVLink2
 	// extensions and trailing zero truncation.
@@ -199,7 +199,7 @@ func (m *ParamMapRc) Read(frame mavlink2.Frame) (err error) {
 }
 
 // Write encodes the field values of the message to a byte array
-func (m *ParamMapRc) Write(version int) (output []byte, err error) {
+func (m *ParamMapRC) Write(version int) (output []byte, err error) {
 	var buffer bytes.Buffer
 
 	// Ensure only Version 1 or Version 2 were specified

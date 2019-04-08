@@ -39,14 +39,14 @@ import (
 type Collision struct {
 	/*ID Unique identifier, domain based on src field */
 	ID uint32
-	/*TimeToMinimumDelta Estimated time until collision occurs */
-	TimeToMinimumDelta float32
-	/*AltitudeMinimumDelta Closest vertical distance between vehicle and object */
-	AltitudeMinimumDelta float32
-	/*HorizontalMinimumDelta Closest horizontal distance between vehicle and object */
-	HorizontalMinimumDelta float32
-	/*Src Collision data source */
-	Src uint8
+	/*TimeToMinIMUmDelta Estimated time until collision occurs */
+	TimeToMinIMUmDelta float32
+	/*AltitudeMinIMUmDelta Closest vertical distance between vehicle and object */
+	AltitudeMinIMUmDelta float32
+	/*HorizontalMinIMUmDelta Closest horizontal distance between vehicle and object */
+	HorizontalMinIMUmDelta float32
+	/*SRC Collision data source */
+	SRC uint8
 	/*Action Action that is being taken to avoid this collision */
 	Action uint8
 	/*ThreatLevel How concerned the aircraft is about this collision */
@@ -64,10 +64,10 @@ func (m *Collision) String() string {
 	builder.WriteString("Name:\t%v/%v\n")
 	// Output field values based on the decoded message type
 	builder.WriteString("ID:\t%v \n")
-	builder.WriteString("TimeToMinimumDelta:\t%v [s]\n")
-	builder.WriteString("AltitudeMinimumDelta:\t%v [m]\n")
-	builder.WriteString("HorizontalMinimumDelta:\t%v [m]\n")
-	builder.WriteString("Src:\t%v \n")
+	builder.WriteString("TimeToMinIMUmDelta:\t%v [s]\n")
+	builder.WriteString("AltitudeMinIMUmDelta:\t%v [m]\n")
+	builder.WriteString("HorizontalMinIMUmDelta:\t%v [m]\n")
+	builder.WriteString("SRC:\t%v \n")
 	builder.WriteString("Action:\t%v \n")
 	builder.WriteString("ThreatLevel:\t%v \n")
 	format := builder.String()
@@ -78,10 +78,10 @@ func (m *Collision) String() string {
 		m.GetDialect(),
 		m.GetMessageName(),
 		m.ID,
-		m.TimeToMinimumDelta,
-		m.AltitudeMinimumDelta,
-		m.HorizontalMinimumDelta,
-		m.Src,
+		m.TimeToMinIMUmDelta,
+		m.AltitudeMinIMUmDelta,
+		m.HorizontalMinIMUmDelta,
+		m.SRC,
 		m.Action,
 		m.ThreatLevel,
 	)

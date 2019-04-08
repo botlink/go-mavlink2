@@ -59,10 +59,10 @@ type Odometry struct {
 	Pitchspeed float32
 	/*Yawspeed Yaw angular speed */
 	Yawspeed float32
-	/*PoseCovariance Row-major representation of a 6x6 pose cross-covariance matrix upper right triangle (states: x, y, z, roll, pitch, yaw; first six entries are the first ROW, next five entries are the second ROW, etc.). If unknown, assign NaN value to first element in the array. */
+	/*PoseCovariance Pose (states: x, y, z, roll, pitch, yaw) covariance matrix upper right triangle (first six entries are the first ROW, next five entries are the second ROW, etc.) */
 	PoseCovariance [21]float32
-	/*VelocityCovariance Row-major representation of a 6x6 velocity cross-covariance matrix upper right triangle (states: vx, vy, vz, rollspeed, pitchspeed, yawspeed; first six entries are the first ROW, next five entries are the second ROW, etc.). If unknown, assign NaN value to first element in the array. */
-	VelocityCovariance [21]float32
+	/*TwistCovariance Twist (states: vx, vy, vz, rollspeed, pitchspeed, yawspeed) covariance matrix upper right triangle (first six entries are the first ROW, next five entries are the second ROW, etc.) */
+	TwistCovariance [21]float32
 	/*FrameID Coordinate frame of reference for the pose data. */
 	FrameID uint8
 	/*ChildFrameID Coordinate frame of reference for the velocity in free space (twist) data. */
@@ -91,7 +91,7 @@ func (m *Odometry) String() string {
 	builder.WriteString("Pitchspeed:\t%v [rad/s]\n")
 	builder.WriteString("Yawspeed:\t%v [rad/s]\n")
 	builder.WriteString("PoseCovariance:\t%v \n")
-	builder.WriteString("VelocityCovariance:\t%v \n")
+	builder.WriteString("TwistCovariance:\t%v \n")
 	builder.WriteString("FrameID:\t%v \n")
 	builder.WriteString("ChildFrameID:\t%v \n")
 	format := builder.String()
@@ -113,7 +113,7 @@ func (m *Odometry) String() string {
 		m.Pitchspeed,
 		m.Yawspeed,
 		m.PoseCovariance,
-		m.VelocityCovariance,
+		m.TwistCovariance,
 		m.FrameID,
 		m.ChildFrameID,
 	)

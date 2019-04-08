@@ -35,8 +35,8 @@ import (
 	"github.com/queue-b/go-mavlink2/util"
 )
 
-/*ResourceRequest The autopilot is requesting a resource (file, binary, other type of data) */
-type ResourceRequest struct {
+/*ResouRCeRequest The autopilot is requesting a resource (file, binary, other type of data) */
+type ResouRCeRequest struct {
 	/*RequestID Request ID. This ID should be re-used when sending back URI contents */
 	RequestID uint8
 	/*URIType The type of requested URI. 0 = a file via URL. 1 = a UAVCAN binary */
@@ -51,7 +51,7 @@ type ResourceRequest struct {
 	HasExtensionFieldValues bool
 }
 
-func (m *ResourceRequest) String() string {
+func (m *ResouRCeRequest) String() string {
 	var builder strings.Builder
 	var buffer bytes.Buffer
 
@@ -83,7 +83,7 @@ func (m *ResourceRequest) String() string {
 }
 
 // GetVersion gets the MAVLink version of the Message contents
-func (m *ResourceRequest) GetVersion() int {
+func (m *ResouRCeRequest) GetVersion() int {
 	if m.HasExtensionFieldValues {
 		return 2
 	}
@@ -92,35 +92,35 @@ func (m *ResourceRequest) GetVersion() int {
 }
 
 // GetDialect gets the name of the dialect that defines the Message
-func (m *ResourceRequest) GetDialect() string {
+func (m *ResouRCeRequest) GetDialect() string {
 	return "common"
 }
 
 // GetMessageName gets the name of the Message
-func (m *ResourceRequest) GetMessageName() string {
-	return "ResourceRequest"
+func (m *ResouRCeRequest) GetMessageName() string {
+	return "ResouRCeRequest"
 }
 
 // GetID gets the ID of the Message
-func (m *ResourceRequest) GetID() uint32 {
+func (m *ResouRCeRequest) GetID() uint32 {
 	return 142
 }
 
 // HasExtensionFields returns true if the message definition contained extensions; false otherwise
-func (m *ResourceRequest) HasExtensionFields() bool {
+func (m *ResouRCeRequest) HasExtensionFields() bool {
 	return false
 }
 
-func (m *ResourceRequest) getV1Length() int {
+func (m *ResouRCeRequest) getV1Length() int {
 	return 243
 }
 
-func (m *ResourceRequest) getIOSlice() []byte {
+func (m *ResouRCeRequest) getIOSlice() []byte {
 	return make([]byte, 243+1)
 }
 
 // Read sets the field values of the message from the raw message payload
-func (m *ResourceRequest) Read(frame mavlink2.Frame) (err error) {
+func (m *ResouRCeRequest) Read(frame mavlink2.Frame) (err error) {
 	version := frame.GetVersion()
 
 	// Ensure only Version 1 or Version 2 were specified
@@ -142,7 +142,7 @@ func (m *ResourceRequest) Read(frame mavlink2.Frame) (err error) {
 		}
 	}()
 
-	// Get a slice of bytes long enough for the all the ResourceRequest fields
+	// Get a slice of bytes long enough for the all the ResouRCeRequest fields
 	// binary.Read requires enough bytes in the reader to read all fields, even if
 	// the fields are just zero values. This also simplifies handling MAVLink2
 	// extensions and trailing zero truncation.
@@ -163,7 +163,7 @@ func (m *ResourceRequest) Read(frame mavlink2.Frame) (err error) {
 }
 
 // Write encodes the field values of the message to a byte array
-func (m *ResourceRequest) Write(version int) (output []byte, err error) {
+func (m *ResouRCeRequest) Write(version int) (output []byte, err error) {
 	var buffer bytes.Buffer
 
 	// Ensure only Version 1 or Version 2 were specified

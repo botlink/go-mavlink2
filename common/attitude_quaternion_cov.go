@@ -47,7 +47,7 @@ type AttitudeQuaternionCov struct {
 	Pitchspeed float32
 	/*Yawspeed Yaw angular speed */
 	Yawspeed float32
-	/*Covariance Row-major representation of a 3x3 attitude covariance matrix (states: roll, pitch, yaw; first three entries are the first ROW, next three entries are the second row, etc.). If unknown, assign NaN value to first element in the array. */
+	/*Covariance Attitude covariance */
 	Covariance [9]float32
 	/*HasExtensionFieldValues indicates if this message has any extensions and  */
 	HasExtensionFieldValues bool

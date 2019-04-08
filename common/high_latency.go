@@ -71,10 +71,10 @@ type HighLatency struct {
 	Groundspeed uint8
 	/*ClimbRate climb rate */
 	ClimbRate int8
-	/*GpsNsat Number of satellites visible. If unknown, set to 255 */
-	GpsNsat uint8
-	/*GpsFixType GPS Fix type. */
-	GpsFixType uint8
+	/*GPSNsat Number of satellites visible. If unknown, set to 255 */
+	GPSNsat uint8
+	/*GPSFixType GPS Fix type. */
+	GPSFixType uint8
 	/*BatteryRemaining Remaining battery (percentage) */
 	BatteryRemaining uint8
 	/*Temperature Autopilot temperature (degrees C) */
@@ -109,14 +109,14 @@ func (m *HighLatency) String() string {
 	builder.WriteString("WpDistance:\t%v [m]\n")
 	builder.WriteString("BaseMode:\t%v \n")
 	builder.WriteString("LandedState:\t%v \n")
-	builder.WriteString("Throttle:\t%v [%]\n")
+	builder.WriteString("Throttle:\t%v \n")
 	builder.WriteString("Airspeed:\t%v [m/s]\n")
 	builder.WriteString("AirspeedSp:\t%v [m/s]\n")
 	builder.WriteString("Groundspeed:\t%v [m/s]\n")
 	builder.WriteString("ClimbRate:\t%v [m/s]\n")
-	builder.WriteString("GpsNsat:\t%v \n")
-	builder.WriteString("GpsFixType:\t%v \n")
-	builder.WriteString("BatteryRemaining:\t%v [%]\n")
+	builder.WriteString("GPSNsat:\t%v \n")
+	builder.WriteString("GPSFixType:\t%v \n")
+	builder.WriteString("BatteryRemaining:\t%v \n")
 	builder.WriteString("Temperature:\t%v [degC]\n")
 	builder.WriteString("TemperatureAir:\t%v [degC]\n")
 	builder.WriteString("Failsafe:\t%v \n")
@@ -145,8 +145,8 @@ func (m *HighLatency) String() string {
 		m.AirspeedSp,
 		m.Groundspeed,
 		m.ClimbRate,
-		m.GpsNsat,
-		m.GpsFixType,
+		m.GPSNsat,
+		m.GPSFixType,
 		m.BatteryRemaining,
 		m.Temperature,
 		m.TemperatureAir,

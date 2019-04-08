@@ -35,8 +35,8 @@ import (
 	"github.com/queue-b/go-mavlink2/util"
 )
 
-/*HighresImu The IMU readings in SI units in NED body frame */
-type HighresImu struct {
+/*HighresIMU The IMU readings in SI units in NED body frame */
+type HighresIMU struct {
 	/*TimeUsec Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude the number. */
 	TimeUsec uint64
 	/*Xacc X acceleration */
@@ -71,7 +71,7 @@ type HighresImu struct {
 	HasExtensionFieldValues bool
 }
 
-func (m *HighresImu) String() string {
+func (m *HighresIMU) String() string {
 	var builder strings.Builder
 	var buffer bytes.Buffer
 
@@ -123,7 +123,7 @@ func (m *HighresImu) String() string {
 }
 
 // GetVersion gets the MAVLink version of the Message contents
-func (m *HighresImu) GetVersion() int {
+func (m *HighresIMU) GetVersion() int {
 	if m.HasExtensionFieldValues {
 		return 2
 	}
@@ -132,35 +132,35 @@ func (m *HighresImu) GetVersion() int {
 }
 
 // GetDialect gets the name of the dialect that defines the Message
-func (m *HighresImu) GetDialect() string {
+func (m *HighresIMU) GetDialect() string {
 	return "common"
 }
 
 // GetMessageName gets the name of the Message
-func (m *HighresImu) GetMessageName() string {
-	return "HighresImu"
+func (m *HighresIMU) GetMessageName() string {
+	return "HighresIMU"
 }
 
 // GetID gets the ID of the Message
-func (m *HighresImu) GetID() uint32 {
+func (m *HighresIMU) GetID() uint32 {
 	return 105
 }
 
 // HasExtensionFields returns true if the message definition contained extensions; false otherwise
-func (m *HighresImu) HasExtensionFields() bool {
+func (m *HighresIMU) HasExtensionFields() bool {
 	return false
 }
 
-func (m *HighresImu) getV1Length() int {
+func (m *HighresIMU) getV1Length() int {
 	return 62
 }
 
-func (m *HighresImu) getIOSlice() []byte {
+func (m *HighresIMU) getIOSlice() []byte {
 	return make([]byte, 62+1)
 }
 
 // Read sets the field values of the message from the raw message payload
-func (m *HighresImu) Read(frame mavlink2.Frame) (err error) {
+func (m *HighresIMU) Read(frame mavlink2.Frame) (err error) {
 	version := frame.GetVersion()
 
 	// Ensure only Version 1 or Version 2 were specified
@@ -182,7 +182,7 @@ func (m *HighresImu) Read(frame mavlink2.Frame) (err error) {
 		}
 	}()
 
-	// Get a slice of bytes long enough for the all the HighresImu fields
+	// Get a slice of bytes long enough for the all the HighresIMU fields
 	// binary.Read requires enough bytes in the reader to read all fields, even if
 	// the fields are just zero values. This also simplifies handling MAVLink2
 	// extensions and trailing zero truncation.
@@ -203,7 +203,7 @@ func (m *HighresImu) Read(frame mavlink2.Frame) (err error) {
 }
 
 // Write encodes the field values of the message to a byte array
-func (m *HighresImu) Write(version int) (output []byte, err error) {
+func (m *HighresIMU) Write(version int) (output []byte, err error) {
 	var buffer bytes.Buffer
 
 	// Ensure only Version 1 or Version 2 were specified

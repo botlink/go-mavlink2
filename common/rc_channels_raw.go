@@ -35,8 +35,8 @@ import (
 	"github.com/queue-b/go-mavlink2/util"
 )
 
-/*RcChannelsRaw The RAW values of the RC channels received. The standard PPM modulation is as follows: 1000 microseconds: 0%, 2000 microseconds: 100%. A value of UINT16_MAX implies the channel is unused. Individual receivers/transmitters might violate this specification. */
-type RcChannelsRaw struct {
+/*RCChannelsRaw The RAW values of the RC channels received. The standard PPM modulation is as follows: 1000 microseconds: 0%, 2000 microseconds: 100%. A value of UINT16_MAX implies the channel is unused. Individual receivers/transmitters might violate this specification. */
+type RCChannelsRaw struct {
 	/*TimeBootMs Timestamp (time since system boot). */
 	TimeBootMs uint32
 	/*Chan1Raw RC channel 1 value. */
@@ -55,15 +55,15 @@ type RcChannelsRaw struct {
 	Chan7Raw uint16
 	/*Chan8Raw RC channel 8 value. */
 	Chan8Raw uint16
-	/*Port Servo output port (set of 8 outputs = 1 port). Flight stacks running on Pixhawk should use: 0 = MAIN, 1 = AUX. */
+	/*Port Servo output port (set of 8 outputs = 1 port). Most MAVs will just use one, but this allows for more than 8 servos. */
 	Port uint8
-	/*Rssi Receive signal strength indicator in device-dependent units/scale. Values: [0-254], 255: invalid/unknown. */
-	Rssi uint8
+	/*RSSI Receive signal strength indicator. Values: [0-100], 255: invalid/unknown. */
+	RSSI uint8
 	/*HasExtensionFieldValues indicates if this message has any extensions and  */
 	HasExtensionFieldValues bool
 }
 
-func (m *RcChannelsRaw) String() string {
+func (m *RCChannelsRaw) String() string {
 	var builder strings.Builder
 	var buffer bytes.Buffer
 
@@ -81,7 +81,7 @@ func (m *RcChannelsRaw) String() string {
 	builder.WriteString("Chan7Raw:\t%v [us]\n")
 	builder.WriteString("Chan8Raw:\t%v [us]\n")
 	builder.WriteString("Port:\t%v \n")
-	builder.WriteString("Rssi:\t%v \n")
+	builder.WriteString("RSSI:\t%v \n")
 	format := builder.String()
 
 	fmt.Fprintf(
@@ -99,7 +99,7 @@ func (m *RcChannelsRaw) String() string {
 		m.Chan7Raw,
 		m.Chan8Raw,
 		m.Port,
-		m.Rssi,
+		m.RSSI,
 	)
 
 	writer.Flush()
@@ -107,7 +107,7 @@ func (m *RcChannelsRaw) String() string {
 }
 
 // GetVersion gets the MAVLink version of the Message contents
-func (m *RcChannelsRaw) GetVersion() int {
+func (m *RCChannelsRaw) GetVersion() int {
 	if m.HasExtensionFieldValues {
 		return 2
 	}
@@ -116,35 +116,35 @@ func (m *RcChannelsRaw) GetVersion() int {
 }
 
 // GetDialect gets the name of the dialect that defines the Message
-func (m *RcChannelsRaw) GetDialect() string {
+func (m *RCChannelsRaw) GetDialect() string {
 	return "common"
 }
 
 // GetMessageName gets the name of the Message
-func (m *RcChannelsRaw) GetMessageName() string {
-	return "RcChannelsRaw"
+func (m *RCChannelsRaw) GetMessageName() string {
+	return "RCChannelsRaw"
 }
 
 // GetID gets the ID of the Message
-func (m *RcChannelsRaw) GetID() uint32 {
+func (m *RCChannelsRaw) GetID() uint32 {
 	return 35
 }
 
 // HasExtensionFields returns true if the message definition contained extensions; false otherwise
-func (m *RcChannelsRaw) HasExtensionFields() bool {
+func (m *RCChannelsRaw) HasExtensionFields() bool {
 	return false
 }
 
-func (m *RcChannelsRaw) getV1Length() int {
+func (m *RCChannelsRaw) getV1Length() int {
 	return 22
 }
 
-func (m *RcChannelsRaw) getIOSlice() []byte {
+func (m *RCChannelsRaw) getIOSlice() []byte {
 	return make([]byte, 22+1)
 }
 
 // Read sets the field values of the message from the raw message payload
-func (m *RcChannelsRaw) Read(frame mavlink2.Frame) (err error) {
+func (m *RCChannelsRaw) Read(frame mavlink2.Frame) (err error) {
 	version := frame.GetVersion()
 
 	// Ensure only Version 1 or Version 2 were specified
@@ -166,7 +166,7 @@ func (m *RcChannelsRaw) Read(frame mavlink2.Frame) (err error) {
 		}
 	}()
 
-	// Get a slice of bytes long enough for the all the RcChannelsRaw fields
+	// Get a slice of bytes long enough for the all the RCChannelsRaw fields
 	// binary.Read requires enough bytes in the reader to read all fields, even if
 	// the fields are just zero values. This also simplifies handling MAVLink2
 	// extensions and trailing zero truncation.
@@ -187,7 +187,7 @@ func (m *RcChannelsRaw) Read(frame mavlink2.Frame) (err error) {
 }
 
 // Write encodes the field values of the message to a byte array
-func (m *RcChannelsRaw) Write(version int) (output []byte, err error) {
+func (m *RCChannelsRaw) Write(version int) (output []byte, err error) {
 	var buffer bytes.Buffer
 
 	// Ensure only Version 1 or Version 2 were specified

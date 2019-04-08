@@ -35,11 +35,11 @@ import (
 	"github.com/queue-b/go-mavlink2/util"
 )
 
-/*Heartbeat The heartbeat message shows that a system or component is present and responding. The type and autopilot fields (along with the message component id), allow the receiving system to treat further messages from this system appropriately (e.g. by laying out the user interface based on the autopilot). */
+/*Heartbeat The heartbeat message shows that a system is present and responding. The type of the MAV and Autopilot hardware allow the receiving system to treat further messages from this system appropriate (e.g. by laying out the user interface based on the autopilot). */
 type Heartbeat struct {
 	/*CustomMode A bitfield for use for autopilot-specific flags */
 	CustomMode uint32
-	/*Type Type of the system (quadrotor, helicopter, etc.). Components use the same type as their associated system. */
+	/*Type Type of the MAV (quadrotor, helicopter, etc.) */
 	Type uint8
 	/*Autopilot Autopilot type / class. */
 	Autopilot uint8

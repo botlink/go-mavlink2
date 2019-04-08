@@ -35,8 +35,8 @@ import (
 	"github.com/queue-b/go-mavlink2/util"
 )
 
-/*RawImu The RAW IMU readings for the usual 9DOF sensor setup. This message should always contain the true raw values without any scaling to allow data capture and system debugging. */
-type RawImu struct {
+/*RawIMU The RAW IMU readings for the usual 9DOF sensor setup. This message should always contain the true raw values without any scaling to allow data capture and system debugging. */
+type RawIMU struct {
 	/*TimeUsec Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude the number. */
 	TimeUsec uint64
 	/*Xacc X acceleration (raw) */
@@ -61,7 +61,7 @@ type RawImu struct {
 	HasExtensionFieldValues bool
 }
 
-func (m *RawImu) String() string {
+func (m *RawIMU) String() string {
 	var builder strings.Builder
 	var buffer bytes.Buffer
 
@@ -103,7 +103,7 @@ func (m *RawImu) String() string {
 }
 
 // GetVersion gets the MAVLink version of the Message contents
-func (m *RawImu) GetVersion() int {
+func (m *RawIMU) GetVersion() int {
 	if m.HasExtensionFieldValues {
 		return 2
 	}
@@ -112,35 +112,35 @@ func (m *RawImu) GetVersion() int {
 }
 
 // GetDialect gets the name of the dialect that defines the Message
-func (m *RawImu) GetDialect() string {
+func (m *RawIMU) GetDialect() string {
 	return "common"
 }
 
 // GetMessageName gets the name of the Message
-func (m *RawImu) GetMessageName() string {
-	return "RawImu"
+func (m *RawIMU) GetMessageName() string {
+	return "RawIMU"
 }
 
 // GetID gets the ID of the Message
-func (m *RawImu) GetID() uint32 {
+func (m *RawIMU) GetID() uint32 {
 	return 27
 }
 
 // HasExtensionFields returns true if the message definition contained extensions; false otherwise
-func (m *RawImu) HasExtensionFields() bool {
+func (m *RawIMU) HasExtensionFields() bool {
 	return false
 }
 
-func (m *RawImu) getV1Length() int {
+func (m *RawIMU) getV1Length() int {
 	return 26
 }
 
-func (m *RawImu) getIOSlice() []byte {
+func (m *RawIMU) getIOSlice() []byte {
 	return make([]byte, 26+1)
 }
 
 // Read sets the field values of the message from the raw message payload
-func (m *RawImu) Read(frame mavlink2.Frame) (err error) {
+func (m *RawIMU) Read(frame mavlink2.Frame) (err error) {
 	version := frame.GetVersion()
 
 	// Ensure only Version 1 or Version 2 were specified
@@ -162,7 +162,7 @@ func (m *RawImu) Read(frame mavlink2.Frame) (err error) {
 		}
 	}()
 
-	// Get a slice of bytes long enough for the all the RawImu fields
+	// Get a slice of bytes long enough for the all the RawIMU fields
 	// binary.Read requires enough bytes in the reader to read all fields, even if
 	// the fields are just zero values. This also simplifies handling MAVLink2
 	// extensions and trailing zero truncation.
@@ -183,7 +183,7 @@ func (m *RawImu) Read(frame mavlink2.Frame) (err error) {
 }
 
 // Write encodes the field values of the message to a byte array
-func (m *RawImu) Write(version int) (output []byte, err error) {
+func (m *RawIMU) Write(version int) (output []byte, err error) {
 	var buffer bytes.Buffer
 
 	// Ensure only Version 1 or Version 2 were specified

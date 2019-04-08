@@ -57,8 +57,8 @@ type HilControls struct {
 	Aux4 float32
 	/*Mode System mode. */
 	Mode uint8
-	/*NavMode Navigation mode (MAV_NAV_MODE) */
-	NavMode uint8
+	/*NAVMode Navigation mode (MAV_NAV_MODE) */
+	NAVMode uint8
 	/*HasExtensionFieldValues indicates if this message has any extensions and  */
 	HasExtensionFieldValues bool
 }
@@ -81,7 +81,7 @@ func (m *HilControls) String() string {
 	builder.WriteString("Aux3:\t%v \n")
 	builder.WriteString("Aux4:\t%v \n")
 	builder.WriteString("Mode:\t%v \n")
-	builder.WriteString("NavMode:\t%v \n")
+	builder.WriteString("NAVMode:\t%v \n")
 	format := builder.String()
 
 	fmt.Fprintf(
@@ -99,7 +99,7 @@ func (m *HilControls) String() string {
 		m.Aux3,
 		m.Aux4,
 		m.Mode,
-		m.NavMode,
+		m.NAVMode,
 	)
 
 	writer.Flush()

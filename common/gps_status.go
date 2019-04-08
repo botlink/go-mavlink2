@@ -35,8 +35,8 @@ import (
 	"github.com/queue-b/go-mavlink2/util"
 )
 
-/*GpsStatus The positioning status, as reported by GPS. This message is intended to display status information about each satellite visible to the receiver. See message GLOBAL_POSITION for the global position estimate. This message can contain information for up to 20 satellites. */
-type GpsStatus struct {
+/*GPSStatus The positioning status, as reported by GPS. This message is intended to display status information about each satellite visible to the receiver. See message GLOBAL_POSITION for the global position estimate. This message can contain information for up to 20 satellites. */
+type GPSStatus struct {
 	/*SatellitesVisible Number of satellites visible */
 	SatellitesVisible uint8
 	/*SatellitePrn Global satellite ID */
@@ -45,15 +45,15 @@ type GpsStatus struct {
 	SatelliteUsed [20]uint8
 	/*SatelliteElevation Elevation (0: right on top of receiver, 90: on the horizon) of satellite */
 	SatelliteElevation [20]uint8
-	/*SatelliteAzimuth Direction of satellite, 0: 0 deg, 255: 360 deg. */
-	SatelliteAzimuth [20]uint8
+	/*SatelliteAzIMUth Direction of satellite, 0: 0 deg, 255: 360 deg. */
+	SatelliteAzIMUth [20]uint8
 	/*SatelliteSnr Signal to noise ratio of satellite */
 	SatelliteSnr [20]uint8
 	/*HasExtensionFieldValues indicates if this message has any extensions and  */
 	HasExtensionFieldValues bool
 }
 
-func (m *GpsStatus) String() string {
+func (m *GPSStatus) String() string {
 	var builder strings.Builder
 	var buffer bytes.Buffer
 
@@ -65,7 +65,7 @@ func (m *GpsStatus) String() string {
 	builder.WriteString("SatellitePrn:\t%v \n")
 	builder.WriteString("SatelliteUsed:\t%v \n")
 	builder.WriteString("SatelliteElevation:\t%v [deg]\n")
-	builder.WriteString("SatelliteAzimuth:\t%v [deg]\n")
+	builder.WriteString("SatelliteAzIMUth:\t%v [deg]\n")
 	builder.WriteString("SatelliteSnr:\t%v [dB]\n")
 	format := builder.String()
 
@@ -78,7 +78,7 @@ func (m *GpsStatus) String() string {
 		m.SatellitePrn,
 		m.SatelliteUsed,
 		m.SatelliteElevation,
-		m.SatelliteAzimuth,
+		m.SatelliteAzIMUth,
 		m.SatelliteSnr,
 	)
 
@@ -87,7 +87,7 @@ func (m *GpsStatus) String() string {
 }
 
 // GetVersion gets the MAVLink version of the Message contents
-func (m *GpsStatus) GetVersion() int {
+func (m *GPSStatus) GetVersion() int {
 	if m.HasExtensionFieldValues {
 		return 2
 	}
@@ -96,35 +96,35 @@ func (m *GpsStatus) GetVersion() int {
 }
 
 // GetDialect gets the name of the dialect that defines the Message
-func (m *GpsStatus) GetDialect() string {
+func (m *GPSStatus) GetDialect() string {
 	return "common"
 }
 
 // GetMessageName gets the name of the Message
-func (m *GpsStatus) GetMessageName() string {
-	return "GpsStatus"
+func (m *GPSStatus) GetMessageName() string {
+	return "GPSStatus"
 }
 
 // GetID gets the ID of the Message
-func (m *GpsStatus) GetID() uint32 {
+func (m *GPSStatus) GetID() uint32 {
 	return 25
 }
 
 // HasExtensionFields returns true if the message definition contained extensions; false otherwise
-func (m *GpsStatus) HasExtensionFields() bool {
+func (m *GPSStatus) HasExtensionFields() bool {
 	return false
 }
 
-func (m *GpsStatus) getV1Length() int {
+func (m *GPSStatus) getV1Length() int {
 	return 101
 }
 
-func (m *GpsStatus) getIOSlice() []byte {
+func (m *GPSStatus) getIOSlice() []byte {
 	return make([]byte, 101+1)
 }
 
 // Read sets the field values of the message from the raw message payload
-func (m *GpsStatus) Read(frame mavlink2.Frame) (err error) {
+func (m *GPSStatus) Read(frame mavlink2.Frame) (err error) {
 	version := frame.GetVersion()
 
 	// Ensure only Version 1 or Version 2 were specified
@@ -146,7 +146,7 @@ func (m *GpsStatus) Read(frame mavlink2.Frame) (err error) {
 		}
 	}()
 
-	// Get a slice of bytes long enough for the all the GpsStatus fields
+	// Get a slice of bytes long enough for the all the GPSStatus fields
 	// binary.Read requires enough bytes in the reader to read all fields, even if
 	// the fields are just zero values. This also simplifies handling MAVLink2
 	// extensions and trailing zero truncation.
@@ -167,7 +167,7 @@ func (m *GpsStatus) Read(frame mavlink2.Frame) (err error) {
 }
 
 // Write encodes the field values of the message to a byte array
-func (m *GpsStatus) Write(version int) (output []byte, err error) {
+func (m *GPSStatus) Write(version int) (output []byte, err error) {
 	var buffer bytes.Buffer
 
 	// Ensure only Version 1 or Version 2 were specified

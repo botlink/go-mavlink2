@@ -35,8 +35,8 @@ import (
 	"github.com/queue-b/go-mavlink2/util"
 )
 
-/*GpsInjectData Data for injecting into the onboard GPS (used for DGPS) */
-type GpsInjectData struct {
+/*GPSInjectData Data for injecting into the onboard GPS (used for DGPS) */
+type GPSInjectData struct {
 	/*TargetSystem System ID */
 	TargetSystem uint8
 	/*TargetComponent Component ID */
@@ -49,7 +49,7 @@ type GpsInjectData struct {
 	HasExtensionFieldValues bool
 }
 
-func (m *GpsInjectData) String() string {
+func (m *GPSInjectData) String() string {
 	var builder strings.Builder
 	var buffer bytes.Buffer
 
@@ -79,7 +79,7 @@ func (m *GpsInjectData) String() string {
 }
 
 // GetVersion gets the MAVLink version of the Message contents
-func (m *GpsInjectData) GetVersion() int {
+func (m *GPSInjectData) GetVersion() int {
 	if m.HasExtensionFieldValues {
 		return 2
 	}
@@ -88,35 +88,35 @@ func (m *GpsInjectData) GetVersion() int {
 }
 
 // GetDialect gets the name of the dialect that defines the Message
-func (m *GpsInjectData) GetDialect() string {
+func (m *GPSInjectData) GetDialect() string {
 	return "common"
 }
 
 // GetMessageName gets the name of the Message
-func (m *GpsInjectData) GetMessageName() string {
-	return "GpsInjectData"
+func (m *GPSInjectData) GetMessageName() string {
+	return "GPSInjectData"
 }
 
 // GetID gets the ID of the Message
-func (m *GpsInjectData) GetID() uint32 {
+func (m *GPSInjectData) GetID() uint32 {
 	return 123
 }
 
 // HasExtensionFields returns true if the message definition contained extensions; false otherwise
-func (m *GpsInjectData) HasExtensionFields() bool {
+func (m *GPSInjectData) HasExtensionFields() bool {
 	return false
 }
 
-func (m *GpsInjectData) getV1Length() int {
+func (m *GPSInjectData) getV1Length() int {
 	return 113
 }
 
-func (m *GpsInjectData) getIOSlice() []byte {
+func (m *GPSInjectData) getIOSlice() []byte {
 	return make([]byte, 113+1)
 }
 
 // Read sets the field values of the message from the raw message payload
-func (m *GpsInjectData) Read(frame mavlink2.Frame) (err error) {
+func (m *GPSInjectData) Read(frame mavlink2.Frame) (err error) {
 	version := frame.GetVersion()
 
 	// Ensure only Version 1 or Version 2 were specified
@@ -138,7 +138,7 @@ func (m *GpsInjectData) Read(frame mavlink2.Frame) (err error) {
 		}
 	}()
 
-	// Get a slice of bytes long enough for the all the GpsInjectData fields
+	// Get a slice of bytes long enough for the all the GPSInjectData fields
 	// binary.Read requires enough bytes in the reader to read all fields, even if
 	// the fields are just zero values. This also simplifies handling MAVLink2
 	// extensions and trailing zero truncation.
@@ -159,7 +159,7 @@ func (m *GpsInjectData) Read(frame mavlink2.Frame) (err error) {
 }
 
 // Write encodes the field values of the message to a byte array
-func (m *GpsInjectData) Write(version int) (output []byte, err error) {
+func (m *GPSInjectData) Write(version int) (output []byte, err error) {
 	var buffer bytes.Buffer
 
 	// Ensure only Version 1 or Version 2 were specified

@@ -35,20 +35,20 @@ import (
 	"github.com/queue-b/go-mavlink2/util"
 )
 
-/*NavControllerOutput The state of the fixed wing navigation and position controller. */
-type NavControllerOutput struct {
-	/*NavRoll Current desired roll */
-	NavRoll float32
-	/*NavPitch Current desired pitch */
-	NavPitch float32
+/*NAVControllerOutput The state of the fixed wing navigation and position controller. */
+type NAVControllerOutput struct {
+	/*NAVRoll Current desired roll */
+	NAVRoll float32
+	/*NAVPitch Current desired pitch */
+	NAVPitch float32
 	/*AltError Current altitude error */
 	AltError float32
 	/*AspdError Current airspeed error */
 	AspdError float32
 	/*XtrackError Current crosstrack error on x-y plane */
 	XtrackError float32
-	/*NavBearing Current desired heading */
-	NavBearing int16
+	/*NAVBearing Current desired heading */
+	NAVBearing int16
 	/*TargetBearing Bearing to current waypoint/target */
 	TargetBearing int16
 	/*WpDist Distance to active waypoint */
@@ -57,7 +57,7 @@ type NavControllerOutput struct {
 	HasExtensionFieldValues bool
 }
 
-func (m *NavControllerOutput) String() string {
+func (m *NAVControllerOutput) String() string {
 	var builder strings.Builder
 	var buffer bytes.Buffer
 
@@ -65,12 +65,12 @@ func (m *NavControllerOutput) String() string {
 
 	builder.WriteString("Name:\t%v/%v\n")
 	// Output field values based on the decoded message type
-	builder.WriteString("NavRoll:\t%v [deg]\n")
-	builder.WriteString("NavPitch:\t%v [deg]\n")
+	builder.WriteString("NAVRoll:\t%v [deg]\n")
+	builder.WriteString("NAVPitch:\t%v [deg]\n")
 	builder.WriteString("AltError:\t%v [m]\n")
 	builder.WriteString("AspdError:\t%v [m/s]\n")
 	builder.WriteString("XtrackError:\t%v [m]\n")
-	builder.WriteString("NavBearing:\t%v [deg]\n")
+	builder.WriteString("NAVBearing:\t%v [deg]\n")
 	builder.WriteString("TargetBearing:\t%v [deg]\n")
 	builder.WriteString("WpDist:\t%v [m]\n")
 	format := builder.String()
@@ -80,12 +80,12 @@ func (m *NavControllerOutput) String() string {
 		format,
 		m.GetDialect(),
 		m.GetMessageName(),
-		m.NavRoll,
-		m.NavPitch,
+		m.NAVRoll,
+		m.NAVPitch,
 		m.AltError,
 		m.AspdError,
 		m.XtrackError,
-		m.NavBearing,
+		m.NAVBearing,
 		m.TargetBearing,
 		m.WpDist,
 	)
@@ -95,7 +95,7 @@ func (m *NavControllerOutput) String() string {
 }
 
 // GetVersion gets the MAVLink version of the Message contents
-func (m *NavControllerOutput) GetVersion() int {
+func (m *NAVControllerOutput) GetVersion() int {
 	if m.HasExtensionFieldValues {
 		return 2
 	}
@@ -104,35 +104,35 @@ func (m *NavControllerOutput) GetVersion() int {
 }
 
 // GetDialect gets the name of the dialect that defines the Message
-func (m *NavControllerOutput) GetDialect() string {
+func (m *NAVControllerOutput) GetDialect() string {
 	return "common"
 }
 
 // GetMessageName gets the name of the Message
-func (m *NavControllerOutput) GetMessageName() string {
-	return "NavControllerOutput"
+func (m *NAVControllerOutput) GetMessageName() string {
+	return "NAVControllerOutput"
 }
 
 // GetID gets the ID of the Message
-func (m *NavControllerOutput) GetID() uint32 {
+func (m *NAVControllerOutput) GetID() uint32 {
 	return 62
 }
 
 // HasExtensionFields returns true if the message definition contained extensions; false otherwise
-func (m *NavControllerOutput) HasExtensionFields() bool {
+func (m *NAVControllerOutput) HasExtensionFields() bool {
 	return false
 }
 
-func (m *NavControllerOutput) getV1Length() int {
+func (m *NAVControllerOutput) getV1Length() int {
 	return 26
 }
 
-func (m *NavControllerOutput) getIOSlice() []byte {
+func (m *NAVControllerOutput) getIOSlice() []byte {
 	return make([]byte, 26+1)
 }
 
 // Read sets the field values of the message from the raw message payload
-func (m *NavControllerOutput) Read(frame mavlink2.Frame) (err error) {
+func (m *NAVControllerOutput) Read(frame mavlink2.Frame) (err error) {
 	version := frame.GetVersion()
 
 	// Ensure only Version 1 or Version 2 were specified
@@ -154,7 +154,7 @@ func (m *NavControllerOutput) Read(frame mavlink2.Frame) (err error) {
 		}
 	}()
 
-	// Get a slice of bytes long enough for the all the NavControllerOutput fields
+	// Get a slice of bytes long enough for the all the NAVControllerOutput fields
 	// binary.Read requires enough bytes in the reader to read all fields, even if
 	// the fields are just zero values. This also simplifies handling MAVLink2
 	// extensions and trailing zero truncation.
@@ -175,7 +175,7 @@ func (m *NavControllerOutput) Read(frame mavlink2.Frame) (err error) {
 }
 
 // Write encodes the field values of the message to a byte array
-func (m *NavControllerOutput) Write(version int) (output []byte, err error) {
+func (m *NAVControllerOutput) Write(version int) (output []byte, err error) {
 	var buffer bytes.Buffer
 
 	// Ensure only Version 1 or Version 2 were specified

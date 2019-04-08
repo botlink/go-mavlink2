@@ -38,8 +38,8 @@ const (
 	MavAutopilotOpenpilot = 4
 	/*MavAutopilotGenericWaypointsOnly - Generic autopilot only supporting simple waypoints */
 	MavAutopilotGenericWaypointsOnly = 5
-	/*MavAutopilotGenericWaypointsAndSimpleNavigationOnly - Generic autopilot supporting waypoints and other simple navigation commands */
-	MavAutopilotGenericWaypointsAndSimpleNavigationOnly = 6
+	/*MavAutopilotGenericWaypointsAndSimpleNAVigationOnly - Generic autopilot supporting waypoints and other simple navigation commands */
+	MavAutopilotGenericWaypointsAndSimpleNAVigationOnly = 6
 	/*MavAutopilotGenericMissionFull - Generic autopilot supporting the full mission command set */
 	MavAutopilotGenericMissionFull = 7
 	/*MavAutopilotInvalID - No valid autopilot, e.g. a GCS or other MAVLink component */
@@ -70,7 +70,7 @@ const (
 	MavAutopilotEnumEnd = 20
 )
 
-/*MAV_TYPE - MAVLINK system type. All components in a system should report this type in their HEARTBEAT. */
+/*MAV_TYPE -  */
 const (
 	/*MavTypeGeneric - Generic micro air vehicle. */
 	MavTypeGeneric = 0
@@ -124,19 +124,19 @@ const (
 	MavTypeVtolReserved4 = 24
 	/*MavTypeVtolReserved5 - VTOL reserved 5 */
 	MavTypeVtolReserved5 = 25
-	/*MavTypeGimbal - Gimbal (standalone) */
+	/*MavTypeGimbal - Onboard gimbal */
 	MavTypeGimbal = 26
-	/*MavTypeAdsb - ADSB system (standalone) */
+	/*MavTypeAdsb - Onboard ADSB peripheral */
 	MavTypeAdsb = 27
 	/*MavTypeParafoil - Steerable, nonrigid airfoil */
 	MavTypeParafoil = 28
 	/*MavTypeDodecarotor - Dodecarotor */
 	MavTypeDodecarotor = 29
-	/*MavTypeCamera - Camera (standalone) */
+	/*MavTypeCamera - Camera */
 	MavTypeCamera = 30
 	/*MavTypeChargingStation - Charging station */
 	MavTypeChargingStation = 31
-	/*MavTypeFlarm - FLARM collision avoidance system (standalone) */
+	/*MavTypeFlarm - Onboard FLARM collision avoidance system */
 	MavTypeFlarm = 32
 	/*MavTypeEnumEnd -  */
 	MavTypeEnumEnd = 33
@@ -150,8 +150,8 @@ const (
 	FirmwareVersionTypeAlpha = 64
 	/*FirmwareVersionTypeBeta - beta release */
 	FirmwareVersionTypeBeta = 128
-	/*FirmwareVersionTypeRc - release candidate */
-	FirmwareVersionTypeRc = 192
+	/*FirmwareVersionTypeRC - release candidate */
+	FirmwareVersionTypeRC = 192
 	/*FirmwareVersionTypeOfficial - official stable release */
 	FirmwareVersionTypeOfficial = 255
 	/*FirmwareVersionTypeEnumEnd -  */
@@ -160,8 +160,8 @@ const (
 
 /*HL_FAILURE_FLAG - Flags to report failure cases over the high latency telemtry. */
 const (
-	/*HlFailureFlagGps - GPS failure. */
-	HlFailureFlagGps = 1
+	/*HlFailureFlagGPS - GPS failure. */
+	HlFailureFlagGPS = 1
 	/*HlFailureFlagDifferentialPressure - Differential pressure sensor failure. */
 	HlFailureFlagDifferentialPressure = 2
 	/*HlFailureFlagAbsolutePressure - Absolute pressure sensor failure. */
@@ -176,8 +176,8 @@ const (
 	HlFailureFlagTerrain = 64
 	/*HlFailureFlagBattery - Battery failure/critical low battery. */
 	HlFailureFlagBattery = 128
-	/*HlFailureFlagRcReceiver - RC receiver failure/no rc connection. */
-	HlFailureFlagRcReceiver = 256
+	/*HlFailureFlagRCReceiver - RC receiver failure/no rc connection. */
+	HlFailureFlagRCReceiver = 256
 	/*HlFailureFlagOffboardLink - Offboard link failure. */
 	HlFailureFlagOffboardLink = 512
 	/*HlFailureFlagEngine - Engine failure. */
@@ -303,91 +303,87 @@ const (
 	MavStateEnumEnd = 9
 )
 
-/*MAV_COMPONENT - Component ids (values) for the different types and instances of onboard hardware/software that might make up a MAVLink system (autopilot, cameras, servos, GPS systems, avoidance systems etc.).
-  Components must use the appropriate ID in their source address when sending messages. Components can also use IDs to determine if they are the intended recipient of an incoming message. The MAV_COMP_ID_ALL value is used to indicate messages that must be processed by all components.
-  When creating new entries, components that can have multiple instances (e.g. cameras, servos etc.) should be allocated sequential values. An appropriate number of values should be left free after these components to allow the number of instances to be expanded. */
+/*MAV_COMPONENT -  */
 const (
-	/*MavCompIDAll - Used to broadcast messages to all components of the receiving system. Components should attempt to process messages with this component ID and forward to components on any other interfaces. */
+	/*MavCompIDAll -  */
 	MavCompIDAll = 0
-	/*MavCompIDAutopilot1 - System flight controller component ("autopilot"). Only one autopilot is expected in a particular system. */
+	/*MavCompIDAutopilot1 -  */
 	MavCompIDAutopilot1 = 1
-	/*MavCompIDCamera - Camera #1. */
+	/*MavCompIDCamera -  */
 	MavCompIDCamera = 100
-	/*MavCompIDCamera2 - Camera #2. */
+	/*MavCompIDCamera2 -  */
 	MavCompIDCamera2 = 101
-	/*MavCompIDCamera3 - Camera #3. */
+	/*MavCompIDCamera3 -  */
 	MavCompIDCamera3 = 102
-	/*MavCompIDCamera4 - Camera #4. */
+	/*MavCompIDCamera4 -  */
 	MavCompIDCamera4 = 103
-	/*MavCompIDCamera5 - Camera #5. */
+	/*MavCompIDCamera5 -  */
 	MavCompIDCamera5 = 104
-	/*MavCompIDCamera6 - Camera #6. */
+	/*MavCompIDCamera6 -  */
 	MavCompIDCamera6 = 105
-	/*MavCompIDServo1 - Servo #1. */
+	/*MavCompIDServo1 -  */
 	MavCompIDServo1 = 140
-	/*MavCompIDServo2 - Servo #2. */
+	/*MavCompIDServo2 -  */
 	MavCompIDServo2 = 141
-	/*MavCompIDServo3 - Servo #3. */
+	/*MavCompIDServo3 -  */
 	MavCompIDServo3 = 142
-	/*MavCompIDServo4 - Servo #4. */
+	/*MavCompIDServo4 -  */
 	MavCompIDServo4 = 143
-	/*MavCompIDServo5 - Servo #5. */
+	/*MavCompIDServo5 -  */
 	MavCompIDServo5 = 144
-	/*MavCompIDServo6 - Servo #6. */
+	/*MavCompIDServo6 -  */
 	MavCompIDServo6 = 145
-	/*MavCompIDServo7 - Servo #7. */
+	/*MavCompIDServo7 -  */
 	MavCompIDServo7 = 146
-	/*MavCompIDServo8 - Servo #8. */
+	/*MavCompIDServo8 -  */
 	MavCompIDServo8 = 147
-	/*MavCompIDServo9 - Servo #9. */
+	/*MavCompIDServo9 -  */
 	MavCompIDServo9 = 148
-	/*MavCompIDServo10 - Servo #10. */
+	/*MavCompIDServo10 -  */
 	MavCompIDServo10 = 149
-	/*MavCompIDServo11 - Servo #11. */
+	/*MavCompIDServo11 -  */
 	MavCompIDServo11 = 150
-	/*MavCompIDServo12 - Servo #12. */
+	/*MavCompIDServo12 -  */
 	MavCompIDServo12 = 151
-	/*MavCompIDServo13 - Servo #13. */
+	/*MavCompIDServo13 -  */
 	MavCompIDServo13 = 152
-	/*MavCompIDServo14 - Servo #14. */
+	/*MavCompIDServo14 -  */
 	MavCompIDServo14 = 153
-	/*MavCompIDGimbal - Gimbal component. */
+	/*MavCompIDGimbal -  */
 	MavCompIDGimbal = 154
-	/*MavCompIDLog - Logging component. */
+	/*MavCompIDLog -  */
 	MavCompIDLog = 155
-	/*MavCompIDAdsb - Automatic Dependent Surveillance-Broadcast (ADS-B) component. */
+	/*MavCompIDAdsb -  */
 	MavCompIDAdsb = 156
-	/*MavCompIDOsd - On Screen Display (OSD) devices for video links. */
+	/*MavCompIDOsd - On Screen Display (OSD) devices for video links */
 	MavCompIDOsd = 157
-	/*MavCompIDPeripheral - Generic autopilot peripheral component ID. Meant for devices that do not implement the parameter microservice. */
+	/*MavCompIDPeripheral - Generic autopilot peripheral component ID. Meant for devices that do not implement the parameter sub-protocol */
 	MavCompIDPeripheral = 158
-	/*MavCompIDQx1Gimbal - Gimbal ID for QX1. */
+	/*MavCompIDQx1Gimbal -  */
 	MavCompIDQx1Gimbal = 159
-	/*MavCompIDFlarm - FLARM collision alert component. */
+	/*MavCompIDFlarm -  */
 	MavCompIDFlarm = 160
-	/*MavCompIDMissionplanner - Component that can generate/supply a mission flight plan (e.g. GCS or developer API). */
+	/*MavCompIDMapper -  */
+	MavCompIDMapper = 180
+	/*MavCompIDMissionplanner -  */
 	MavCompIDMissionplanner = 190
-	/*MavCompIDPathplanner - Component that finds an optimal path between points based on a certain constraint (e.g. minimum snap, shortest path, cost, etc.). */
+	/*MavCompIDPathplanner -  */
 	MavCompIDPathplanner = 195
-	/*MavCompIDObstacleAvoIDance - Component that plans a collision free path between two points. */
-	MavCompIDObstacleAvoIDance = 196
-	/*MavCompIDVisualInertialOdometry - Component that provides position estimates using VIO techniques. */
-	MavCompIDVisualInertialOdometry = 197
-	/*MavCompIDImu - Inertial Measurement Unit (IMU) #1. */
-	MavCompIDImu = 200
-	/*MavCompIDImu2 - Inertial Measurement Unit (IMU) #2. */
-	MavCompIDImu2 = 201
-	/*MavCompIDImu3 - Inertial Measurement Unit (IMU) #3. */
-	MavCompIDImu3 = 202
-	/*MavCompIDGps - GPS #1. */
-	MavCompIDGps = 220
-	/*MavCompIDGps2 - GPS #2. */
-	MavCompIDGps2 = 221
-	/*MavCompIDUDPBrIDge - Component to bridge MAVLink to UDP (i.e. from a UART). */
+	/*MavCompIDIMU -  */
+	MavCompIDIMU = 200
+	/*MavCompIDIMU2 -  */
+	MavCompIDIMU2 = 201
+	/*MavCompIDIMU3 -  */
+	MavCompIDIMU3 = 202
+	/*MavCompIDGPS -  */
+	MavCompIDGPS = 220
+	/*MavCompIDGPS2 -  */
+	MavCompIDGPS2 = 221
+	/*MavCompIDUDPBrIDge -  */
 	MavCompIDUDPBrIDge = 240
-	/*MavCompIDUartBrIDge - Component to bridge to UART (i.e. from UDP). */
+	/*MavCompIDUartBrIDge -  */
 	MavCompIDUartBrIDge = 241
-	/*MavCompIDSystemControl - Component for handling system messages (e.g. to ARM, takeoff, etc.). */
+	/*MavCompIDSystemControl -  */
 	MavCompIDSystemControl = 250
 	/*MavComponentEnumEnd -  */
 	MavComponentEnumEnd = 251
@@ -405,8 +401,8 @@ const (
 	MavSysStatusSensorAbsolutePressure = 8
 	/*MavSysStatusSensorDifferentialPressure - 0x10 differential pressure */
 	MavSysStatusSensorDifferentialPressure = 16
-	/*MavSysStatusSensorGps - 0x20 GPS */
-	MavSysStatusSensorGps = 32
+	/*MavSysStatusSensorGPS - 0x20 GPS */
+	MavSysStatusSensorGPS = 32
 	/*MavSysStatusSensorOpticalFlow - 0x40 optical flow */
 	MavSysStatusSensorOpticalFlow = 64
 	/*MavSysStatusSensorVisionPosition - 0x80 computer vision position */
@@ -427,8 +423,8 @@ const (
 	MavSysStatusSensorXyPositionControl = 16384
 	/*MavSysStatusSensorMotorOutputs - 0x8000 motor outputs / control */
 	MavSysStatusSensorMotorOutputs = 32768
-	/*MavSysStatusSensorRcReceiver - 0x10000 rc receiver */
-	MavSysStatusSensorRcReceiver = 65536
+	/*MavSysStatusSensorRCReceiver - 0x10000 rc receiver */
+	MavSysStatusSensorRCReceiver = 65536
 	/*MavSysStatusSensor3DGyro2 - 0x20000 2nd 3D gyro */
 	MavSysStatusSensor3DGyro2 = 131072
 	/*MavSysStatusSensor3DAccel2 - 0x40000 2nd 3D accelerometer */
@@ -437,8 +433,8 @@ const (
 	MavSysStatusSensor3DMag2 = 524288
 	/*MavSysStatusGeofence - 0x100000 geofence */
 	MavSysStatusGeofence = 1048576
-	/*MavSysStatusAhrs - 0x200000 AHRS subsystem health */
-	MavSysStatusAhrs = 2097152
+	/*MavSysStatusAHRS - 0x200000 AHRS subsystem health */
+	MavSysStatusAHRS = 2097152
 	/*MavSysStatusTerrain - 0x400000 Terrain subsystem health */
 	MavSysStatusTerrain = 4194304
 	/*MavSysStatusReverseMotor - 0x800000 Motors are reversed */
@@ -457,19 +453,19 @@ const (
 
 /*MAV_FRAME -  */
 const (
-	/*MavFrameGlobal - Global (WGS84) coordinate frame + MSL altitude. First value / x: latitude, second value / y: longitude, third value / z: positive altitude over mean sea level (MSL). */
+	/*MavFrameGlobal - Global coordinate frame, WGS84 coordinate system. First value / x: latitude, second value / y: longitude, third value / z: positive altitude over mean sea level (MSL). */
 	MavFrameGlobal = 0
 	/*MavFrameLocalNed - Local coordinate frame, Z-down (x: north, y: east, z: down). */
 	MavFrameLocalNed = 1
 	/*MavFrameMission - NOT a coordinate frame, indicates a mission command. */
 	MavFrameMission = 2
-	/*MavFrameGlobalRelativeAlt - Global (WGS84) coordinate frame + altitude relative to the home position. First value / x: latitude, second value / y: longitude, third value / z: positive altitude with 0 being at the altitude of the home location. */
+	/*MavFrameGlobalRelativeAlt - Global coordinate frame, WGS84 coordinate system, relative altitude over ground with respect to the home position. First value / x: latitude, second value / y: longitude, third value / z: positive altitude with 0 being at the altitude of the home location. */
 	MavFrameGlobalRelativeAlt = 3
 	/*MavFrameLocalEnu - Local coordinate frame, Z-up (x: east, y: north, z: up). */
 	MavFrameLocalEnu = 4
-	/*MavFrameGlobalInt - Global (WGS84) coordinate frame (scaled) + MSL altitude. First value / x: latitude in degrees*1.0e-7, second value / y: longitude in degrees*1.0e-7, third value / z: positive altitude over mean sea level (MSL). */
+	/*MavFrameGlobalInt - Global coordinate frame, WGS84 coordinate system. First value / x: latitude in degrees*1.0e-7, second value / y: longitude in degrees*1.0e-7, third value / z: positive altitude over mean sea level (MSL). */
 	MavFrameGlobalInt = 5
-	/*MavFrameGlobalRelativeAltInt - Global (WGS84) coordinate frame (scaled) + altitude relative to the home position. First value / x: latitude in degrees*10e-7, second value / y: longitude in degrees*10e-7, third value / z: positive altitude with 0 being at the altitude of the home location. */
+	/*MavFrameGlobalRelativeAltInt - Global coordinate frame, WGS84 coordinate system, relative altitude over ground with respect to the home position. First value / x: latitude in degrees*10e-7, second value / y: longitude in degrees*10e-7, third value / z: positive altitude with 0 being at the altitude of the home location. */
 	MavFrameGlobalRelativeAltInt = 6
 	/*MavFrameLocalOffsetNed - Offset to the current local frame. Anything expressed in this frame should be added to the current local frame position. */
 	MavFrameLocalOffsetNed = 7
@@ -479,7 +475,7 @@ const (
 	MavFrameBodyOffsetNed = 9
 	/*MavFrameGlobalTerrainAlt - Global (WGS84) coordinate frame with AGL altitude (at the waypoint coordinate). First value / x: latitude in degrees, second value / y: longitude in degrees, third value / z: positive altitude in meters with 0 being at ground level in terrain model. */
 	MavFrameGlobalTerrainAlt = 10
-	/*MavFrameGlobalTerrainAltInt - Global (WGS84) coordinate frame (scaled) with AGL altitude (at the waypoint coordinate). First value / x: latitude in degrees*10e-7, second value / y: longitude in degrees*10e-7, third value / z: positive altitude in meters with 0 being at ground level in terrain model. */
+	/*MavFrameGlobalTerrainAltInt - Global (WGS84) coordinate frame with AGL altitude (at the waypoint coordinate). First value / x: latitude in degrees*10e-7, second value / y: longitude in degrees*10e-7, third value / z: positive altitude in meters with 0 being at ground level in terrain model. */
 	MavFrameGlobalTerrainAltInt = 11
 	/*MavFrameBodyFrd - Body fixed frame of reference, Z-down (x: forward, y: right, z: down). */
 	MavFrameBodyFrd = 12
@@ -557,10 +553,10 @@ const (
 	MavMountModeNeutral = 1
 	/*MavMountModeMavlinkTargeting - Load neutral position and start MAVLink Roll,Pitch,Yaw control with stabilization */
 	MavMountModeMavlinkTargeting = 2
-	/*MavMountModeRcTargeting - Load neutral position and start RC Roll,Pitch,Yaw control with stabilization */
-	MavMountModeRcTargeting = 3
-	/*MavMountModeGpsPoint - Load neutral position and start to point to Lat,Lon,Alt */
-	MavMountModeGpsPoint = 4
+	/*MavMountModeRCTargeting - Load neutral position and start RC Roll,Pitch,Yaw control with stabilization */
+	MavMountModeRCTargeting = 3
+	/*MavMountModeGPSPoint - Load neutral position and start to point to Lat,Lon,Alt */
+	MavMountModeGPSPoint = 4
 	/*MavMountModeEnumEnd -  */
 	MavMountModeEnumEnd = 5
 )
@@ -597,54 +593,56 @@ const (
 
 /*MAV_CMD - Commands to be executed by the MAV. They can be executed on user request, or as part of a mission script. If the action is used in a mission, the parameter mapping to the waypoint/mission message is as follows: Param 1, Param 2, Param 3, Param 4, X: Param 5, Y:Param 6, Z:Param 7. This command list is similar what ARINC 424 is for commercial aircraft: A data format how to interpret waypoint/mission data. */
 const (
-	/*MavCmdNavWaypoint - Navigate to waypoint. */
-	MavCmdNavWaypoint = 16
-	/*MavCmdNavLoiterUnlim - Loiter around this waypoint an unlimited amount of time */
-	MavCmdNavLoiterUnlim = 17
-	/*MavCmdNavLoiterTurns - Loiter around this waypoint for X turns */
-	MavCmdNavLoiterTurns = 18
-	/*MavCmdNavLoiterTime - Loiter around this waypoint for X seconds */
-	MavCmdNavLoiterTime = 19
-	/*MavCmdNavReturnToLaunch - Return to launch location */
-	MavCmdNavReturnToLaunch = 20
-	/*MavCmdNavLand - Land at location. */
-	MavCmdNavLand = 21
-	/*MavCmdNavTakeoff - Takeoff from ground / hand */
-	MavCmdNavTakeoff = 22
-	/*MavCmdNavLandLocal - Land at local position (local frame only) */
-	MavCmdNavLandLocal = 23
-	/*MavCmdNavTakeoffLocal - Takeoff from local position (local frame only) */
-	MavCmdNavTakeoffLocal = 24
-	/*MavCmdNavFollow - Vehicle following, i.e. this waypoint represents the position of a moving vehicle */
-	MavCmdNavFollow = 25
-	/*MavCmdNavContinueAndChangeAlt - Continue on the current course and climb/descend to specified altitude.  When the altitude is reached continue to the next command (i.e., don't proceed to the next command until the desired altitude is reached. */
-	MavCmdNavContinueAndChangeAlt = 30
-	/*MavCmdNavLoiterToAlt - Begin loiter at the specified Latitude and Longitude.  If Lat=Lon=0, then loiter at the current position.  Don't consider the navigation command complete (don't leave loiter) until the altitude has been reached.  Additionally, if the Heading Required parameter is non-zero the  aircraft will not leave the loiter until heading toward the next waypoint. */
-	MavCmdNavLoiterToAlt = 31
+	/*MavCmdNAVWaypoint - Navigate to waypoint. */
+	MavCmdNAVWaypoint = 16
+	/*MavCmdNAVLoiterUnlim - Loiter around this waypoint an unlimited amount of time */
+	MavCmdNAVLoiterUnlim = 17
+	/*MavCmdNAVLoiterTurns - Loiter around this waypoint for X turns */
+	MavCmdNAVLoiterTurns = 18
+	/*MavCmdNAVLoiterTime - Loiter around this waypoint for X seconds */
+	MavCmdNAVLoiterTime = 19
+	/*MavCmdNAVReturnToLaunch - Return to launch location */
+	MavCmdNAVReturnToLaunch = 20
+	/*MavCmdNAVLand - Land at location */
+	MavCmdNAVLand = 21
+	/*MavCmdNAVTakeoff - Takeoff from ground / hand */
+	MavCmdNAVTakeoff = 22
+	/*MavCmdNAVLandLocal - Land at local position (local frame only) */
+	MavCmdNAVLandLocal = 23
+	/*MavCmdNAVTakeoffLocal - Takeoff from local position (local frame only) */
+	MavCmdNAVTakeoffLocal = 24
+	/*MavCmdNAVFollow - Vehicle following, i.e. this waypoint represents the position of a moving vehicle */
+	MavCmdNAVFollow = 25
+	/*MavCmdNAVContinueAndChangeAlt - Continue on the current course and climb/descend to specified altitude.  When the altitude is reached continue to the next command (i.e., don't proceed to the next command until the desired altitude is reached. */
+	MavCmdNAVContinueAndChangeAlt = 30
+	/*MavCmdNAVLoiterToAlt - Begin loiter at the specified Latitude and Longitude.  If Lat=Lon=0, then loiter at the current position.  Don't consider the navigation command complete (don't leave loiter) until the altitude has been reached.  Additionally, if the Heading Required parameter is non-zero the  aircraft will not leave the loiter until heading toward the next waypoint. */
+	MavCmdNAVLoiterToAlt = 31
 	/*MavCmdDoFollow - Being following a target */
 	MavCmdDoFollow = 32
 	/*MavCmdDoFollowReposition - Reposition the MAV after a follow target command has been sent */
 	MavCmdDoFollowReposition = 33
 	/*MavCmdDoOrbit - Start orbiting on the circumference of a circle defined by the parameters. Setting any value NaN results in using defaults. */
 	MavCmdDoOrbit = 34
-	/*MavCmdNavRoi - Sets the region of interest (ROI) for a sensor set or the vehicle itself. This can then be used by the vehicles control system to control the vehicle attitude and the attitude of various sensors such as cameras. */
-	MavCmdNavRoi = 80
-	/*MavCmdNavPathplanning - Control autonomous path planning on the MAV. */
-	MavCmdNavPathplanning = 81
-	/*MavCmdNavSplineWaypoint - Navigate to waypoint using a spline path. */
-	MavCmdNavSplineWaypoint = 82
-	/*MavCmdNavVtolTakeoff - Takeoff from ground using VTOL mode, and transition to forward flight with specified heading. */
-	MavCmdNavVtolTakeoff = 84
-	/*MavCmdNavVtolLand - Land using VTOL mode */
-	MavCmdNavVtolLand = 85
-	/*MavCmdNavGUIDedEnable - hand control over to an external controller */
-	MavCmdNavGUIDedEnable = 92
-	/*MavCmdNavDelay - Delay the next navigation command a number of seconds or until a specified time */
-	MavCmdNavDelay = 93
-	/*MavCmdNavPayloadPlace - Descend and place payload. Vehicle moves to specified location, descends until it detects a hanging payload has reached the ground, and then releases the payload. If ground is not detected before the reaching the maximum descent value (param1), the command will complete without releasing the payload. */
-	MavCmdNavPayloadPlace = 94
-	/*MavCmdNavLast - NOP - This command is only used to mark the upper limit of the NAV/ACTION commands in the enumeration */
-	MavCmdNavLast = 95
+	/*MavCmdNAVRoi - Sets the region of interest (ROI) for a sensor set or the vehicle itself. This can then be used by the vehicles control system to control the vehicle attitude and the attitude of various sensors such as cameras. */
+	MavCmdNAVRoi = 80
+	/*MavCmdNAVPathplanning - Control autonomous path planning on the MAV. */
+	MavCmdNAVPathplanning = 81
+	/*MavCmdNAVSplineWaypoint - Navigate to waypoint using a spline path. */
+	MavCmdNAVSplineWaypoint = 82
+	/*MavCmdNAVAltitudeWait - Mission command to wait for an altitude or downwards vertical speed. This is meant for high altitude balloon launches, allowing the aircraft to be idle until either an altitude is reached or a negative vertical speed is reached (indicating early balloon burst). The wiggle time is how often to wiggle the control surfaces to prevent them seizing up. */
+	MavCmdNAVAltitudeWait = 83
+	/*MavCmdNAVVtolTakeoff - Takeoff from ground using VTOL mode */
+	MavCmdNAVVtolTakeoff = 84
+	/*MavCmdNAVVtolLand - Land using VTOL mode */
+	MavCmdNAVVtolLand = 85
+	/*MavCmdNAVGUIDedEnable - hand control over to an external controller */
+	MavCmdNAVGUIDedEnable = 92
+	/*MavCmdNAVDelay - Delay the next navigation command a number of seconds or until a specified time */
+	MavCmdNAVDelay = 93
+	/*MavCmdNAVPayloadPlace - Descend and place payload.  Vehicle descends until it detects a hanging payload has reached the ground, the gripper is opened to release the payload */
+	MavCmdNAVPayloadPlace = 94
+	/*MavCmdNAVLast - NOP - This command is only used to mark the upper limit of the NAV/ACTION commands in the enumeration */
+	MavCmdNAVLast = 95
 	/*MavCmdConditionDelay - Delay mission state machine. */
 	MavCmdConditionDelay = 112
 	/*MavCmdConditionChangeAlt - Ascend/descend at rate.  Delay mission state machine until desired altitude reached. */
@@ -699,9 +697,9 @@ const (
 	MavCmdDoControlVIDeo = 200
 	/*MavCmdDoSetRoi - Sets the region of interest (ROI) for a sensor set or the vehicle itself. This can then be used by the vehicles control system to control the vehicle attitude and the attitude of various sensors such as cameras. */
 	MavCmdDoSetRoi = 201
-	/*MavCmdDoDigicamConfigure - Configure digital camera. This is a fallback message for systems that have not yet implemented PARAM_EXT_XXX messages and camera definition files (see https://mavlink.io/en/services/camera_def.html ). */
+	/*MavCmdDoDigicamConfigure - THIS INTERFACE IS DEPRECATED since 2018-01. Please use PARAM_EXT_XXX messages and the camera definition format described in https://mavlink.io/en/protocol/camera_def.html. */
 	MavCmdDoDigicamConfigure = 202
-	/*MavCmdDoDigicamControl - Control digital camera. This is a fallback message for systems that have not yet implemented PARAM_EXT_XXX messages and camera definition files (see https://mavlink.io/en/services/camera_def.html ). */
+	/*MavCmdDoDigicamControl - THIS INTERFACE IS DEPRECATED since 2018-01. Please use PARAM_EXT_XXX messages and the camera definition format described in https://mavlink.io/en/protocol/camera_def.html. */
 	MavCmdDoDigicamControl = 203
 	/*MavCmdDoMountConfigure - Mission command to configure a camera or antenna mount */
 	MavCmdDoMountConfigure = 204
@@ -717,8 +715,12 @@ const (
 	MavCmdDoMotorTest = 209
 	/*MavCmdDoInvertedFlight - Change to/from inverted flight */
 	MavCmdDoInvertedFlight = 210
-	/*MavCmdNavSetYawSpeed - Sets a desired vehicle turn angle and speed change */
-	MavCmdNavSetYawSpeed = 213
+	/*MavCmdDoGripper - Mission command to operate EPM gripper. */
+	MavCmdDoGripper = 211
+	/*MavCmdDoAutotuneEnable - Enable/disable autotune. */
+	MavCmdDoAutotuneEnable = 212
+	/*MavCmdNAVSetYawSpeed - Sets a desired vehicle turn angle and speed change */
+	MavCmdNAVSetYawSpeed = 213
 	/*MavCmdDoSetCamTriggInterval - Mission command to set camera trigger interval for this flight. If triggering is enabled, the camera is triggered each time this interval expires. This command can also be used to set the shutter integration time for the camera. */
 	MavCmdDoSetCamTriggInterval = 214
 	/*MavCmdDoMountControlQuat - Mission command to control a camera or antenna mount, using a quaternion as reference. */
@@ -757,8 +759,6 @@ const (
 	MavCmdGetMessageInterval = 510
 	/*MavCmdSetMessageInterval - Set the interval between messages for a particular MAVLink message ID. This interface replaces REQUEST_DATA_STREAM */
 	MavCmdSetMessageInterval = 511
-	/*MavCmdRequestMessage - Request the target system(s) emit a single instance of a specified message (i.e. a "one-shot" version of MAV_CMD_SET_MESSAGE_INTERVAL). */
-	MavCmdRequestMessage = 512
 	/*MavCmdRequestProtocolVersion - Request MAVLink protocol version compatibility */
 	MavCmdRequestProtocolVersion = 519
 	/*MavCmdRequestAutopilotCapabilities - Request autopilot capabilities */
@@ -777,36 +777,26 @@ const (
 	MavCmdRequestFlightInformation = 528
 	/*MavCmdResetCameraSettings - Reset all camera settings to Factory Default */
 	MavCmdResetCameraSettings = 529
-	/*MavCmdSetCameraMode - Set camera running mode. Use NaN for reserved values. GCS will send a MAV_CMD_REQUEST_VIDEO_STREAM_STATUS command after a mode change if the camera supports video streaming. */
+	/*MavCmdSetCameraMode - Set camera running mode. Use NAN for reserved values. */
 	MavCmdSetCameraMode = 530
-	/*MavCmdSetCameraZoom - Set camera zoom. Camera must respond with a CAMERA_SETTINGS message (on success). Use NaN for reserved values. */
-	MavCmdSetCameraZoom = 531
-	/*MavCmdSetCameraFocus - Set camera focus. Camera must respond with a CAMERA_SETTINGS message (on success). Use NaN for reserved values. */
-	MavCmdSetCameraFocus = 532
-	/*MavCmdJumpTag - Tagged jump target. Can be jumped to with MAV_CMD_DO_JUMP_TAG. */
-	MavCmdJumpTag = 600
-	/*MavCmdDoJumpTag - Jump to the matching tag in the mission list. Repeat this action for the specified number of times. A mission should contain a single matching tag for each jump. If this is not the case then a jump to a missing tag should complete the mission, and a jump where there are multiple matching tags should always select the one with the lowest mission sequence number. */
-	MavCmdDoJumpTag = 601
-	/*MavCmdImageStartCapture - Start image capture sequence. Sends CAMERA_IMAGE_CAPTURED after each capture. Use NaN for reserved values. */
+	/*MavCmdImageStartCapture - Start image capture sequence. Sends CAMERA_IMAGE_CAPTURED after each capture. Use NAN for reserved values. */
 	MavCmdImageStartCapture = 2000
-	/*MavCmdImageStopCapture - Stop image capture sequence Use NaN for reserved values. */
+	/*MavCmdImageStopCapture - Stop image capture sequence Use NAN for reserved values. */
 	MavCmdImageStopCapture = 2001
-	/*MavCmdRequestCameraImageCapture - Re-request a CAMERA_IMAGE_CAPTURE message. Use NaN for reserved values. */
+	/*MavCmdRequestCameraImageCapture - Re-request a CAMERA_IMAGE_CAPTURE packet. Use NAN for reserved values. */
 	MavCmdRequestCameraImageCapture = 2002
 	/*MavCmdDoTriggerControl - Enable or disable on-board camera triggering system. */
 	MavCmdDoTriggerControl = 2003
-	/*MavCmdVIDeoStartCapture - Starts video capture (recording). Use NaN for reserved values. */
+	/*MavCmdVIDeoStartCapture - Starts video capture (recording). Use NAN for reserved values. */
 	MavCmdVIDeoStartCapture = 2500
-	/*MavCmdVIDeoStopCapture - Stop the current video capture (recording). Use NaN for reserved values. */
+	/*MavCmdVIDeoStopCapture - Stop the current video capture (recording). Use NAN for reserved values. */
 	MavCmdVIDeoStopCapture = 2501
 	/*MavCmdVIDeoStartStreaming - Start video streaming */
 	MavCmdVIDeoStartStreaming = 2502
-	/*MavCmdVIDeoStopStreaming - Stop the given video stream */
+	/*MavCmdVIDeoStopStreaming - Stop the current video streaming */
 	MavCmdVIDeoStopStreaming = 2503
 	/*MavCmdRequestVIDeoStreamInformation - Request video stream information (VIDEO_STREAM_INFORMATION) */
 	MavCmdRequestVIDeoStreamInformation = 2504
-	/*MavCmdRequestVIDeoStreamStatus - Request video stream status (VIDEO_STREAM_STATUS) */
-	MavCmdRequestVIDeoStreamStatus = 2505
 	/*MavCmdLoggingStart - Request to start streaming logging data over MAVLink (see also LOGGING_DATA message) */
 	MavCmdLoggingStart = 2510
 	/*MavCmdLoggingStop - Request to stop streaming log data over MAVLink */
@@ -825,29 +815,29 @@ const (
 	/*MavCmdSetGUIDedSubmodeStandard - This command sets the submode to standard guided when vehicle is in guided mode. The vehicle holds position and altitude and the user can input the desired velocities along all three axes.
 	 */
 	MavCmdSetGUIDedSubmodeStandard = 4000
-	/*MavCmdSetGUIDedSubmodeCircle - This command sets submode circle when vehicle is in guided mode. Vehicle flies along a circle facing the center of the circle. The user can input the velocity along the circle and change the radius. If no input is given the vehicle will hold position.
+	/*MavCmdSetGUIDedSubmodeCiRCle - This command sets submode circle when vehicle is in guided mode. Vehicle flies along a circle facing the center of the circle. The user can input the velocity along the circle and change the radius. If no input is given the vehicle will hold position.
 	 */
-	MavCmdSetGUIDedSubmodeCircle = 4001
+	MavCmdSetGUIDedSubmodeCiRCle = 4001
 	/*MavCmdConditionGate - Delay mission state machine until gate has been reached. */
 	MavCmdConditionGate = 4501
-	/*MavCmdNavFenceReturnPoint - Fence return point. There can only be one fence return point.
+	/*MavCmdNAVFenceReturnPoint - Fence return point. There can only be one fence return point.
 	 */
-	MavCmdNavFenceReturnPoint = 5000
-	/*MavCmdNavFencePolygonVertexInclusion - Fence vertex for an inclusion polygon (the polygon must not be self-intersecting). The vehicle must stay within this area. Minimum of 3 vertices required.
+	MavCmdNAVFenceReturnPoint = 5000
+	/*MavCmdNAVFencePolygonVertexInclusion - Fence vertex for an inclusion polygon (the polygon must not be self-intersecting). The vehicle must stay within this area. Minimum of 3 vertices required.
 	 */
-	MavCmdNavFencePolygonVertexInclusion = 5001
-	/*MavCmdNavFencePolygonVertexExclusion - Fence vertex for an exclusion polygon (the polygon must not be self-intersecting). The vehicle must stay outside this area. Minimum of 3 vertices required.
+	MavCmdNAVFencePolygonVertexInclusion = 5001
+	/*MavCmdNAVFencePolygonVertexExclusion - Fence vertex for an exclusion polygon (the polygon must not be self-intersecting). The vehicle must stay outside this area. Minimum of 3 vertices required.
 	 */
-	MavCmdNavFencePolygonVertexExclusion = 5002
-	/*MavCmdNavFenceCircleInclusion - Circular fence area. The vehicle must stay inside this area.
+	MavCmdNAVFencePolygonVertexExclusion = 5002
+	/*MavCmdNAVFenceCiRCleInclusion - Circular fence area. The vehicle must stay inside this area.
 	 */
-	MavCmdNavFenceCircleInclusion = 5003
-	/*MavCmdNavFenceCircleExclusion - Circular fence area. The vehicle must stay outside this area.
+	MavCmdNAVFenceCiRCleInclusion = 5003
+	/*MavCmdNAVFenceCiRCleExclusion - Circular fence area. The vehicle must stay outside this area.
 	 */
-	MavCmdNavFenceCircleExclusion = 5004
-	/*MavCmdNavRallyPoint - Rally point. You can have multiple rally points defined.
+	MavCmdNAVFenceCiRCleExclusion = 5004
+	/*MavCmdNAVRallyPoint - Rally point. You can have multiple rally points defined.
 	 */
-	MavCmdNavRallyPoint = 5100
+	MavCmdNAVRallyPoint = 5100
 	/*MavCmdUavcanGetNodeInfo - Commands the vehicle to respond with a sequence of messages UAVCAN_NODE_INFO, one message per every UAVCAN node that is online. Note that some of the response messages can be lost, which the receiver can detect easily by checking whether every received UAVCAN_NODE_STATUS has a matching message UAVCAN_NODE_INFO received earlier; if not, this command should be sent again in order to request re-transmission of the node information messages. */
 	MavCmdUavcanGetNodeInfo = 5200
 	/*MavCmdPayloadPrepareDeploy - Deploy payload on a Lat / Lon / Alt position. This includes the navigation to reach the required release position and velocity. */
@@ -884,8 +874,45 @@ const (
 	MavCmdUser4 = 31013
 	/*MavCmdUser5 - User defined command. Ground Station will not show the Vehicle as flying through this item. Example: MAV_CMD_DO_SET_PARAMETER item. */
 	MavCmdUser5 = 31014
+	/*MavCmdPowerOffInitiated - A system wide power-off event has been initiated. */
+	MavCmdPowerOffInitiated = 42000
+	/*MavCmdSoloBtnFlyClick - FLY button has been clicked. */
+	MavCmdSoloBtnFlyClick = 42001
+	/*MavCmdSoloBtnFlyHold - FLY button has been held for 1.5 seconds. */
+	MavCmdSoloBtnFlyHold = 42002
+	/*MavCmdSoloBtnPauseClick - PAUSE button has been clicked. */
+	MavCmdSoloBtnPauseClick = 42003
+	/*MavCmdFixedMagCal - Magnetometer calibration based on fixed position
+	  in earth field given by inclination, declination and intensity. */
+	MavCmdFixedMagCal = 42004
+	/*MavCmdFixedMagCalField - Magnetometer calibration based on fixed expected field values in milliGauss. */
+	MavCmdFixedMagCalField = 42005
+	/*MavCmdDoStartMagCal - Initiate a magnetometer calibration. */
+	MavCmdDoStartMagCal = 42424
+	/*MavCmdDoAcceptMagCal - Initiate a magnetometer calibration. */
+	MavCmdDoAcceptMagCal = 42425
+	/*MavCmdDoCancelMagCal - Cancel a running magnetometer calibration. */
+	MavCmdDoCancelMagCal = 42426
+	/*MavCmdSetFactoryTestMode - Command autopilot to get into factory test/diagnostic mode. */
+	MavCmdSetFactoryTestMode = 42427
+	/*MavCmdDoSendBanner - Reply with the version banner. */
+	MavCmdDoSendBanner = 42428
+	/*MavCmdAccelcalVehiclePos - Used when doing accelerometer calibration. When sent to the GCS tells it what position to put the vehicle in. When sent to the vehicle says what position the vehicle is in. */
+	MavCmdAccelcalVehiclePos = 42429
+	/*MavCmdGimbalReset - Causes the gimbal to reset and boot as if it was just powered on. */
+	MavCmdGimbalReset = 42501
+	/*MavCmdGimbalAxisCalibrationStatus - Reports progress and success or failure of gimbal axis calibration procedure. */
+	MavCmdGimbalAxisCalibrationStatus = 42502
+	/*MavCmdGimbalRequestAxisCalibration - Starts commutation calibration on the gimbal. */
+	MavCmdGimbalRequestAxisCalibration = 42503
+	/*MavCmdGimbalFullReset - Erases gimbal application and parameters. */
+	MavCmdGimbalFullReset = 42505
+	/*MavCmdDoWinch - Command to operate winch. */
+	MavCmdDoWinch = 42600
+	/*MavCmdFlashBootloader - Update the bootloader */
+	MavCmdFlashBootloader = 42650
 	/*MavCmdEnumEnd -  */
-	MavCmdEnumEnd = 31015
+	MavCmdEnumEnd = 42651
 )
 
 /*MAV_DATA_STREAM - A data stream is not a fixed set of messages, but rather a
@@ -898,8 +925,8 @@ const (
 	MavDataStreamRawSensors = 1
 	/*MavDataStreamExtendedStatus - Enable GPS_STATUS, CONTROL_STATUS, AUX_STATUS */
 	MavDataStreamExtendedStatus = 2
-	/*MavDataStreamRcChannels - Enable RC_CHANNELS_SCALED, RC_CHANNELS_RAW, SERVO_OUTPUT_RAW */
-	MavDataStreamRcChannels = 3
+	/*MavDataStreamRCChannels - Enable RC_CHANNELS_SCALED, RC_CHANNELS_RAW, SERVO_OUTPUT_RAW */
+	MavDataStreamRCChannels = 3
 	/*MavDataStreamRawController - Enable ATTITUDE_CONTROLLER_OUTPUT, POSITION_CONTROLLER_OUTPUT, NAV_CONTROLLER_OUTPUT. */
 	MavDataStreamRawController = 4
 	/*MavDataStreamPosition - Enable LOCAL_POSITION, GLOBAL_POSITION/GLOBAL_POSITION_INT messages. */
@@ -1028,42 +1055,40 @@ const (
 	MavResultEnumEnd = 6
 )
 
-/*MAV_MISSION_RESULT - Result of mission operation (in a MISSION_ACK message). */
+/*MAV_MISSION_RESULT - result in a MAVLink mission ack */
 const (
 	/*MavMissionAccepted - mission accepted OK */
 	MavMissionAccepted = 0
-	/*MavMissionError - Generic error / not accepting mission commands at all right now. */
+	/*MavMissionError - generic error / not accepting mission commands at all right now */
 	MavMissionError = 1
-	/*MavMissionUnsupportedFrame - Coordinate frame is not supported. */
+	/*MavMissionUnsupportedFrame - coordinate frame is not supported */
 	MavMissionUnsupportedFrame = 2
-	/*MavMissionUnsupported - Command is not supported. */
+	/*MavMissionUnsupported - command is not supported */
 	MavMissionUnsupported = 3
-	/*MavMissionNoSpace - Mission item exceeds storage space. */
+	/*MavMissionNoSpace - mission item exceeds storage space */
 	MavMissionNoSpace = 4
-	/*MavMissionInvalID - One of the parameters has an invalid value. */
+	/*MavMissionInvalID - one of the parameters has an invalid value */
 	MavMissionInvalID = 5
-	/*MavMissionInvalIDParam1 - param1 has an invalid value. */
+	/*MavMissionInvalIDParam1 - param1 has an invalid value */
 	MavMissionInvalIDParam1 = 6
-	/*MavMissionInvalIDParam2 - param2 has an invalid value. */
+	/*MavMissionInvalIDParam2 - param2 has an invalid value */
 	MavMissionInvalIDParam2 = 7
-	/*MavMissionInvalIDParam3 - param3 has an invalid value. */
+	/*MavMissionInvalIDParam3 - param3 has an invalid value */
 	MavMissionInvalIDParam3 = 8
-	/*MavMissionInvalIDParam4 - param4 has an invalid value. */
+	/*MavMissionInvalIDParam4 - param4 has an invalid value */
 	MavMissionInvalIDParam4 = 9
-	/*MavMissionInvalIDParam5X - x / param5 has an invalid value. */
+	/*MavMissionInvalIDParam5X - x/param5 has an invalid value */
 	MavMissionInvalIDParam5X = 10
-	/*MavMissionInvalIDParam6Y - y / param6 has an invalid value. */
+	/*MavMissionInvalIDParam6Y - y/param6 has an invalid value */
 	MavMissionInvalIDParam6Y = 11
-	/*MavMissionInvalIDParam7 - z / param7 has an invalid value. */
+	/*MavMissionInvalIDParam7 - param7 has an invalid value */
 	MavMissionInvalIDParam7 = 12
-	/*MavMissionInvalIDSequence - Mission item received out of sequence */
+	/*MavMissionInvalIDSequence - received waypoint out of sequence */
 	MavMissionInvalIDSequence = 13
-	/*MavMissionDenied - Not accepting any mission commands from this communication partner. */
+	/*MavMissionDenied - not accepting any mission commands from this communication partner */
 	MavMissionDenied = 14
-	/*MavMissionOperationCancelled - Current mission operation cancelled (e.g. mission upload, mission download). */
-	MavMissionOperationCancelled = 15
 	/*MavMissionResultEnumEnd -  */
-	MavMissionResultEnumEnd = 16
+	MavMissionResultEnumEnd = 15
 )
 
 /*MAV_SEVERITY - Indicates the severity level, generally used for status messages to indicate their relative urgency. Based on RFC-5424 using expanded definitions at: http://www.kiwisyslog.com/kb/info:-syslog-message-levels/. */
@@ -1096,10 +1121,10 @@ const (
 	MavPowerStatusServoValID = 2
 	/*MavPowerStatusUsbConnected - USB power is connected */
 	MavPowerStatusUsbConnected = 4
-	/*MavPowerStatusPeriphOvercurrent - peripheral supply is in over-current state */
-	MavPowerStatusPeriphOvercurrent = 8
-	/*MavPowerStatusPeriphHipowerOvercurrent - hi-power peripheral supply is in over-current state */
-	MavPowerStatusPeriphHipowerOvercurrent = 16
+	/*MavPowerStatusPeriphOveRCurrent - peripheral supply is in over-current state */
+	MavPowerStatusPeriphOveRCurrent = 8
+	/*MavPowerStatusPeriphHipowerOveRCurrent - hi-power peripheral supply is in over-current state */
+	MavPowerStatusPeriphHipowerOveRCurrent = 16
 	/*MavPowerStatusChanged - Power status has changed since boot */
 	MavPowerStatusChanged = 32
 	/*MavPowerStatusEnumEnd -  */
@@ -1112,10 +1137,10 @@ const (
 	SerialControlDevTelem1 = 0
 	/*SerialControlDevTelem2 - Second telemetry port */
 	SerialControlDevTelem2 = 1
-	/*SerialControlDevGps1 - First GPS port */
-	SerialControlDevGps1 = 2
-	/*SerialControlDevGps2 - Second GPS port */
-	SerialControlDevGps2 = 3
+	/*SerialControlDevGPS1 - First GPS port */
+	SerialControlDevGPS1 = 2
+	/*SerialControlDevGPS2 - Second GPS port */
+	SerialControlDevGPS2 = 3
 	/*SerialControlDevShell - system shell */
 	SerialControlDevShell = 10
 	/*SerialControlDevEnumEnd -  */
@@ -1288,9 +1313,9 @@ const (
 const (
 	/*MavMissionTypeMission - Items are mission commands for main mission. */
 	MavMissionTypeMission = 0
-	/*MavMissionTypeFence - Specifies GeoFence area(s). Items are MAV_CMD_NAV_FENCE_ GeoFence items. */
+	/*MavMissionTypeFence - Specifies GeoFence area(s). Items are MAV_CMD_FENCE_ GeoFence items. */
 	MavMissionTypeFence = 1
-	/*MavMissionTypeRally - Specifies the rally points for the vehicle. Rally points are alternative RTL points. Items are MAV_CMD_NAV_RALLY_POINT rally point items. */
+	/*MavMissionTypeRally - Specifies the rally points for the vehicle. Rally points are alternative RTL points. Items are MAV_CMD_RALLY_POINT rally point items. */
 	MavMissionTypeRally = 2
 	/*MavMissionTypeAll - Only used in MISSION_CLEAR_ALL to clear all mission types. */
 	MavMissionTypeAll = 255
@@ -1306,10 +1331,10 @@ const (
 	MavEstimatorTypeVision = 2
 	/*MavEstimatorTypeVio - Visual-inertial estimate. */
 	MavEstimatorTypeVio = 3
-	/*MavEstimatorTypeGps - Plain GPS estimate. */
-	MavEstimatorTypeGps = 4
-	/*MavEstimatorTypeGpsIns - Estimator integrating GPS and inertial sensing. */
-	MavEstimatorTypeGpsIns = 5
+	/*MavEstimatorTypeGPS - Plain GPS estimate. */
+	MavEstimatorTypeGPS = 4
+	/*MavEstimatorTypeGPSIns - Estimator integrating GPS and inertial sensing. */
+	MavEstimatorTypeGPSIns = 5
 	/*MavEstimatorTypeEnumEnd -  */
 	MavEstimatorTypeEnumEnd = 6
 )
@@ -1346,7 +1371,7 @@ const (
 	MavBatteryFunctionEnumEnd = 5
 )
 
-/*MAV_BATTERY_CHARGE_STATE - Enumeration for battery charge states. */
+/*MAV_BATTERY_CHARGE_STATE - Enumeration for low battery states. */
 const (
 	/*MavBatteryChargeStateUndefined - Low battery state is not provided */
 	MavBatteryChargeStateUndefined = 0
@@ -1362,28 +1387,8 @@ const (
 	MavBatteryChargeStateFailed = 5
 	/*MavBatteryChargeStateUnhealthy - Battery is diagnosed to be defective or an error occurred, usage is discouraged / prohibited. */
 	MavBatteryChargeStateUnhealthy = 6
-	/*MavBatteryChargeStateCharging - Battery is charging. */
-	MavBatteryChargeStateCharging = 7
 	/*MavBatteryChargeStateEnumEnd -  */
-	MavBatteryChargeStateEnumEnd = 8
-)
-
-/*MAV_SMART_BATTERY_FAULT - Smart battery supply status/fault flags (bitmask) for health indication. */
-const (
-	/*MavSmartBatteryFaultDeepDischarge - Battery has deep discharged. */
-	MavSmartBatteryFaultDeepDischarge = 1
-	/*MavSmartBatteryFaultSpikes - Voltage spikes. */
-	MavSmartBatteryFaultSpikes = 2
-	/*MavSmartBatteryFaultSingleCellFail - Single cell has failed. */
-	MavSmartBatteryFaultSingleCellFail = 4
-	/*MavSmartBatteryFaultOverCurrent - Over-current fault. */
-	MavSmartBatteryFaultOverCurrent = 8
-	/*MavSmartBatteryFaultOverTemperature - Over-temperature fault. */
-	MavSmartBatteryFaultOverTemperature = 16
-	/*MavSmartBatteryFaultUnderTemperature - Under-temperature fault. */
-	MavSmartBatteryFaultUnderTemperature = 32
-	/*MavSmartBatteryFaultEnumEnd -  */
-	MavSmartBatteryFaultEnumEnd = 33
+	MavBatteryChargeStateEnumEnd = 7
 )
 
 /*MAV_VTOL_STATE - Enumeration of VTOL states */
@@ -1488,8 +1493,8 @@ const (
 	AdsbFlagsValIDCallsign = 16
 	/*AdsbFlagsValIDSquawk -  */
 	AdsbFlagsValIDSquawk = 32
-	/*AdsbFlagsSimulated -  */
-	AdsbFlagsSimulated = 64
+	/*AdsbFlagsSIMUlated -  */
+	AdsbFlagsSIMUlated = 64
 	/*AdsbFlagsEnumEnd -  */
 	AdsbFlagsEnumEnd = 65
 )
@@ -1524,8 +1529,8 @@ const (
 	EstimatorPredPosHorizRel = 256
 	/*EstimatorPredPosHorizAbs - True if the EKF has sufficient data to enter a mode that will provide a (absolute) position estimate */
 	EstimatorPredPosHorizAbs = 512
-	/*EstimatorGpsGlitch - True if the EKF has detected a GPS glitch */
-	EstimatorGpsGlitch = 1024
+	/*EstimatorGPSGlitch - True if the EKF has detected a GPS glitch */
+	EstimatorGPSGlitch = 1024
 	/*EstimatorAccelError - True if the EKF has detected bad accelerometer data */
 	EstimatorAccelError = 2048
 	/*EstimatorStatusFlagsEnumEnd -  */
@@ -1546,8 +1551,8 @@ const (
 
 /*MOTOR_TEST_THROTTLE_TYPE -  */
 const (
-	/*MotorTestThrottlePercent - throttle as a percentage from 0 ~ 100 */
-	MotorTestThrottlePercent = 0
+	/*MotorTestThrottlePeRCent - throttle as a percentage from 0 ~ 100 */
+	MotorTestThrottlePeRCent = 0
 	/*MotorTestThrottlePwm - throttle as an absolute PWM value (normally in range of 1000~2000) */
 	MotorTestThrottlePwm = 1
 	/*MotorTestThrottlePilot - throttle pass-through from pilot's transmitter */
@@ -1560,24 +1565,24 @@ const (
 
 /*GPS_INPUT_IGNORE_FLAGS -  */
 const (
-	/*GpsInputIgnoreFlagAlt - ignore altitude field */
-	GpsInputIgnoreFlagAlt = 1
-	/*GpsInputIgnoreFlagHdop - ignore hdop field */
-	GpsInputIgnoreFlagHdop = 2
-	/*GpsInputIgnoreFlagVdop - ignore vdop field */
-	GpsInputIgnoreFlagVdop = 4
-	/*GpsInputIgnoreFlagVelHoriz - ignore horizontal velocity field (vn and ve) */
-	GpsInputIgnoreFlagVelHoriz = 8
-	/*GpsInputIgnoreFlagVelVert - ignore vertical velocity field (vd) */
-	GpsInputIgnoreFlagVelVert = 16
-	/*GpsInputIgnoreFlagSpeedAccuracy - ignore speed accuracy field */
-	GpsInputIgnoreFlagSpeedAccuracy = 32
-	/*GpsInputIgnoreFlagHorizontalAccuracy - ignore horizontal accuracy field */
-	GpsInputIgnoreFlagHorizontalAccuracy = 64
-	/*GpsInputIgnoreFlagVerticalAccuracy - ignore vertical accuracy field */
-	GpsInputIgnoreFlagVerticalAccuracy = 128
-	/*GpsInputIgnoreFlagsEnumEnd -  */
-	GpsInputIgnoreFlagsEnumEnd = 129
+	/*GPSInputIgnoreFlagAlt - ignore altitude field */
+	GPSInputIgnoreFlagAlt = 1
+	/*GPSInputIgnoreFlagHdop - ignore hdop field */
+	GPSInputIgnoreFlagHdop = 2
+	/*GPSInputIgnoreFlagVdop - ignore vdop field */
+	GPSInputIgnoreFlagVdop = 4
+	/*GPSInputIgnoreFlagVelHoriz - ignore horizontal velocity field (vn and ve) */
+	GPSInputIgnoreFlagVelHoriz = 8
+	/*GPSInputIgnoreFlagVelVert - ignore vertical velocity field (vd) */
+	GPSInputIgnoreFlagVelVert = 16
+	/*GPSInputIgnoreFlagSpeedAccuracy - ignore speed accuracy field */
+	GPSInputIgnoreFlagSpeedAccuracy = 32
+	/*GPSInputIgnoreFlagHorizontalAccuracy - ignore horizontal accuracy field */
+	GPSInputIgnoreFlagHorizontalAccuracy = 64
+	/*GPSInputIgnoreFlagVerticalAccuracy - ignore vertical accuracy field */
+	GPSInputIgnoreFlagVerticalAccuracy = 128
+	/*GPSInputIgnoreFlagsEnumEnd -  */
+	GPSInputIgnoreFlagsEnumEnd = 129
 )
 
 /*MAV_COLLISION_ACTION - Possible actions an aircraft can take to avoid a collision. */
@@ -1606,7 +1611,7 @@ const (
 	MavCollisionThreatLevelNone = 0
 	/*MavCollisionThreatLevelLow - Craft is mildly concerned about this threat */
 	MavCollisionThreatLevelLow = 1
-	/*MavCollisionThreatLevelHigh - Craft is panicking, and may take actions to avoid threat */
+	/*MavCollisionThreatLevelHigh - Craft is panicing, and may take actions to avoid threat */
 	MavCollisionThreatLevelHigh = 2
 	/*MavCollisionThreatLevelEnumEnd -  */
 	MavCollisionThreatLevelEnumEnd = 3
@@ -1614,36 +1619,36 @@ const (
 
 /*MAV_COLLISION_SRC - Source of information about this collision. */
 const (
-	/*MavCollisionSrcAdsb - ID field references ADSB_VEHICLE packets */
-	MavCollisionSrcAdsb = 0
-	/*MavCollisionSrcMavlinkGpsGlobalInt - ID field references MAVLink SRC ID */
-	MavCollisionSrcMavlinkGpsGlobalInt = 1
-	/*MavCollisionSrcEnumEnd -  */
-	MavCollisionSrcEnumEnd = 2
+	/*MavCollisionSRCAdsb - ID field references ADSB_VEHICLE packets */
+	MavCollisionSRCAdsb = 0
+	/*MavCollisionSRCMavlinkGPSGlobalInt - ID field references MAVLink SRC ID */
+	MavCollisionSRCMavlinkGPSGlobalInt = 1
+	/*MavCollisionSRCEnumEnd -  */
+	MavCollisionSRCEnumEnd = 2
 )
 
 /*GPS_FIX_TYPE - Type of GPS fix */
 const (
-	/*GpsFixTypeNoGps - No GPS connected */
-	GpsFixTypeNoGps = 0
-	/*GpsFixTypeNoFix - No position information, GPS is connected */
-	GpsFixTypeNoFix = 1
-	/*GpsFixType2DFix - 2D position */
-	GpsFixType2DFix = 2
-	/*GpsFixType3DFix - 3D position */
-	GpsFixType3DFix = 3
-	/*GpsFixTypeDgps - DGPS/SBAS aided 3D position */
-	GpsFixTypeDgps = 4
-	/*GpsFixTypeRtkFloat - RTK float, 3D position */
-	GpsFixTypeRtkFloat = 5
-	/*GpsFixTypeRtkFixed - RTK Fixed, 3D position */
-	GpsFixTypeRtkFixed = 6
-	/*GpsFixTypeStatic - Static fixed, typically used for base stations */
-	GpsFixTypeStatic = 7
-	/*GpsFixTypePpp - PPP, 3D position. */
-	GpsFixTypePpp = 8
-	/*GpsFixTypeEnumEnd -  */
-	GpsFixTypeEnumEnd = 9
+	/*GPSFixTypeNoGPS - No GPS connected */
+	GPSFixTypeNoGPS = 0
+	/*GPSFixTypeNoFix - No position information, GPS is connected */
+	GPSFixTypeNoFix = 1
+	/*GPSFixType2DFix - 2D position */
+	GPSFixType2DFix = 2
+	/*GPSFixType3DFix - 3D position */
+	GPSFixType3DFix = 3
+	/*GPSFixTypeDGPS - DGPS/SBAS aided 3D position */
+	GPSFixTypeDGPS = 4
+	/*GPSFixTypeRtkFloat - RTK float, 3D position */
+	GPSFixTypeRtkFloat = 5
+	/*GPSFixTypeRtkFixed - RTK Fixed, 3D position */
+	GPSFixTypeRtkFixed = 6
+	/*GPSFixTypeStatic - Static fixed, typically used for base stations */
+	GPSFixTypeStatic = 7
+	/*GPSFixTypePpp - PPP, 3D position. */
+	GPSFixTypePpp = 8
+	/*GPSFixTypeEnumEnd -  */
+	GPSFixTypeEnumEnd = 9
 )
 
 /*RTK_BASELINE_COORDINATE_SYSTEM - RTK GPS baseline coordinate system, used for RTK corrections */
@@ -1686,11 +1691,11 @@ const (
 	VtolTransitionHeadingEnumEnd = 5
 )
 
-/*CAMERA_CAP_FLAGS - Camera capability flags (Bitmap) */
+/*CAMERA_CAP_FLAGS - Camera capability flags (Bitmap). */
 const (
-	/*CameraCapFlagsCaptureVIDeo - Camera is able to record video */
+	/*CameraCapFlagsCaptureVIDeo - Camera is able to record video. */
 	CameraCapFlagsCaptureVIDeo = 1
-	/*CameraCapFlagsCaptureImage - Camera is able to capture images */
+	/*CameraCapFlagsCaptureImage - Camera is able to capture images. */
 	CameraCapFlagsCaptureImage = 2
 	/*CameraCapFlagsHasModes - Camera has separate Video and Image/Photo modes (MAV_CMD_SET_CAMERA_MODE) */
 	CameraCapFlagsHasModes = 4
@@ -1700,62 +1705,8 @@ const (
 	CameraCapFlagsCanCaptureVIDeoInImageMode = 16
 	/*CameraCapFlagsHasImageSurveyMode - Camera has image survey mode (MAV_CMD_SET_CAMERA_MODE) */
 	CameraCapFlagsHasImageSurveyMode = 32
-	/*CameraCapFlagsHasBasicZoom - Camera has basic zoom control (MAV_CMD_SET_CAMERA_ZOOM) */
-	CameraCapFlagsHasBasicZoom = 64
-	/*CameraCapFlagsHasBasicFocus - Camera has basic focus control (MAV_CMD_SET_CAMERA_FOCUS) */
-	CameraCapFlagsHasBasicFocus = 128
-	/*CameraCapFlagsHasVIDeoStream - Camera has video streaming capabilities (use MAV_CMD_REQUEST_VIDEO_STREAM_INFORMATION for video streaming info) */
-	CameraCapFlagsHasVIDeoStream = 256
 	/*CameraCapFlagsEnumEnd -  */
-	CameraCapFlagsEnumEnd = 257
-)
-
-/*VIDEO_STREAM_STATUS_FLAGS - Stream status flags (Bitmap) */
-const (
-	/*VIDeoStreamStatusFlagsRunning - Stream is active (running) */
-	VIDeoStreamStatusFlagsRunning = 1
-	/*VIDeoStreamStatusFlagsThermal - Stream is thermal imaging */
-	VIDeoStreamStatusFlagsThermal = 2
-	/*VIDeoStreamStatusFlagsEnumEnd -  */
-	VIDeoStreamStatusFlagsEnumEnd = 3
-)
-
-/*VIDEO_STREAM_TYPE - Video stream types */
-const (
-	/*VIDeoStreamTypeRtsp - Stream is RTSP */
-	VIDeoStreamTypeRtsp = 0
-	/*VIDeoStreamTypeRtpUDP - Stream is RTP UDP (URI gives the port number) */
-	VIDeoStreamTypeRtpUDP = 1
-	/*VIDeoStreamTypeTCPMPEG - Stream is MPEG on TCP */
-	VIDeoStreamTypeTCPMPEG = 2
-	/*VIDeoStreamTypeMPEGTsH264 - Stream is h.264 on MPEG TS (URI gives the port number) */
-	VIDeoStreamTypeMPEGTsH264 = 3
-	/*VIDeoStreamTypeEnumEnd -  */
-	VIDeoStreamTypeEnumEnd = 4
-)
-
-/*CAMERA_ZOOM_TYPE - Zoom types for MAV_CMD_SET_CAMERA_ZOOM */
-const (
-	/*ZoomTypeStep - Zoom one step increment (-1 for wide, 1 for tele) */
-	ZoomTypeStep = 0
-	/*ZoomTypeContinuous - Continuous zoom up/down until stopped (-1 for wide, 1 for tele, 0 to stop zooming) */
-	ZoomTypeContinuous = 1
-	/*ZoomTypeRange - Zoom value as proportion of full camera range (a value between 0.0 and 100.0) */
-	ZoomTypeRange = 2
-	/*CameraZoomTypeEnumEnd -  */
-	CameraZoomTypeEnumEnd = 3
-)
-
-/*SET_FOCUS_TYPE - Focus types for MAV_CMD_SET_CAMERA_FOCUS */
-const (
-	/*FocusTypeStep - Focus one step increment (-1 for focusing in, 1 for focusing out towards infinity). */
-	FocusTypeStep = 0
-	/*FocusTypeContinuous - Continuous focus up/down until stopped (-1 for focusing in, 1 for focusing out towards infinity, 0 to stop focusing) */
-	FocusTypeContinuous = 1
-	/*FocusTypeRange - Zoom value as proportion of full camera range (a value between 0.0 and 100.0) */
-	FocusTypeRange = 2
-	/*SetFocusTypeEnumEnd -  */
-	SetFocusTypeEnumEnd = 3
+	CameraCapFlagsEnumEnd = 33
 )
 
 /*PARAM_ACK - Result from a PARAM_EXT_SET message. */
@@ -1804,12 +1755,12 @@ const (
 
 /*RC_TYPE - RC type */
 const (
-	/*RcTypeSpektrumDsm2 - Spektrum DSM2 */
-	RcTypeSpektrumDsm2 = 0
-	/*RcTypeSpektrumDsmx - Spektrum DSMX */
-	RcTypeSpektrumDsmx = 1
-	/*RcTypeEnumEnd -  */
-	RcTypeEnumEnd = 2
+	/*RCTypeSpektrumDsm2 - Spektrum DSM2 */
+	RCTypeSpektrumDsm2 = 0
+	/*RCTypeSpektrumDsmx - Spektrum DSMX */
+	RCTypeSpektrumDsmx = 1
+	/*RCTypeEnumEnd -  */
+	RCTypeEnumEnd = 2
 )
 
 /*POSITION_TARGET_TYPEMASK - Bitmap to indicate which dimensions should be ignored by the vehicle: a value of 0b0000000000000000 or 0b0000001000000000 indicates that none of the setpoint dimensions should be ignored. If bit 9 is set the floats afx afy afz should be interpreted as force instead of acceleration. */
@@ -1832,86 +1783,12 @@ const (
 	PositionTargetTypemaskAyIgnore = 128
 	/*PositionTargetTypemaskAzIgnore - Ignore acceleration z */
 	PositionTargetTypemaskAzIgnore = 256
-	/*PositionTargetTypemaskForceSet - Use force instead of acceleration */
-	PositionTargetTypemaskForceSet = 512
+	/*PositionTargetTypemaskFoRCeSet - Use force instead of acceleration */
+	PositionTargetTypemaskFoRCeSet = 512
 	/*PositionTargetTypemaskYawIgnore - Ignore yaw */
 	PositionTargetTypemaskYawIgnore = 1024
 	/*PositionTargetTypemaskYawRateIgnore - Ignore yaw rate */
 	PositionTargetTypemaskYawRateIgnore = 2048
 	/*PositionTargetTypemaskEnumEnd -  */
 	PositionTargetTypemaskEnumEnd = 2049
-)
-
-/*UTM_FLIGHT_STATE - Airborne status of UAS. */
-const (
-	/*UtmFlightStateUnknown - The flight state can't be determined. */
-	UtmFlightStateUnknown = 1
-	/*UtmFlightStateGround - UAS on ground. */
-	UtmFlightStateGround = 2
-	/*UtmFlightStateAirborne - UAS airborne. */
-	UtmFlightStateAirborne = 3
-	/*UtmFlightStateEmergency - UAS is in an emergency flight state. */
-	UtmFlightStateEmergency = 16
-	/*UtmFlightStateNoctrl - UAS has no active controls. */
-	UtmFlightStateNoctrl = 32
-	/*UtmFlightStateEnumEnd -  */
-	UtmFlightStateEnumEnd = 33
-)
-
-/*UTM_DATA_AVAIL_FLAGS - Flags for the global position report. */
-const (
-	/*UtmDataAvailFlagsTimeValID - The field time contains valid data. */
-	UtmDataAvailFlagsTimeValID = 1
-	/*UtmDataAvailFlagsUasIDAvailable - The field uas_id contains valid data. */
-	UtmDataAvailFlagsUasIDAvailable = 2
-	/*UtmDataAvailFlagsPositionAvailable - The fields lat, lon and h_acc contain valid data. */
-	UtmDataAvailFlagsPositionAvailable = 4
-	/*UtmDataAvailFlagsAltitudeAvailable - The fields alt and v_acc contain valid data. */
-	UtmDataAvailFlagsAltitudeAvailable = 8
-	/*UtmDataAvailFlagsRelativeAltitudeAvailable - The field relative_alt contains valid data. */
-	UtmDataAvailFlagsRelativeAltitudeAvailable = 16
-	/*UtmDataAvailFlagsHorizontalVeloAvailable - The fields vx and vy contain valid data. */
-	UtmDataAvailFlagsHorizontalVeloAvailable = 32
-	/*UtmDataAvailFlagsVerticalVeloAvailable - The field vz contains valid data. */
-	UtmDataAvailFlagsVerticalVeloAvailable = 64
-	/*UtmDataAvailFlagsNextWaypointAvailable - The fields next_lat, next_lon and next_alt contain valid data. */
-	UtmDataAvailFlagsNextWaypointAvailable = 128
-	/*UtmDataAvailFlagsEnumEnd -  */
-	UtmDataAvailFlagsEnumEnd = 129
-)
-
-/*CELLULAR_NETWORK_RADIO_TYPE - Cellular network radio type */
-const (
-	/*CellularNetworkRadioTypeNone -  */
-	CellularNetworkRadioTypeNone = 0
-	/*CellularNetworkRadioTypeGsm -  */
-	CellularNetworkRadioTypeGsm = 1
-	/*CellularNetworkRadioTypeCdma -  */
-	CellularNetworkRadioTypeCdma = 2
-	/*CellularNetworkRadioTypeWcdma -  */
-	CellularNetworkRadioTypeWcdma = 3
-	/*CellularNetworkRadioTypeLte -  */
-	CellularNetworkRadioTypeLte = 4
-	/*CellularNetworkRadioTypeEnumEnd -  */
-	CellularNetworkRadioTypeEnumEnd = 5
-)
-
-/*CELLULAR_NETWORK_STATUS_FLAG - These flags encode the cellular network status */
-const (
-	/*CellularNetworkStatusFlagRoaming - Roaming is active */
-	CellularNetworkStatusFlagRoaming = 1
-	/*CellularNetworkStatusFlagEnumEnd -  */
-	CellularNetworkStatusFlagEnumEnd = 2
-)
-
-/*PRECISION_LAND_MODE - Precision land modes (used in MAV_CMD_NAV_LAND). */
-const (
-	/*PrecisionLandModeDisabled - Normal (non-precision) landing. */
-	PrecisionLandModeDisabled = 0
-	/*PrecisionLandModeOpportunistic - Use precision landing if beacon detected when land command accepted, otherwise land normally. */
-	PrecisionLandModeOpportunistic = 1
-	/*PrecisionLandModeRequired - Use precision landing, searching for beacon if not found when land command accepted (land normally if beacon cannot be found). */
-	PrecisionLandModeRequired = 2
-	/*PrecisionLandModeEnumEnd -  */
-	PrecisionLandModeEnumEnd = 3
 )

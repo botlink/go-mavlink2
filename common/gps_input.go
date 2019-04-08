@@ -35,8 +35,8 @@ import (
 	"github.com/queue-b/go-mavlink2/util"
 )
 
-/*GpsInput GPS sensor input message.  This is a raw sensor value sent by the GPS. This is NOT the global position estimate of the system. */
-type GpsInput struct {
+/*GPSInput GPS sensor input message.  This is a raw sensor value sent by the GPS. This is NOT the global position estimate of the system. */
+type GPSInput struct {
 	/*TimeUsec Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude the number. */
 	TimeUsec uint64
 	/*TimeWeekMs GPS time (from start of GPS week) */
@@ -67,8 +67,8 @@ type GpsInput struct {
 	IgnoreFlags uint16
 	/*TimeWeek GPS week number */
 	TimeWeek uint16
-	/*GpsID ID of the GPS for multiple GPS inputs */
-	GpsID uint8
+	/*GPSID ID of the GPS for multiple GPS inputs */
+	GPSID uint8
 	/*FixType 0-1: no fix, 2: 2D fix, 3: 3D fix. 4: 3D with DGPS. 5: 3D with RTK */
 	FixType uint8
 	/*SatellitesVisible Number of satellites visible. */
@@ -77,7 +77,7 @@ type GpsInput struct {
 	HasExtensionFieldValues bool
 }
 
-func (m *GpsInput) String() string {
+func (m *GPSInput) String() string {
 	var builder strings.Builder
 	var buffer bytes.Buffer
 
@@ -100,7 +100,7 @@ func (m *GpsInput) String() string {
 	builder.WriteString("VertAccuracy:\t%v [m]\n")
 	builder.WriteString("IgnoreFlags:\t%v \n")
 	builder.WriteString("TimeWeek:\t%v \n")
-	builder.WriteString("GpsID:\t%v \n")
+	builder.WriteString("GPSID:\t%v \n")
 	builder.WriteString("FixType:\t%v \n")
 	builder.WriteString("SatellitesVisible:\t%v \n")
 	format := builder.String()
@@ -125,7 +125,7 @@ func (m *GpsInput) String() string {
 		m.VertAccuracy,
 		m.IgnoreFlags,
 		m.TimeWeek,
-		m.GpsID,
+		m.GPSID,
 		m.FixType,
 		m.SatellitesVisible,
 	)
@@ -135,7 +135,7 @@ func (m *GpsInput) String() string {
 }
 
 // GetVersion gets the MAVLink version of the Message contents
-func (m *GpsInput) GetVersion() int {
+func (m *GPSInput) GetVersion() int {
 	if m.HasExtensionFieldValues {
 		return 2
 	}
@@ -144,35 +144,35 @@ func (m *GpsInput) GetVersion() int {
 }
 
 // GetDialect gets the name of the dialect that defines the Message
-func (m *GpsInput) GetDialect() string {
+func (m *GPSInput) GetDialect() string {
 	return "common"
 }
 
 // GetMessageName gets the name of the Message
-func (m *GpsInput) GetMessageName() string {
-	return "GpsInput"
+func (m *GPSInput) GetMessageName() string {
+	return "GPSInput"
 }
 
 // GetID gets the ID of the Message
-func (m *GpsInput) GetID() uint32 {
+func (m *GPSInput) GetID() uint32 {
 	return 232
 }
 
 // HasExtensionFields returns true if the message definition contained extensions; false otherwise
-func (m *GpsInput) HasExtensionFields() bool {
+func (m *GPSInput) HasExtensionFields() bool {
 	return false
 }
 
-func (m *GpsInput) getV1Length() int {
+func (m *GPSInput) getV1Length() int {
 	return 63
 }
 
-func (m *GpsInput) getIOSlice() []byte {
+func (m *GPSInput) getIOSlice() []byte {
 	return make([]byte, 63+1)
 }
 
 // Read sets the field values of the message from the raw message payload
-func (m *GpsInput) Read(frame mavlink2.Frame) (err error) {
+func (m *GPSInput) Read(frame mavlink2.Frame) (err error) {
 	version := frame.GetVersion()
 
 	// Ensure only Version 1 or Version 2 were specified
@@ -194,7 +194,7 @@ func (m *GpsInput) Read(frame mavlink2.Frame) (err error) {
 		}
 	}()
 
-	// Get a slice of bytes long enough for the all the GpsInput fields
+	// Get a slice of bytes long enough for the all the GPSInput fields
 	// binary.Read requires enough bytes in the reader to read all fields, even if
 	// the fields are just zero values. This also simplifies handling MAVLink2
 	// extensions and trailing zero truncation.
@@ -215,7 +215,7 @@ func (m *GpsInput) Read(frame mavlink2.Frame) (err error) {
 }
 
 // Write encodes the field values of the message to a byte array
-func (m *GpsInput) Write(version int) (output []byte, err error) {
+func (m *GPSInput) Write(version int) (output []byte, err error) {
 	var buffer bytes.Buffer
 
 	// Ensure only Version 1 or Version 2 were specified

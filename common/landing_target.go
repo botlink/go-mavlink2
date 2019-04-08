@@ -35,7 +35,7 @@ import (
 	"github.com/queue-b/go-mavlink2/util"
 )
 
-/*LandingTarget The location of a landing target. See: https://mavlink.io/en/services/landing_target.html */
+/*LandingTarget The location of a landing target. See: https://mavlink.io/en/protocol/landing_target.html */
 type LandingTarget struct {
 	/*TimeUsec Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude the number. */
 	TimeUsec uint64

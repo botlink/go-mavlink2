@@ -35,8 +35,8 @@ import (
 	"github.com/queue-b/go-mavlink2/util"
 )
 
-/*RcChannelsOverrIDe The RAW values of the RC channels sent to the MAV to override info received from the RC radio. A value of UINT16_MAX means no change to that channel. A value of 0 means control of that channel should be released back to the RC radio. The standard PPM modulation is as follows: 1000 microseconds: 0%, 2000 microseconds: 100%. Individual receivers/transmitters might violate this specification. */
-type RcChannelsOverrIDe struct {
+/*RCChannelsOverrIDe The RAW values of the RC channels sent to the MAV to override info received from the RC radio. A value of UINT16_MAX means no change to that channel. A value of 0 means control of that channel should be released back to the RC radio. The standard PPM modulation is as follows: 1000 microseconds: 0%, 2000 microseconds: 100%. Individual receivers/transmitters might violate this specification. */
+type RCChannelsOverrIDe struct {
 	/*Chan1Raw RC channel 1 value. A value of UINT16_MAX means to ignore this field. */
 	Chan1Raw uint16
 	/*Chan2Raw RC channel 2 value. A value of UINT16_MAX means to ignore this field. */
@@ -81,7 +81,7 @@ type RcChannelsOverrIDe struct {
 	HasExtensionFieldValues bool
 }
 
-func (m *RcChannelsOverrIDe) String() string {
+func (m *RCChannelsOverrIDe) String() string {
 	var builder strings.Builder
 	var buffer bytes.Buffer
 
@@ -167,7 +167,7 @@ func (m *RcChannelsOverrIDe) String() string {
 }
 
 // GetVersion gets the MAVLink version of the Message contents
-func (m *RcChannelsOverrIDe) GetVersion() int {
+func (m *RCChannelsOverrIDe) GetVersion() int {
 	if m.HasExtensionFieldValues {
 		return 2
 	}
@@ -176,35 +176,35 @@ func (m *RcChannelsOverrIDe) GetVersion() int {
 }
 
 // GetDialect gets the name of the dialect that defines the Message
-func (m *RcChannelsOverrIDe) GetDialect() string {
+func (m *RCChannelsOverrIDe) GetDialect() string {
 	return "common"
 }
 
 // GetMessageName gets the name of the Message
-func (m *RcChannelsOverrIDe) GetMessageName() string {
-	return "RcChannelsOverrIDe"
+func (m *RCChannelsOverrIDe) GetMessageName() string {
+	return "RCChannelsOverrIDe"
 }
 
 // GetID gets the ID of the Message
-func (m *RcChannelsOverrIDe) GetID() uint32 {
+func (m *RCChannelsOverrIDe) GetID() uint32 {
 	return 70
 }
 
 // HasExtensionFields returns true if the message definition contained extensions; false otherwise
-func (m *RcChannelsOverrIDe) HasExtensionFields() bool {
+func (m *RCChannelsOverrIDe) HasExtensionFields() bool {
 	return true
 }
 
-func (m *RcChannelsOverrIDe) getV1Length() int {
+func (m *RCChannelsOverrIDe) getV1Length() int {
 	return 18
 }
 
-func (m *RcChannelsOverrIDe) getIOSlice() []byte {
+func (m *RCChannelsOverrIDe) getIOSlice() []byte {
 	return make([]byte, 38+1)
 }
 
 // Read sets the field values of the message from the raw message payload
-func (m *RcChannelsOverrIDe) Read(frame mavlink2.Frame) (err error) {
+func (m *RCChannelsOverrIDe) Read(frame mavlink2.Frame) (err error) {
 	version := frame.GetVersion()
 
 	// Ensure only Version 1 or Version 2 were specified
@@ -226,7 +226,7 @@ func (m *RcChannelsOverrIDe) Read(frame mavlink2.Frame) (err error) {
 		}
 	}()
 
-	// Get a slice of bytes long enough for the all the RcChannelsOverrIDe fields
+	// Get a slice of bytes long enough for the all the RCChannelsOverrIDe fields
 	// binary.Read requires enough bytes in the reader to read all fields, even if
 	// the fields are just zero values. This also simplifies handling MAVLink2
 	// extensions and trailing zero truncation.
@@ -247,7 +247,7 @@ func (m *RcChannelsOverrIDe) Read(frame mavlink2.Frame) (err error) {
 }
 
 // Write encodes the field values of the message to a byte array
-func (m *RcChannelsOverrIDe) Write(version int) (output []byte, err error) {
+func (m *RCChannelsOverrIDe) Write(version int) (output []byte, err error) {
 	var buffer bytes.Buffer
 
 	// Ensure only Version 1 or Version 2 were specified

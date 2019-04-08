@@ -46,12 +46,12 @@ type UavcanNodeInfo struct {
 	SwVcsCommit uint32
 	/*Name Node name string. For example, "sapog.px4.io". */
 	Name [80]byte
-	/*HwVersionMajor Hardware major version number. */
-	HwVersionMajor uint8
-	/*HwVersionMinor Hardware minor version number. */
-	HwVersionMinor uint8
-	/*HwUniqueID Hardware unique 128-bit ID. */
-	HwUniqueID [16]uint8
+	/*HWVersionMajor Hardware major version number. */
+	HWVersionMajor uint8
+	/*HWVersionMinor Hardware minor version number. */
+	HWVersionMinor uint8
+	/*HWUniqueID Hardware unique 128-bit ID. */
+	HWUniqueID [16]uint8
 	/*SwVersionMajor Software major version number. */
 	SwVersionMajor uint8
 	/*SwVersionMinor Software minor version number. */
@@ -72,9 +72,9 @@ func (m *UavcanNodeInfo) String() string {
 	builder.WriteString("UptimeSec:\t%v [s]\n")
 	builder.WriteString("SwVcsCommit:\t%v \n")
 	builder.WriteString("Name:\t%v \n")
-	builder.WriteString("HwVersionMajor:\t%v \n")
-	builder.WriteString("HwVersionMinor:\t%v \n")
-	builder.WriteString("HwUniqueID:\t%v \n")
+	builder.WriteString("HWVersionMajor:\t%v \n")
+	builder.WriteString("HWVersionMinor:\t%v \n")
+	builder.WriteString("HWUniqueID:\t%v \n")
 	builder.WriteString("SwVersionMajor:\t%v \n")
 	builder.WriteString("SwVersionMinor:\t%v \n")
 	format := builder.String()
@@ -88,9 +88,9 @@ func (m *UavcanNodeInfo) String() string {
 		m.UptimeSec,
 		m.SwVcsCommit,
 		m.Name,
-		m.HwVersionMajor,
-		m.HwVersionMinor,
-		m.HwUniqueID,
+		m.HWVersionMajor,
+		m.HWVersionMinor,
+		m.HWUniqueID,
 		m.SwVersionMajor,
 		m.SwVersionMinor,
 	)

@@ -51,14 +51,8 @@ type DistanceSensor struct {
 	ID uint8
 	/*Orientation Direction the sensor faces. downward-facing: ROTATION_PITCH_270, upward-facing: ROTATION_PITCH_90, backward-facing: ROTATION_PITCH_180, forward-facing: ROTATION_NONE, left-facing: ROTATION_YAW_90, right-facing: ROTATION_YAW_270 */
 	Orientation uint8
-	/*Covariance Measurement variance. Max standard deviation is 6cm. 255 if unknown. */
+	/*Covariance Measurement covariance, 0 for unknown / invalid readings */
 	Covariance uint8
-	/*HorizontalFov Horizontal Field of View (angle) where the distance measurement is valid and the field of view is known. Otherwise this is set to 0. */
-	HorizontalFov float32
-	/*VerticalFov Vertical Field of View (angle) where the distance measurement is valid and the field of view is known. Otherwise this is set to 0. */
-	VerticalFov float32
-	/*Quaternion Quaternion of the sensor orientation in vehicle body frame (w, x, y, z order, zero-rotation is 1, 0, 0, 0). Zero-rotation is along the vehicle body x-axis. This field is required if the orientation is set to MAV_SENSOR_ROTATION_CUSTOM. Set it to 0 if invalid." */
-	Quaternion [4]float32
 	/*HasExtensionFieldValues indicates if this message has any extensions and  */
 	HasExtensionFieldValues bool
 }
@@ -78,36 +72,8 @@ func (m *DistanceSensor) String() string {
 	builder.WriteString("Type:\t%v \n")
 	builder.WriteString("ID:\t%v \n")
 	builder.WriteString("Orientation:\t%v \n")
-	builder.WriteString("Covariance:\t%v [cm^2]\n")
-	if m.HasExtensionFieldValues {
-		builder.WriteString("HorizontalFov:\t%v\n")
-		builder.WriteString("VerticalFov:\t%v\n")
-		builder.WriteString("Quaternion:\t%v\n")
-	}
+	builder.WriteString("Covariance:\t%v [cm]\n")
 	format := builder.String()
-
-	if m.HasExtensionFieldValues {
-		fmt.Fprintf(
-			writer,
-			format,
-			m.GetDialect(),
-			m.GetMessageName(),
-			m.TimeBootMs,
-			m.MinDistance,
-			m.MaxDistance,
-			m.CurrentDistance,
-			m.Type,
-			m.ID,
-			m.Orientation,
-			m.Covariance,
-			m.HorizontalFov,
-			m.VerticalFov,
-			m.Quaternion,
-		)
-
-		writer.Flush()
-		return string(buffer.Bytes())
-	}
 
 	fmt.Fprintf(
 		writer,
@@ -154,7 +120,7 @@ func (m *DistanceSensor) GetID() uint32 {
 
 // HasExtensionFields returns true if the message definition contained extensions; false otherwise
 func (m *DistanceSensor) HasExtensionFields() bool {
-	return true
+	return false
 }
 
 func (m *DistanceSensor) getV1Length() int {
@@ -162,7 +128,7 @@ func (m *DistanceSensor) getV1Length() int {
 }
 
 func (m *DistanceSensor) getIOSlice() []byte {
-	return make([]byte, 38+1)
+	return make([]byte, 14+1)
 }
 
 // Read sets the field values of the message from the raw message payload

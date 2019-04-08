@@ -35,9 +35,9 @@ import (
 	"github.com/queue-b/go-mavlink2/util"
 )
 
-/*GpsRawInt The global position, as returned by the Global Positioning System (GPS). This is
+/*GPSRawInt The global position, as returned by the Global Positioning System (GPS). This is
   NOT the global position estimate of the system, but rather a RAW sensor value. See message GLOBAL_POSITION for the global position estimate. */
-type GpsRawInt struct {
+type GPSRawInt struct {
 	/*TimeUsec Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude the number. */
 	TimeUsec uint64
 	/*Lat Latitude (WGS84, EGM96 ellipsoid) */
@@ -72,7 +72,7 @@ type GpsRawInt struct {
 	HasExtensionFieldValues bool
 }
 
-func (m *GpsRawInt) String() string {
+func (m *GPSRawInt) String() string {
 	var builder strings.Builder
 	var buffer bytes.Buffer
 
@@ -148,7 +148,7 @@ func (m *GpsRawInt) String() string {
 }
 
 // GetVersion gets the MAVLink version of the Message contents
-func (m *GpsRawInt) GetVersion() int {
+func (m *GPSRawInt) GetVersion() int {
 	if m.HasExtensionFieldValues {
 		return 2
 	}
@@ -157,35 +157,35 @@ func (m *GpsRawInt) GetVersion() int {
 }
 
 // GetDialect gets the name of the dialect that defines the Message
-func (m *GpsRawInt) GetDialect() string {
+func (m *GPSRawInt) GetDialect() string {
 	return "common"
 }
 
 // GetMessageName gets the name of the Message
-func (m *GpsRawInt) GetMessageName() string {
-	return "GpsRawInt"
+func (m *GPSRawInt) GetMessageName() string {
+	return "GPSRawInt"
 }
 
 // GetID gets the ID of the Message
-func (m *GpsRawInt) GetID() uint32 {
+func (m *GPSRawInt) GetID() uint32 {
 	return 24
 }
 
 // HasExtensionFields returns true if the message definition contained extensions; false otherwise
-func (m *GpsRawInt) HasExtensionFields() bool {
+func (m *GPSRawInt) HasExtensionFields() bool {
 	return true
 }
 
-func (m *GpsRawInt) getV1Length() int {
+func (m *GPSRawInt) getV1Length() int {
 	return 30
 }
 
-func (m *GpsRawInt) getIOSlice() []byte {
+func (m *GPSRawInt) getIOSlice() []byte {
 	return make([]byte, 50+1)
 }
 
 // Read sets the field values of the message from the raw message payload
-func (m *GpsRawInt) Read(frame mavlink2.Frame) (err error) {
+func (m *GPSRawInt) Read(frame mavlink2.Frame) (err error) {
 	version := frame.GetVersion()
 
 	// Ensure only Version 1 or Version 2 were specified
@@ -207,7 +207,7 @@ func (m *GpsRawInt) Read(frame mavlink2.Frame) (err error) {
 		}
 	}()
 
-	// Get a slice of bytes long enough for the all the GpsRawInt fields
+	// Get a slice of bytes long enough for the all the GPSRawInt fields
 	// binary.Read requires enough bytes in the reader to read all fields, even if
 	// the fields are just zero values. This also simplifies handling MAVLink2
 	// extensions and trailing zero truncation.
@@ -228,7 +228,7 @@ func (m *GpsRawInt) Read(frame mavlink2.Frame) (err error) {
 }
 
 // Write encodes the field values of the message to a byte array
-func (m *GpsRawInt) Write(version int) (output []byte, err error) {
+func (m *GPSRawInt) Write(version int) (output []byte, err error) {
 	var buffer bytes.Buffer
 
 	// Ensure only Version 1 or Version 2 were specified

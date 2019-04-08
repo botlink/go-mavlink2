@@ -35,8 +35,8 @@ import (
 	"github.com/queue-b/go-mavlink2/util"
 )
 
-/*Gps2Raw Second GPS data. */
-type Gps2Raw struct {
+/*GPS2Raw Second GPS data. */
+type GPS2Raw struct {
 	/*TimeUsec Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude the number. */
 	TimeUsec uint64
 	/*Lat Latitude (WGS84) */
@@ -45,8 +45,8 @@ type Gps2Raw struct {
 	Lon int32
 	/*Alt Altitude (MSL). Positive for up. */
 	Alt int32
-	/*DgpsAge Age of DGPS info */
-	DgpsAge uint32
+	/*DGPSAge Age of DGPS info */
+	DGPSAge uint32
 	/*Eph GPS HDOP horizontal dilution of position. If unknown, set to: UINT16_MAX */
 	Eph uint16
 	/*Epv GPS VDOP vertical dilution of position. If unknown, set to: UINT16_MAX */
@@ -59,13 +59,13 @@ type Gps2Raw struct {
 	FixType uint8
 	/*SatellitesVisible Number of satellites visible. If unknown, set to 255 */
 	SatellitesVisible uint8
-	/*DgpsNumch Number of DGPS satellites */
-	DgpsNumch uint8
+	/*DGPSNumch Number of DGPS satellites */
+	DGPSNumch uint8
 	/*HasExtensionFieldValues indicates if this message has any extensions and  */
 	HasExtensionFieldValues bool
 }
 
-func (m *Gps2Raw) String() string {
+func (m *GPS2Raw) String() string {
 	var builder strings.Builder
 	var buffer bytes.Buffer
 
@@ -77,14 +77,14 @@ func (m *Gps2Raw) String() string {
 	builder.WriteString("Lat:\t%v [degE7]\n")
 	builder.WriteString("Lon:\t%v [degE7]\n")
 	builder.WriteString("Alt:\t%v [mm]\n")
-	builder.WriteString("DgpsAge:\t%v [ms]\n")
+	builder.WriteString("DGPSAge:\t%v [ms]\n")
 	builder.WriteString("Eph:\t%v [cm]\n")
 	builder.WriteString("Epv:\t%v [cm]\n")
 	builder.WriteString("Vel:\t%v [cm/s]\n")
 	builder.WriteString("Cog:\t%v [cdeg]\n")
 	builder.WriteString("FixType:\t%v \n")
 	builder.WriteString("SatellitesVisible:\t%v \n")
-	builder.WriteString("DgpsNumch:\t%v \n")
+	builder.WriteString("DGPSNumch:\t%v \n")
 	format := builder.String()
 
 	fmt.Fprintf(
@@ -96,14 +96,14 @@ func (m *Gps2Raw) String() string {
 		m.Lat,
 		m.Lon,
 		m.Alt,
-		m.DgpsAge,
+		m.DGPSAge,
 		m.Eph,
 		m.Epv,
 		m.Vel,
 		m.Cog,
 		m.FixType,
 		m.SatellitesVisible,
-		m.DgpsNumch,
+		m.DGPSNumch,
 	)
 
 	writer.Flush()
@@ -111,7 +111,7 @@ func (m *Gps2Raw) String() string {
 }
 
 // GetVersion gets the MAVLink version of the Message contents
-func (m *Gps2Raw) GetVersion() int {
+func (m *GPS2Raw) GetVersion() int {
 	if m.HasExtensionFieldValues {
 		return 2
 	}
@@ -120,35 +120,35 @@ func (m *Gps2Raw) GetVersion() int {
 }
 
 // GetDialect gets the name of the dialect that defines the Message
-func (m *Gps2Raw) GetDialect() string {
+func (m *GPS2Raw) GetDialect() string {
 	return "common"
 }
 
 // GetMessageName gets the name of the Message
-func (m *Gps2Raw) GetMessageName() string {
-	return "Gps2Raw"
+func (m *GPS2Raw) GetMessageName() string {
+	return "GPS2Raw"
 }
 
 // GetID gets the ID of the Message
-func (m *Gps2Raw) GetID() uint32 {
+func (m *GPS2Raw) GetID() uint32 {
 	return 124
 }
 
 // HasExtensionFields returns true if the message definition contained extensions; false otherwise
-func (m *Gps2Raw) HasExtensionFields() bool {
+func (m *GPS2Raw) HasExtensionFields() bool {
 	return false
 }
 
-func (m *Gps2Raw) getV1Length() int {
+func (m *GPS2Raw) getV1Length() int {
 	return 35
 }
 
-func (m *Gps2Raw) getIOSlice() []byte {
+func (m *GPS2Raw) getIOSlice() []byte {
 	return make([]byte, 35+1)
 }
 
 // Read sets the field values of the message from the raw message payload
-func (m *Gps2Raw) Read(frame mavlink2.Frame) (err error) {
+func (m *GPS2Raw) Read(frame mavlink2.Frame) (err error) {
 	version := frame.GetVersion()
 
 	// Ensure only Version 1 or Version 2 were specified
@@ -170,7 +170,7 @@ func (m *Gps2Raw) Read(frame mavlink2.Frame) (err error) {
 		}
 	}()
 
-	// Get a slice of bytes long enough for the all the Gps2Raw fields
+	// Get a slice of bytes long enough for the all the GPS2Raw fields
 	// binary.Read requires enough bytes in the reader to read all fields, even if
 	// the fields are just zero values. This also simplifies handling MAVLink2
 	// extensions and trailing zero truncation.
@@ -191,7 +191,7 @@ func (m *Gps2Raw) Read(frame mavlink2.Frame) (err error) {
 }
 
 // Write encodes the field values of the message to a byte array
-func (m *Gps2Raw) Write(version int) (output []byte, err error) {
+func (m *GPS2Raw) Write(version int) (output []byte, err error) {
 	var buffer bytes.Buffer
 
 	// Ensure only Version 1 or Version 2 were specified

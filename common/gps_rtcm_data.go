@@ -35,8 +35,8 @@ import (
 	"github.com/queue-b/go-mavlink2/util"
 )
 
-/*GpsRtcmData RTCM message for injecting into the onboard GPS (used for DGPS) */
-type GpsRtcmData struct {
+/*GPSRtcmData RTCM message for injecting into the onboard GPS (used for DGPS) */
+type GPSRtcmData struct {
 	/*Flags LSB: 1 means message is fragmented, next 2 bits are the fragment ID, the remaining 5 bits are used for the sequence ID. Messages are only to be flushed to the GPS when the entire message has been reconstructed on the autopilot. The fragment ID specifies which order the fragments should be assembled into a buffer, while the sequence ID is used to detect a mismatch between different buffers. The buffer is considered fully reconstructed when either all 4 fragments are present, or all the fragments before the first fragment with a non full payload is received. This management is used to ensure that normal GPS operation doesn't corrupt RTCM data, and to recover from a unreliable transport delivery order. */
 	Flags uint8
 	/*Len data length */
@@ -47,7 +47,7 @@ type GpsRtcmData struct {
 	HasExtensionFieldValues bool
 }
 
-func (m *GpsRtcmData) String() string {
+func (m *GPSRtcmData) String() string {
 	var builder strings.Builder
 	var buffer bytes.Buffer
 
@@ -75,7 +75,7 @@ func (m *GpsRtcmData) String() string {
 }
 
 // GetVersion gets the MAVLink version of the Message contents
-func (m *GpsRtcmData) GetVersion() int {
+func (m *GPSRtcmData) GetVersion() int {
 	if m.HasExtensionFieldValues {
 		return 2
 	}
@@ -84,35 +84,35 @@ func (m *GpsRtcmData) GetVersion() int {
 }
 
 // GetDialect gets the name of the dialect that defines the Message
-func (m *GpsRtcmData) GetDialect() string {
+func (m *GPSRtcmData) GetDialect() string {
 	return "common"
 }
 
 // GetMessageName gets the name of the Message
-func (m *GpsRtcmData) GetMessageName() string {
-	return "GpsRtcmData"
+func (m *GPSRtcmData) GetMessageName() string {
+	return "GPSRtcmData"
 }
 
 // GetID gets the ID of the Message
-func (m *GpsRtcmData) GetID() uint32 {
+func (m *GPSRtcmData) GetID() uint32 {
 	return 233
 }
 
 // HasExtensionFields returns true if the message definition contained extensions; false otherwise
-func (m *GpsRtcmData) HasExtensionFields() bool {
+func (m *GPSRtcmData) HasExtensionFields() bool {
 	return false
 }
 
-func (m *GpsRtcmData) getV1Length() int {
+func (m *GPSRtcmData) getV1Length() int {
 	return 182
 }
 
-func (m *GpsRtcmData) getIOSlice() []byte {
+func (m *GPSRtcmData) getIOSlice() []byte {
 	return make([]byte, 182+1)
 }
 
 // Read sets the field values of the message from the raw message payload
-func (m *GpsRtcmData) Read(frame mavlink2.Frame) (err error) {
+func (m *GPSRtcmData) Read(frame mavlink2.Frame) (err error) {
 	version := frame.GetVersion()
 
 	// Ensure only Version 1 or Version 2 were specified
@@ -134,7 +134,7 @@ func (m *GpsRtcmData) Read(frame mavlink2.Frame) (err error) {
 		}
 	}()
 
-	// Get a slice of bytes long enough for the all the GpsRtcmData fields
+	// Get a slice of bytes long enough for the all the GPSRtcmData fields
 	// binary.Read requires enough bytes in the reader to read all fields, even if
 	// the fields are just zero values. This also simplifies handling MAVLink2
 	// extensions and trailing zero truncation.
@@ -155,7 +155,7 @@ func (m *GpsRtcmData) Read(frame mavlink2.Frame) (err error) {
 }
 
 // Write encodes the field values of the message to a byte array
-func (m *GpsRtcmData) Write(version int) (output []byte, err error) {
+func (m *GPSRtcmData) Write(version int) (output []byte, err error) {
 	var buffer bytes.Buffer
 
 	// Ensure only Version 1 or Version 2 were specified

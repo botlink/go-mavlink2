@@ -35,25 +35,25 @@ import (
 	"github.com/queue-b/go-mavlink2/util"
 )
 
-/*VfrHud Metrics typically displayed on a HUD for fixed wing aircraft. */
-type VfrHud struct {
-	/*Airspeed Current indicated airspeed (IAS). */
+/*VFRHUD Metrics typically displayed on a HUD for fixed wing aircraft */
+type VFRHUD struct {
+	/*Airspeed Current airspeed */
 	Airspeed float32
-	/*Groundspeed Current ground speed. */
+	/*Groundspeed Current ground speed */
 	Groundspeed float32
-	/*Alt Current altitude (MSL). */
+	/*Alt Current altitude (MSL) */
 	Alt float32
-	/*Climb Current climb rate. */
+	/*Climb Current climb rate */
 	Climb float32
-	/*Heading Current heading in compass units (0-360, 0=north). */
+	/*Heading Current heading in degrees, in compass units (0..360, 0=north) */
 	Heading int16
-	/*Throttle Current throttle setting (0 to 100). */
+	/*Throttle Current throttle setting in integer percent, 0 to 100 */
 	Throttle uint16
 	/*HasExtensionFieldValues indicates if this message has any extensions and  */
 	HasExtensionFieldValues bool
 }
 
-func (m *VfrHud) String() string {
+func (m *VFRHUD) String() string {
 	var builder strings.Builder
 	var buffer bytes.Buffer
 
@@ -66,7 +66,7 @@ func (m *VfrHud) String() string {
 	builder.WriteString("Alt:\t%v [m]\n")
 	builder.WriteString("Climb:\t%v [m/s]\n")
 	builder.WriteString("Heading:\t%v [deg]\n")
-	builder.WriteString("Throttle:\t%v [%]\n")
+	builder.WriteString("Throttle:\t%v \n")
 	format := builder.String()
 
 	fmt.Fprintf(
@@ -87,7 +87,7 @@ func (m *VfrHud) String() string {
 }
 
 // GetVersion gets the MAVLink version of the Message contents
-func (m *VfrHud) GetVersion() int {
+func (m *VFRHUD) GetVersion() int {
 	if m.HasExtensionFieldValues {
 		return 2
 	}
@@ -96,35 +96,35 @@ func (m *VfrHud) GetVersion() int {
 }
 
 // GetDialect gets the name of the dialect that defines the Message
-func (m *VfrHud) GetDialect() string {
+func (m *VFRHUD) GetDialect() string {
 	return "common"
 }
 
 // GetMessageName gets the name of the Message
-func (m *VfrHud) GetMessageName() string {
-	return "VfrHud"
+func (m *VFRHUD) GetMessageName() string {
+	return "VFRHUD"
 }
 
 // GetID gets the ID of the Message
-func (m *VfrHud) GetID() uint32 {
+func (m *VFRHUD) GetID() uint32 {
 	return 74
 }
 
 // HasExtensionFields returns true if the message definition contained extensions; false otherwise
-func (m *VfrHud) HasExtensionFields() bool {
+func (m *VFRHUD) HasExtensionFields() bool {
 	return false
 }
 
-func (m *VfrHud) getV1Length() int {
+func (m *VFRHUD) getV1Length() int {
 	return 20
 }
 
-func (m *VfrHud) getIOSlice() []byte {
+func (m *VFRHUD) getIOSlice() []byte {
 	return make([]byte, 20+1)
 }
 
 // Read sets the field values of the message from the raw message payload
-func (m *VfrHud) Read(frame mavlink2.Frame) (err error) {
+func (m *VFRHUD) Read(frame mavlink2.Frame) (err error) {
 	version := frame.GetVersion()
 
 	// Ensure only Version 1 or Version 2 were specified
@@ -146,7 +146,7 @@ func (m *VfrHud) Read(frame mavlink2.Frame) (err error) {
 		}
 	}()
 
-	// Get a slice of bytes long enough for the all the VfrHud fields
+	// Get a slice of bytes long enough for the all the VFRHUD fields
 	// binary.Read requires enough bytes in the reader to read all fields, even if
 	// the fields are just zero values. This also simplifies handling MAVLink2
 	// extensions and trailing zero truncation.
@@ -167,7 +167,7 @@ func (m *VfrHud) Read(frame mavlink2.Frame) (err error) {
 }
 
 // Write encodes the field values of the message to a byte array
-func (m *VfrHud) Write(version int) (output []byte, err error) {
+func (m *VFRHUD) Write(version int) (output []byte, err error) {
 	var buffer bytes.Buffer
 
 	// Ensure only Version 1 or Version 2 were specified

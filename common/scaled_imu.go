@@ -35,8 +35,8 @@ import (
 	"github.com/queue-b/go-mavlink2/util"
 )
 
-/*ScaledImu The RAW IMU readings for the usual 9DOF sensor setup. This message should contain the scaled values to the described units */
-type ScaledImu struct {
+/*ScaledIMU The RAW IMU readings for the usual 9DOF sensor setup. This message should contain the scaled values to the described units */
+type ScaledIMU struct {
 	/*TimeBootMs Timestamp (time since system boot). */
 	TimeBootMs uint32
 	/*Xacc X acceleration */
@@ -61,7 +61,7 @@ type ScaledImu struct {
 	HasExtensionFieldValues bool
 }
 
-func (m *ScaledImu) String() string {
+func (m *ScaledIMU) String() string {
 	var builder strings.Builder
 	var buffer bytes.Buffer
 
@@ -103,7 +103,7 @@ func (m *ScaledImu) String() string {
 }
 
 // GetVersion gets the MAVLink version of the Message contents
-func (m *ScaledImu) GetVersion() int {
+func (m *ScaledIMU) GetVersion() int {
 	if m.HasExtensionFieldValues {
 		return 2
 	}
@@ -112,35 +112,35 @@ func (m *ScaledImu) GetVersion() int {
 }
 
 // GetDialect gets the name of the dialect that defines the Message
-func (m *ScaledImu) GetDialect() string {
+func (m *ScaledIMU) GetDialect() string {
 	return "common"
 }
 
 // GetMessageName gets the name of the Message
-func (m *ScaledImu) GetMessageName() string {
-	return "ScaledImu"
+func (m *ScaledIMU) GetMessageName() string {
+	return "ScaledIMU"
 }
 
 // GetID gets the ID of the Message
-func (m *ScaledImu) GetID() uint32 {
+func (m *ScaledIMU) GetID() uint32 {
 	return 26
 }
 
 // HasExtensionFields returns true if the message definition contained extensions; false otherwise
-func (m *ScaledImu) HasExtensionFields() bool {
+func (m *ScaledIMU) HasExtensionFields() bool {
 	return false
 }
 
-func (m *ScaledImu) getV1Length() int {
+func (m *ScaledIMU) getV1Length() int {
 	return 22
 }
 
-func (m *ScaledImu) getIOSlice() []byte {
+func (m *ScaledIMU) getIOSlice() []byte {
 	return make([]byte, 22+1)
 }
 
 // Read sets the field values of the message from the raw message payload
-func (m *ScaledImu) Read(frame mavlink2.Frame) (err error) {
+func (m *ScaledIMU) Read(frame mavlink2.Frame) (err error) {
 	version := frame.GetVersion()
 
 	// Ensure only Version 1 or Version 2 were specified
@@ -162,7 +162,7 @@ func (m *ScaledImu) Read(frame mavlink2.Frame) (err error) {
 		}
 	}()
 
-	// Get a slice of bytes long enough for the all the ScaledImu fields
+	// Get a slice of bytes long enough for the all the ScaledIMU fields
 	// binary.Read requires enough bytes in the reader to read all fields, even if
 	// the fields are just zero values. This also simplifies handling MAVLink2
 	// extensions and trailing zero truncation.
@@ -183,7 +183,7 @@ func (m *ScaledImu) Read(frame mavlink2.Frame) (err error) {
 }
 
 // Write encodes the field values of the message to a byte array
-func (m *ScaledImu) Write(version int) (output []byte, err error) {
+func (m *ScaledIMU) Write(version int) (output []byte, err error) {
 	var buffer bytes.Buffer
 
 	// Ensure only Version 1 or Version 2 were specified
