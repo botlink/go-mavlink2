@@ -24,6 +24,8 @@ OUT OF OR IN CONNECTION WITH THE GENERATED SOFTWARE OR THE USE OR OTHER DEALINGS
 IN THE GENERATED SOFTWARE.
 */
 
+import "fmt"
+
 // MessageMeta stores metadata information about a MAVLink message
 type MessageMeta struct {
 	CRCExtra      byte
@@ -38,6 +40,7 @@ type Message interface {
 	GetMessageName() string
 	GetID() uint32
 	Read(Frame) error
+	Write(int) ([]byte, error)
 }
 
 // UnknownMessage represents a message that is not part of any loaded Dialect
@@ -45,4 +48,44 @@ type UnknownMessage struct {
 	ID      uint32
 	Version int
 	Raw     []byte
+}
+
+func (m *UnknownMessage) String() string {
+	return fmt.Sprintf("ID:\t%v\nVersion:\t%v\nRaw:\t%x\n", m.ID, m.Version, m.Raw)
+}
+
+// GetVersion gets the MAVLink version of the Message contents
+func (m *UnknownMessage) GetVersion() int {
+	return m.Version
+}
+
+// GetDialect gets the name of the dialect that defines the Message
+func (m *UnknownMessage) GetDialect() string {
+	return "unknown"
+}
+
+// GetMessageName gets the name of the Message
+func (m *UnknownMessage) GetMessageName() string {
+	return "unknown"
+}
+
+// GetID gets the ID of the Message
+func (m *UnknownMessage) GetID() uint32 {
+	return m.ID
+}
+
+func (m *UnknownMessage) Read(frame Frame) (err error) {
+	rawBytes := make([]byte, frame.GetMessageLength())
+
+	copy(rawBytes, frame.GetMessageBytes())
+
+	m.ID = frame.GetMessageID()
+	m.Version = frame.GetVersion()
+	m.Raw = rawBytes
+
+	return
+}
+
+func (m *UnknownMessage) Write(version int) ([]byte, error) {
+	return m.Raw, nil
 }
