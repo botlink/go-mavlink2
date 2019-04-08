@@ -54,9 +54,17 @@ func main() {
 				err = dialects.Validate(frame)
 
 				if err != nil && err != mavlink2.ErrUnknownMessage {
-					fmt.Printf("*** Error %v\n", err)
+					fmt.Printf("*** Error validating %v\n", err)
 					fmt.Println(frame)
 				}
+
+				message, err := dialects.GetMessage(frame)
+
+				if err != nil {
+					fmt.Printf("*** Error parsing %v\n", err)
+				}
+
+				fmt.Println(message)
 			}
 		}
 
