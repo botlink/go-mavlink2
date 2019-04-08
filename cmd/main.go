@@ -9,7 +9,10 @@ import (
 	"syscall"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
+	"github.com/queue-b/go-mavlink2/ardupilotmega"
 	"github.com/queue-b/go-mavlink2/common"
+	"github.com/queue-b/go-mavlink2/icarous"
+	"github.com/queue-b/go-mavlink2/uAvionix"
 )
 
 func main() {
@@ -26,7 +29,7 @@ func main() {
 
 	var wg sync.WaitGroup
 
-	dialects := mavlink2.Dialects([]mavlink2.Dialect{common.DialectCommon{}})
+	dialects := mavlink2.Dialects([]mavlink2.Dialect{common.DialectCommon{}, ardupilotmega.DialectArdupilotmega{}, uAvionix.DialectUavionix{}, icarous.DialectIcarous{}})
 
 	wg.Add(1)
 	go func() {
