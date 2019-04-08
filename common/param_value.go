@@ -51,7 +51,8 @@ type ParamValue struct {
 
 // SetParamID encodes the input string to the ParamID array
 func (m *ParamValue) SetParamID(input string) (err error) {
-	m.ParamID = []byte(input)[:math.Min(len(input), 16)]
+	clen := int(math.Min(float64(len(input)), float64(16)))
+	copy(m.ParamID[:], []byte(input)[:clen])
 
 	if len(input) > 16 {
 		err = mavlink2.ErrStringTooLong
@@ -62,12 +63,18 @@ func (m *ParamValue) SetParamID(input string) (err error) {
 
 // GetParamID decodes the null-terminated string in the ParamID
 func (m *ParamValue) GetParamID() string {
-	return string(m.ParamID[:util.CStrLen(m.ParamID)])
+	clen := util.CStrLen(m.ParamID[:])
+
+	return string(m.ParamID[:clen])
 }
 
 // GetVersion gets the MAVLink version of the Message contents
 func (m *ParamValue) GetVersion() int {
-	return m.FrameVersion
+	if m.HasExtensionFieldValues {
+		return 2
+	}
+
+	return 1
 }
 
 // GetDialect gets the name of the dialect that defines the Message
@@ -76,7 +83,7 @@ func (m *ParamValue) GetDialect() string {
 }
 
 // GetName gets the name of the Message
-func (m *ParamValue) GetName() string {
+func (m *ParamValue) GetMessageName() string {
 	return "ParamValue"
 }
 
@@ -144,7 +151,6 @@ func (m *ParamValue) Read(frame mavlink2.Frame) (err error) {
 // Write encodes the field values of the message to a byte array
 func (m *ParamValue) Write(version int) (output []byte, err error) {
 	var buffer bytes.Buffer
-	var err error
 
 	// Ensure only Version 1 or Version 2 were specified
 	if version != 1 && version != 2 {

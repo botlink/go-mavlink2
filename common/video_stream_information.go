@@ -65,7 +65,8 @@ type VIDeoStreamInformation struct {
 
 // SetName encodes the input string to the Name array
 func (m *VIDeoStreamInformation) SetName(input string) (err error) {
-	m.Name = []byte(input)[:math.Min(len(input), 32)]
+	clen := int(math.Min(float64(len(input)), float64(32)))
+	copy(m.Name[:], []byte(input)[:clen])
 
 	if len(input) > 32 {
 		err = mavlink2.ErrStringTooLong
@@ -76,12 +77,15 @@ func (m *VIDeoStreamInformation) SetName(input string) (err error) {
 
 // GetName decodes the null-terminated string in the Name
 func (m *VIDeoStreamInformation) GetName() string {
-	return string(m.Name[:util.CStrLen(m.Name)])
+	clen := util.CStrLen(m.Name[:])
+
+	return string(m.Name[:clen])
 }
 
 // SetURI encodes the input string to the URI array
 func (m *VIDeoStreamInformation) SetURI(input string) (err error) {
-	m.URI = []byte(input)[:math.Min(len(input), 160)]
+	clen := int(math.Min(float64(len(input)), float64(160)))
+	copy(m.URI[:], []byte(input)[:clen])
 
 	if len(input) > 160 {
 		err = mavlink2.ErrStringTooLong
@@ -92,12 +96,18 @@ func (m *VIDeoStreamInformation) SetURI(input string) (err error) {
 
 // GetURI decodes the null-terminated string in the URI
 func (m *VIDeoStreamInformation) GetURI() string {
-	return string(m.URI[:util.CStrLen(m.URI)])
+	clen := util.CStrLen(m.URI[:])
+
+	return string(m.URI[:clen])
 }
 
 // GetVersion gets the MAVLink version of the Message contents
 func (m *VIDeoStreamInformation) GetVersion() int {
-	return m.FrameVersion
+	if m.HasExtensionFieldValues {
+		return 2
+	}
+
+	return 1
 }
 
 // GetDialect gets the name of the dialect that defines the Message
@@ -106,7 +116,7 @@ func (m *VIDeoStreamInformation) GetDialect() string {
 }
 
 // GetName gets the name of the Message
-func (m *VIDeoStreamInformation) GetName() string {
+func (m *VIDeoStreamInformation) GetMessageName() string {
 	return "VIDeoStreamInformation"
 }
 
@@ -174,7 +184,6 @@ func (m *VIDeoStreamInformation) Read(frame mavlink2.Frame) (err error) {
 // Write encodes the field values of the message to a byte array
 func (m *VIDeoStreamInformation) Write(version int) (output []byte, err error) {
 	var buffer bytes.Buffer
-	var err error
 
 	// Ensure only Version 1 or Version 2 were specified
 	if version != 1 && version != 2 {

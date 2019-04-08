@@ -67,7 +67,8 @@ type AdsbVehicle struct {
 
 // SetCallsign encodes the input string to the Callsign array
 func (m *AdsbVehicle) SetCallsign(input string) (err error) {
-	m.Callsign = []byte(input)[:math.Min(len(input), 9)]
+	clen := int(math.Min(float64(len(input)), float64(9)))
+	copy(m.Callsign[:], []byte(input)[:clen])
 
 	if len(input) > 9 {
 		err = mavlink2.ErrStringTooLong
@@ -78,12 +79,18 @@ func (m *AdsbVehicle) SetCallsign(input string) (err error) {
 
 // GetCallsign decodes the null-terminated string in the Callsign
 func (m *AdsbVehicle) GetCallsign() string {
-	return string(m.Callsign[:util.CStrLen(m.Callsign)])
+	clen := util.CStrLen(m.Callsign[:])
+
+	return string(m.Callsign[:clen])
 }
 
 // GetVersion gets the MAVLink version of the Message contents
 func (m *AdsbVehicle) GetVersion() int {
-	return m.FrameVersion
+	if m.HasExtensionFieldValues {
+		return 2
+	}
+
+	return 1
 }
 
 // GetDialect gets the name of the dialect that defines the Message
@@ -92,7 +99,7 @@ func (m *AdsbVehicle) GetDialect() string {
 }
 
 // GetName gets the name of the Message
-func (m *AdsbVehicle) GetName() string {
+func (m *AdsbVehicle) GetMessageName() string {
 	return "AdsbVehicle"
 }
 
@@ -160,7 +167,6 @@ func (m *AdsbVehicle) Read(frame mavlink2.Frame) (err error) {
 // Write encodes the field values of the message to a byte array
 func (m *AdsbVehicle) Write(version int) (output []byte, err error) {
 	var buffer bytes.Buffer
-	var err error
 
 	// Ensure only Version 1 or Version 2 were specified
 	if version != 1 && version != 2 {

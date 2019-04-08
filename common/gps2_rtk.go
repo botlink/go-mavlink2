@@ -66,7 +66,11 @@ type Gps2Rtk struct {
 
 // GetVersion gets the MAVLink version of the Message contents
 func (m *Gps2Rtk) GetVersion() int {
-	return m.FrameVersion
+	if m.HasExtensionFieldValues {
+		return 2
+	}
+
+	return 1
 }
 
 // GetDialect gets the name of the dialect that defines the Message
@@ -75,7 +79,7 @@ func (m *Gps2Rtk) GetDialect() string {
 }
 
 // GetName gets the name of the Message
-func (m *Gps2Rtk) GetName() string {
+func (m *Gps2Rtk) GetMessageName() string {
 	return "Gps2Rtk"
 }
 
@@ -143,7 +147,6 @@ func (m *Gps2Rtk) Read(frame mavlink2.Frame) (err error) {
 // Write encodes the field values of the message to a byte array
 func (m *Gps2Rtk) Write(version int) (output []byte, err error) {
 	var buffer bytes.Buffer
-	var err error
 
 	// Ensure only Version 1 or Version 2 were specified
 	if version != 1 && version != 2 {

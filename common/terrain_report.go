@@ -54,7 +54,11 @@ type TerrainReport struct {
 
 // GetVersion gets the MAVLink version of the Message contents
 func (m *TerrainReport) GetVersion() int {
-	return m.FrameVersion
+	if m.HasExtensionFieldValues {
+		return 2
+	}
+
+	return 1
 }
 
 // GetDialect gets the name of the dialect that defines the Message
@@ -63,7 +67,7 @@ func (m *TerrainReport) GetDialect() string {
 }
 
 // GetName gets the name of the Message
-func (m *TerrainReport) GetName() string {
+func (m *TerrainReport) GetMessageName() string {
 	return "TerrainReport"
 }
 
@@ -131,7 +135,6 @@ func (m *TerrainReport) Read(frame mavlink2.Frame) (err error) {
 // Write encodes the field values of the message to a byte array
 func (m *TerrainReport) Write(version int) (output []byte, err error) {
 	var buffer bytes.Buffer
-	var err error
 
 	// Ensure only Version 1 or Version 2 were specified
 	if version != 1 && version != 2 {

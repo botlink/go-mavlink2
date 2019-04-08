@@ -49,7 +49,8 @@ type PlayTune struct {
 
 // SetTune encodes the input string to the Tune array
 func (m *PlayTune) SetTune(input string) (err error) {
-	m.Tune = []byte(input)[:math.Min(len(input), 30)]
+	clen := int(math.Min(float64(len(input)), float64(30)))
+	copy(m.Tune[:], []byte(input)[:clen])
 
 	if len(input) > 30 {
 		err = mavlink2.ErrStringTooLong
@@ -60,12 +61,15 @@ func (m *PlayTune) SetTune(input string) (err error) {
 
 // GetTune decodes the null-terminated string in the Tune
 func (m *PlayTune) GetTune() string {
-	return string(m.Tune[:util.CStrLen(m.Tune)])
+	clen := util.CStrLen(m.Tune[:])
+
+	return string(m.Tune[:clen])
 }
 
 // SetTune2 encodes the input string to the Tune2 array
 func (m *PlayTune) SetTune2(input string) (err error) {
-	m.Tune2 = []byte(input)[:math.Min(len(input), 200)]
+	clen := int(math.Min(float64(len(input)), float64(200)))
+	copy(m.Tune2[:], []byte(input)[:clen])
 
 	if len(input) > 200 {
 		err = mavlink2.ErrStringTooLong
@@ -76,12 +80,18 @@ func (m *PlayTune) SetTune2(input string) (err error) {
 
 // GetTune2 decodes the null-terminated string in the Tune2
 func (m *PlayTune) GetTune2() string {
-	return string(m.Tune2[:util.CStrLen(m.Tune2)])
+	clen := util.CStrLen(m.Tune2[:])
+
+	return string(m.Tune2[:clen])
 }
 
 // GetVersion gets the MAVLink version of the Message contents
 func (m *PlayTune) GetVersion() int {
-	return m.FrameVersion
+	if m.HasExtensionFieldValues {
+		return 2
+	}
+
+	return 1
 }
 
 // GetDialect gets the name of the dialect that defines the Message
@@ -90,7 +100,7 @@ func (m *PlayTune) GetDialect() string {
 }
 
 // GetName gets the name of the Message
-func (m *PlayTune) GetName() string {
+func (m *PlayTune) GetMessageName() string {
 	return "PlayTune"
 }
 
@@ -158,7 +168,6 @@ func (m *PlayTune) Read(frame mavlink2.Frame) (err error) {
 // Write encodes the field values of the message to a byte array
 func (m *PlayTune) Write(version int) (output []byte, err error) {
 	var buffer bytes.Buffer
-	var err error
 
 	// Ensure only Version 1 or Version 2 were specified
 	if version != 1 && version != 2 {

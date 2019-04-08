@@ -61,7 +61,8 @@ type SmartBatteryInfo struct {
 
 // SetDeviceName encodes the input string to the DeviceName array
 func (m *SmartBatteryInfo) SetDeviceName(input string) (err error) {
-	m.DeviceName = []byte(input)[:math.Min(len(input), 50)]
+	clen := int(math.Min(float64(len(input)), float64(50)))
+	copy(m.DeviceName[:], []byte(input)[:clen])
 
 	if len(input) > 50 {
 		err = mavlink2.ErrStringTooLong
@@ -72,12 +73,18 @@ func (m *SmartBatteryInfo) SetDeviceName(input string) (err error) {
 
 // GetDeviceName decodes the null-terminated string in the DeviceName
 func (m *SmartBatteryInfo) GetDeviceName() string {
-	return string(m.DeviceName[:util.CStrLen(m.DeviceName)])
+	clen := util.CStrLen(m.DeviceName[:])
+
+	return string(m.DeviceName[:clen])
 }
 
 // GetVersion gets the MAVLink version of the Message contents
 func (m *SmartBatteryInfo) GetVersion() int {
-	return m.FrameVersion
+	if m.HasExtensionFieldValues {
+		return 2
+	}
+
+	return 1
 }
 
 // GetDialect gets the name of the dialect that defines the Message
@@ -86,7 +93,7 @@ func (m *SmartBatteryInfo) GetDialect() string {
 }
 
 // GetName gets the name of the Message
-func (m *SmartBatteryInfo) GetName() string {
+func (m *SmartBatteryInfo) GetMessageName() string {
 	return "SmartBatteryInfo"
 }
 
@@ -154,7 +161,6 @@ func (m *SmartBatteryInfo) Read(frame mavlink2.Frame) (err error) {
 // Write encodes the field values of the message to a byte array
 func (m *SmartBatteryInfo) Write(version int) (output []byte, err error) {
 	var buffer bytes.Buffer
-	var err error
 
 	// Ensure only Version 1 or Version 2 were specified
 	if version != 1 && version != 2 {

@@ -44,7 +44,11 @@ type Timesync struct {
 
 // GetVersion gets the MAVLink version of the Message contents
 func (m *Timesync) GetVersion() int {
-	return m.FrameVersion
+	if m.HasExtensionFieldValues {
+		return 2
+	}
+
+	return 1
 }
 
 // GetDialect gets the name of the dialect that defines the Message
@@ -53,7 +57,7 @@ func (m *Timesync) GetDialect() string {
 }
 
 // GetName gets the name of the Message
-func (m *Timesync) GetName() string {
+func (m *Timesync) GetMessageName() string {
 	return "Timesync"
 }
 
@@ -121,7 +125,6 @@ func (m *Timesync) Read(frame mavlink2.Frame) (err error) {
 // Write encodes the field values of the message to a byte array
 func (m *Timesync) Write(version int) (output []byte, err error) {
 	var buffer bytes.Buffer
-	var err error
 
 	// Ensure only Version 1 or Version 2 were specified
 	if version != 1 && version != 2 {

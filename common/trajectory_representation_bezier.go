@@ -54,7 +54,11 @@ type TrajectoryRepresentationBezier struct {
 
 // GetVersion gets the MAVLink version of the Message contents
 func (m *TrajectoryRepresentationBezier) GetVersion() int {
-	return m.FrameVersion
+	if m.HasExtensionFieldValues {
+		return 2
+	}
+
+	return 1
 }
 
 // GetDialect gets the name of the dialect that defines the Message
@@ -63,7 +67,7 @@ func (m *TrajectoryRepresentationBezier) GetDialect() string {
 }
 
 // GetName gets the name of the Message
-func (m *TrajectoryRepresentationBezier) GetName() string {
+func (m *TrajectoryRepresentationBezier) GetMessageName() string {
 	return "TrajectoryRepresentationBezier"
 }
 
@@ -131,7 +135,6 @@ func (m *TrajectoryRepresentationBezier) Read(frame mavlink2.Frame) (err error) 
 // Write encodes the field values of the message to a byte array
 func (m *TrajectoryRepresentationBezier) Write(version int) (output []byte, err error) {
 	var buffer bytes.Buffer
-	var err error
 
 	// Ensure only Version 1 or Version 2 were specified
 	if version != 1 && version != 2 {

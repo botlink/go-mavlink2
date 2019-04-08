@@ -45,7 +45,8 @@ type Statustext struct {
 
 // SetText encodes the input string to the Text array
 func (m *Statustext) SetText(input string) (err error) {
-	m.Text = []byte(input)[:math.Min(len(input), 50)]
+	clen := int(math.Min(float64(len(input)), float64(50)))
+	copy(m.Text[:], []byte(input)[:clen])
 
 	if len(input) > 50 {
 		err = mavlink2.ErrStringTooLong
@@ -56,12 +57,18 @@ func (m *Statustext) SetText(input string) (err error) {
 
 // GetText decodes the null-terminated string in the Text
 func (m *Statustext) GetText() string {
-	return string(m.Text[:util.CStrLen(m.Text)])
+	clen := util.CStrLen(m.Text[:])
+
+	return string(m.Text[:clen])
 }
 
 // GetVersion gets the MAVLink version of the Message contents
 func (m *Statustext) GetVersion() int {
-	return m.FrameVersion
+	if m.HasExtensionFieldValues {
+		return 2
+	}
+
+	return 1
 }
 
 // GetDialect gets the name of the dialect that defines the Message
@@ -70,7 +77,7 @@ func (m *Statustext) GetDialect() string {
 }
 
 // GetName gets the name of the Message
-func (m *Statustext) GetName() string {
+func (m *Statustext) GetMessageName() string {
 	return "Statustext"
 }
 
@@ -138,7 +145,6 @@ func (m *Statustext) Read(frame mavlink2.Frame) (err error) {
 // Write encodes the field values of the message to a byte array
 func (m *Statustext) Write(version int) (output []byte, err error) {
 	var buffer bytes.Buffer
-	var err error
 
 	// Ensure only Version 1 or Version 2 were specified
 	if version != 1 && version != 2 {

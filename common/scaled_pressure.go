@@ -48,7 +48,11 @@ type ScaledPressure struct {
 
 // GetVersion gets the MAVLink version of the Message contents
 func (m *ScaledPressure) GetVersion() int {
-	return m.FrameVersion
+	if m.HasExtensionFieldValues {
+		return 2
+	}
+
+	return 1
 }
 
 // GetDialect gets the name of the dialect that defines the Message
@@ -57,7 +61,7 @@ func (m *ScaledPressure) GetDialect() string {
 }
 
 // GetName gets the name of the Message
-func (m *ScaledPressure) GetName() string {
+func (m *ScaledPressure) GetMessageName() string {
 	return "ScaledPressure"
 }
 
@@ -125,7 +129,6 @@ func (m *ScaledPressure) Read(frame mavlink2.Frame) (err error) {
 // Write encodes the field values of the message to a byte array
 func (m *ScaledPressure) Write(version int) (output []byte, err error) {
 	var buffer bytes.Buffer
-	var err error
 
 	// Ensure only Version 1 or Version 2 were specified
 	if version != 1 && version != 2 {

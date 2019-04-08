@@ -50,7 +50,11 @@ type MissionWritePartialList struct {
 
 // GetVersion gets the MAVLink version of the Message contents
 func (m *MissionWritePartialList) GetVersion() int {
-	return m.FrameVersion
+	if m.HasExtensionFieldValues {
+		return 2
+	}
+
+	return 1
 }
 
 // GetDialect gets the name of the dialect that defines the Message
@@ -59,7 +63,7 @@ func (m *MissionWritePartialList) GetDialect() string {
 }
 
 // GetName gets the name of the Message
-func (m *MissionWritePartialList) GetName() string {
+func (m *MissionWritePartialList) GetMessageName() string {
 	return "MissionWritePartialList"
 }
 
@@ -127,7 +131,6 @@ func (m *MissionWritePartialList) Read(frame mavlink2.Frame) (err error) {
 // Write encodes the field values of the message to a byte array
 func (m *MissionWritePartialList) Write(version int) (output []byte, err error) {
 	var buffer bytes.Buffer
-	var err error
 
 	// Ensure only Version 1 or Version 2 were specified
 	if version != 1 && version != 2 {

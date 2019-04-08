@@ -47,7 +47,8 @@ type NamedValueFloat struct {
 
 // SetName encodes the input string to the Name array
 func (m *NamedValueFloat) SetName(input string) (err error) {
-	m.Name = []byte(input)[:math.Min(len(input), 10)]
+	clen := int(math.Min(float64(len(input)), float64(10)))
+	copy(m.Name[:], []byte(input)[:clen])
 
 	if len(input) > 10 {
 		err = mavlink2.ErrStringTooLong
@@ -58,12 +59,18 @@ func (m *NamedValueFloat) SetName(input string) (err error) {
 
 // GetName decodes the null-terminated string in the Name
 func (m *NamedValueFloat) GetName() string {
-	return string(m.Name[:util.CStrLen(m.Name)])
+	clen := util.CStrLen(m.Name[:])
+
+	return string(m.Name[:clen])
 }
 
 // GetVersion gets the MAVLink version of the Message contents
 func (m *NamedValueFloat) GetVersion() int {
-	return m.FrameVersion
+	if m.HasExtensionFieldValues {
+		return 2
+	}
+
+	return 1
 }
 
 // GetDialect gets the name of the dialect that defines the Message
@@ -72,7 +79,7 @@ func (m *NamedValueFloat) GetDialect() string {
 }
 
 // GetName gets the name of the Message
-func (m *NamedValueFloat) GetName() string {
+func (m *NamedValueFloat) GetMessageName() string {
 	return "NamedValueFloat"
 }
 
@@ -140,7 +147,6 @@ func (m *NamedValueFloat) Read(frame mavlink2.Frame) (err error) {
 // Write encodes the field values of the message to a byte array
 func (m *NamedValueFloat) Write(version int) (output []byte, err error) {
 	var buffer bytes.Buffer
-	var err error
 
 	// Ensure only Version 1 or Version 2 were specified
 	if version != 1 && version != 2 {

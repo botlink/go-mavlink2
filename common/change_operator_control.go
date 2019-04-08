@@ -49,7 +49,8 @@ type ChangeOperatorControl struct {
 
 // SetPasskey encodes the input string to the Passkey array
 func (m *ChangeOperatorControl) SetPasskey(input string) (err error) {
-	m.Passkey = []byte(input)[:math.Min(len(input), 25)]
+	clen := int(math.Min(float64(len(input)), float64(25)))
+	copy(m.Passkey[:], []byte(input)[:clen])
 
 	if len(input) > 25 {
 		err = mavlink2.ErrStringTooLong
@@ -60,12 +61,18 @@ func (m *ChangeOperatorControl) SetPasskey(input string) (err error) {
 
 // GetPasskey decodes the null-terminated string in the Passkey
 func (m *ChangeOperatorControl) GetPasskey() string {
-	return string(m.Passkey[:util.CStrLen(m.Passkey)])
+	clen := util.CStrLen(m.Passkey[:])
+
+	return string(m.Passkey[:clen])
 }
 
 // GetVersion gets the MAVLink version of the Message contents
 func (m *ChangeOperatorControl) GetVersion() int {
-	return m.FrameVersion
+	if m.HasExtensionFieldValues {
+		return 2
+	}
+
+	return 1
 }
 
 // GetDialect gets the name of the dialect that defines the Message
@@ -74,7 +81,7 @@ func (m *ChangeOperatorControl) GetDialect() string {
 }
 
 // GetName gets the name of the Message
-func (m *ChangeOperatorControl) GetName() string {
+func (m *ChangeOperatorControl) GetMessageName() string {
 	return "ChangeOperatorControl"
 }
 
@@ -142,7 +149,6 @@ func (m *ChangeOperatorControl) Read(frame mavlink2.Frame) (err error) {
 // Write encodes the field values of the message to a byte array
 func (m *ChangeOperatorControl) Write(version int) (output []byte, err error) {
 	var buffer bytes.Buffer
-	var err error
 
 	// Ensure only Version 1 or Version 2 were specified
 	if version != 1 && version != 2 {

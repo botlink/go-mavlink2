@@ -45,7 +45,8 @@ type WifiConfigAp struct {
 
 // SetSsID encodes the input string to the SsID array
 func (m *WifiConfigAp) SetSsID(input string) (err error) {
-	m.SsID = []byte(input)[:math.Min(len(input), 32)]
+	clen := int(math.Min(float64(len(input)), float64(32)))
+	copy(m.SsID[:], []byte(input)[:clen])
 
 	if len(input) > 32 {
 		err = mavlink2.ErrStringTooLong
@@ -56,12 +57,15 @@ func (m *WifiConfigAp) SetSsID(input string) (err error) {
 
 // GetSsID decodes the null-terminated string in the SsID
 func (m *WifiConfigAp) GetSsID() string {
-	return string(m.SsID[:util.CStrLen(m.SsID)])
+	clen := util.CStrLen(m.SsID[:])
+
+	return string(m.SsID[:clen])
 }
 
 // SetPassword encodes the input string to the Password array
 func (m *WifiConfigAp) SetPassword(input string) (err error) {
-	m.Password = []byte(input)[:math.Min(len(input), 64)]
+	clen := int(math.Min(float64(len(input)), float64(64)))
+	copy(m.Password[:], []byte(input)[:clen])
 
 	if len(input) > 64 {
 		err = mavlink2.ErrStringTooLong
@@ -72,12 +76,18 @@ func (m *WifiConfigAp) SetPassword(input string) (err error) {
 
 // GetPassword decodes the null-terminated string in the Password
 func (m *WifiConfigAp) GetPassword() string {
-	return string(m.Password[:util.CStrLen(m.Password)])
+	clen := util.CStrLen(m.Password[:])
+
+	return string(m.Password[:clen])
 }
 
 // GetVersion gets the MAVLink version of the Message contents
 func (m *WifiConfigAp) GetVersion() int {
-	return m.FrameVersion
+	if m.HasExtensionFieldValues {
+		return 2
+	}
+
+	return 1
 }
 
 // GetDialect gets the name of the dialect that defines the Message
@@ -86,7 +96,7 @@ func (m *WifiConfigAp) GetDialect() string {
 }
 
 // GetName gets the name of the Message
-func (m *WifiConfigAp) GetName() string {
+func (m *WifiConfigAp) GetMessageName() string {
 	return "WifiConfigAp"
 }
 
@@ -154,7 +164,6 @@ func (m *WifiConfigAp) Read(frame mavlink2.Frame) (err error) {
 // Write encodes the field values of the message to a byte array
 func (m *WifiConfigAp) Write(version int) (output []byte, err error) {
 	var buffer bytes.Buffer
-	var err error
 
 	// Ensure only Version 1 or Version 2 were specified
 	if version != 1 && version != 2 {

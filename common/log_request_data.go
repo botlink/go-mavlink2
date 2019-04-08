@@ -50,7 +50,11 @@ type LogRequestData struct {
 
 // GetVersion gets the MAVLink version of the Message contents
 func (m *LogRequestData) GetVersion() int {
-	return m.FrameVersion
+	if m.HasExtensionFieldValues {
+		return 2
+	}
+
+	return 1
 }
 
 // GetDialect gets the name of the dialect that defines the Message
@@ -59,7 +63,7 @@ func (m *LogRequestData) GetDialect() string {
 }
 
 // GetName gets the name of the Message
-func (m *LogRequestData) GetName() string {
+func (m *LogRequestData) GetMessageName() string {
 	return "LogRequestData"
 }
 
@@ -127,7 +131,6 @@ func (m *LogRequestData) Read(frame mavlink2.Frame) (err error) {
 // Write encodes the field values of the message to a byte array
 func (m *LogRequestData) Write(version int) (output []byte, err error) {
 	var buffer bytes.Buffer
-	var err error
 
 	// Ensure only Version 1 or Version 2 were specified
 	if version != 1 && version != 2 {

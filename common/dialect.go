@@ -236,1211 +236,1211 @@ var commonParsers = map[uint32]mavlink2.FrameParser{
 	0: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &Heartbeat{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	1: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &SysStatus{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	2: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &SystemTime{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	4: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &Ping{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	5: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &ChangeOperatorControl{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	6: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &ChangeOperatorControlAck{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	7: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &AuthKey{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	11: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &SetMode{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	20: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &ParamRequestRead{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	21: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &ParamRequestList{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	22: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &ParamValue{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	23: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &ParamSet{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	24: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &GpsRawInt{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	25: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &GpsStatus{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	26: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &ScaledImu{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	27: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &RawImu{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	28: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &RawPressure{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	29: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &ScaledPressure{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	30: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &Attitude{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	31: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &AttitudeQuaternion{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	32: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &LocalPositionNed{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	33: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &GlobalPositionInt{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	34: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &RcChannelsScaled{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	35: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &RcChannelsRaw{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	36: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &ServoOutputRaw{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	37: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &MissionRequestPartialList{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	38: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &MissionWritePartialList{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	39: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &MissionItem{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	40: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &MissionRequest{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	41: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &MissionSetCurrent{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	42: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &MissionCurrent{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	43: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &MissionRequestList{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	44: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &MissionCount{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	45: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &MissionClearAll{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	46: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &MissionItemReached{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	47: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &MissionAck{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	48: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &SetGpsGlobalOrigin{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	49: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &GpsGlobalOrigin{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	50: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &ParamMapRc{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	51: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &MissionRequestInt{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	54: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &SafetySetAllowedArea{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	55: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &SafetyAllowedArea{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	61: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &AttitudeQuaternionCov{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	62: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &NavControllerOutput{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	63: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &GlobalPositionIntCov{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	64: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &LocalPositionNedCov{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	65: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &RcChannels{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	66: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &RequestDataStream{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	67: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &DataStream{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	69: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &ManualControl{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	70: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &RcChannelsOverrIDe{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	73: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &MissionItemInt{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	74: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &VfrHud{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	75: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &CommandInt{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	76: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &CommandLong{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	77: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &CommandAck{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	81: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &ManualSetpoint{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	82: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &SetAttitudeTarget{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	83: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &AttitudeTarget{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	84: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &SetPositionTargetLocalNed{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	85: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &PositionTargetLocalNed{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	86: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &SetPositionTargetGlobalInt{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	87: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &PositionTargetGlobalInt{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	89: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &LocalPositionNedSystemGlobalOffset{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	90: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &HilState{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	91: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &HilControls{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	92: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &HilRcInputsRaw{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	93: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &HilActuatorControls{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	100: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &OpticalFlow{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	101: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &GlobalVisionPositionEstimate{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	102: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &VisionPositionEstimate{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	103: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &VisionSpeedEstimate{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	104: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &ViconPositionEstimate{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	105: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &HighresImu{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	106: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &OpticalFlowRad{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	107: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &HilSensor{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	108: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &SimState{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	109: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &RadioStatus{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	110: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &FileTransferProtocol{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	111: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &Timesync{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	112: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &CameraTrigger{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	113: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &HilGps{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	114: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &HilOpticalFlow{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	115: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &HilStateQuaternion{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	116: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &ScaledImu2{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	117: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &LogRequestList{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	118: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &LogEntry{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	119: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &LogRequestData{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	120: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &LogData{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	121: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &LogErase{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	122: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &LogRequestEnd{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	123: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &GpsInjectData{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	124: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &Gps2Raw{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	125: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &PowerStatus{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	126: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &SerialControl{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	127: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &GpsRtk{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	128: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &Gps2Rtk{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	129: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &ScaledImu3{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	130: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &DataTransmissionHandshake{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	131: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &EncapsulatedData{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	132: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &DistanceSensor{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	133: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &TerrainRequest{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	134: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &TerrainData{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	135: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &TerrainCheck{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	136: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &TerrainReport{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	137: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &ScaledPressure2{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	138: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &AttPosMocap{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	139: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &SetActuatorControlTarget{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	140: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &ActuatorControlTarget{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	141: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &Altitude{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	142: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &ResourceRequest{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	143: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &ScaledPressure3{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	144: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &FollowTarget{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	146: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &ControlSystemState{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	147: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &BatteryStatus{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	148: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &AutopilotVersion{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	149: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &LandingTarget{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	230: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &EstimatorStatus{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	231: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &WindCov{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	232: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &GpsInput{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	233: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &GpsRtcmData{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	234: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &HighLatency{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	235: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &HighLatency2{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	241: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &Vibration{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	242: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &HomePosition{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	243: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &SetHomePosition{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	244: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &MessageInterval{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	245: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &ExtendedSysState{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	246: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &AdsbVehicle{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	247: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &Collision{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	248: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &V2Extension{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	249: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &MemoryVect{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	250: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &DebugVect{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	251: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &NamedValueFloat{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	252: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &NamedValueInt{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	253: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &Statustext{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	254: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &Debug{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	256: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &SetupSigning{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	257: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &ButtonChange{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	258: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &PlayTune{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	259: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &CameraInformation{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	260: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &CameraSettings{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	261: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &StorageInformation{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	262: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &CameraCaptureStatus{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	263: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &CameraImageCaptured{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	264: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &FlightInformation{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	265: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &MountOrientation{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	266: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &LoggingData{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	267: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &LoggingDataAcked{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	268: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &LoggingAck{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	269: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &VIDeoStreamInformation{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	270: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &VIDeoStreamStatus{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	299: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &WifiConfigAp{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	300: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &ProtocolVersion{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	310: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &UavcanNodeStatus{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	311: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &UavcanNodeInfo{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	320: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &ParamExtRequestRead{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	321: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &ParamExtRequestList{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	322: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &ParamExtValue{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	323: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &ParamExtSet{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	324: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &ParamExtAck{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	330: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &ObstacleDistance{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	331: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &Odometry{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	332: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &TrajectoryRepresentationWaypoints{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	333: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &TrajectoryRepresentationBezier{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	334: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &CellularStatus{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	340: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &UtmGlobalPosition{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	350: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &DebugFloatArray{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	360: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &OrbitExecutionStatus{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	365: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &StatustextLong{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	370: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &SmartBatteryInfo{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	371: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &SmartBatteryStatus{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),
 	9000: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &WheelDistance{}
 
-		err = message.Read(frame.GetVersion(), frame.GetMessageBytes())
+		err = message.Read(frame)
 
 		return
 	}),

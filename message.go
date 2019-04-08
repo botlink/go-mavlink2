@@ -35,9 +35,9 @@ type MessageMeta struct {
 type Message interface {
 	GetVersion() int
 	GetDialect() string
-	GetName() string
+	GetMessageName() string
 	GetID() uint32
-	Read(int, []byte) error
+	Read(Frame) error
 }
 
 // UnknownMessage represents a message that is not part of any loaded Dialect

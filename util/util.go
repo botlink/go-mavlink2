@@ -14,10 +14,10 @@ func TruncateV2(input []byte) []byte {
 
 // CStrLen returns the length of the null-terminated C string contained in the input buffer
 func CStrLen(input []byte) int {
-	for i := 0; i < len(n); i++ {
-		if n[i] == 0 {
+	for i := 0; i < len(input); i++ {
+		if input[i] == 0 {
 			return i
 		}
 	}
-	return len(n)
+	return len(input)
 }
