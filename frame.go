@@ -97,7 +97,7 @@ func (frame FrameV1) GetChecksumInput() []byte {
 }
 
 func (frame FrameV1) String() string {
-	return fmt.Sprintf("Version: %v\nMessageLength: %v\nSenderSystemID: %v\nSenderComponentID: %v\nMessageID: %v\nChecksum:%v",
+	return fmt.Sprintf("Version:\t%v\nMessageLength:\t%v\nSenderSystemID:\t%v\nSenderComponentID:\t%v\nMessageID:\t%v\nChecksum:\t%v",
 		frame.GetVersion(),
 		frame.GetMessageLength(),
 		frame.GetSenderSystemID(),
