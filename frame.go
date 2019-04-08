@@ -25,8 +25,10 @@ IN THE GENERATED SOFTWARE.
 */
 
 import (
+	"bytes"
 	"encoding/binary"
 	"fmt"
+	"text/tabwriter"
 )
 
 // Frame represents a MAVLink frame containing a MAVLink message
@@ -97,7 +99,11 @@ func (frame FrameV1) GetChecksumInput() []byte {
 }
 
 func (frame FrameV1) String() string {
-	return fmt.Sprintf("Version:\t%v\nMessageLength:\t%v\nSenderSystemID:\t%v\nSenderComponentID:\t%v\nMessageID:\t%v\nChecksum:\t%v",
+	var buffer bytes.Buffer
+
+	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
+
+	fmt.Fprintf(writer, "Version:\t%v\nMessageLength:\t%v\nSenderSystemID:\t%v\nSenderComponentID:\t%v\nMessageID:\t%v\nChecksum:\t%v",
 		frame.GetVersion(),
 		frame.GetMessageLength(),
 		frame.GetSenderSystemID(),
@@ -105,6 +111,9 @@ func (frame FrameV1) String() string {
 		frame.GetMessageID(),
 		frame.GetChecksum(),
 	)
+
+	writer.Flush()
+	return string(buffer.Bytes())
 }
 
 // FrameV2 represents a MAVLink V1 Frame
@@ -190,7 +199,11 @@ func (frame FrameV2) GetSignature() []byte {
 }
 
 func (frame FrameV2) String() string {
-	format := fmt.Sprintf("Version: %v\nSigned: %v\nMessageLength: %v\nIncompatibilityFlags: %v\nCompatibilityFlags: %v\nSenderSystemID: %v\nSenderComponentID: %v\nMessageID: %v\nChecksum: 0x%x",
+	var buffer bytes.Buffer
+
+	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
+
+	fmt.Fprintf(writer, "Version:\t%v\nSigned:\t%v\nMessageLength:\t%v\nIncompatibilityFlags:\t%v\nCompatibilityFlags:\t%v\nSenderSystemID:\t%v\nSenderComponentID:\t%v\nMessageID:\t%v\nChecksum:\t0x%x",
 		frame.GetVersion(),
 		frame.GetSignature() != nil,
 		frame.GetMessageLength(),
@@ -203,10 +216,11 @@ func (frame FrameV2) String() string {
 	)
 
 	if frame.GetSignature() != nil {
-		format = fmt.Sprintf(format+"\nSignature: %x", frame.GetSignature())
+		fmt.Fprintf(writer, "\nSignature:\t%x", frame.GetSignature())
 	}
 
-	return format
+	writer.Flush()
+	return string(buffer.Bytes())
 }
 
 // ErrFrameTooShort indicates the Frame did not contain enough bytes to complete the requested operation

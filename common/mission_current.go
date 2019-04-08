@@ -29,6 +29,7 @@ import (
 	"encoding/binary"
 	"fmt"
 	"strings"
+	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -44,18 +45,25 @@ type MissionCurrent struct {
 
 func (m *MissionCurrent) String() string {
 	var builder strings.Builder
+	var buffer bytes.Buffer
+
+	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
 	builder.WriteString("Name:\t%v/%v\n")
 	// Output field values based on the decoded message type
 	builder.WriteString("Seq:\t%v \n")
 	format := builder.String()
 
-	return fmt.Sprintf(
+	fmt.Fprintf(
+		writer,
 		format,
 		m.GetDialect(),
 		m.GetMessageName(),
 		m.Seq,
 	)
+
+	writer.Flush()
+	return string(buffer.Bytes())
 }
 
 // GetVersion gets the MAVLink version of the Message contents

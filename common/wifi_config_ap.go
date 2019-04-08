@@ -30,6 +30,7 @@ import (
 	"fmt"
 	"math"
 	"strings"
+	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -47,6 +48,9 @@ type WifiConfigAp struct {
 
 func (m *WifiConfigAp) String() string {
 	var builder strings.Builder
+	var buffer bytes.Buffer
+
+	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
 	builder.WriteString("Name:\t%v/%v\n")
 	// Output field values based on the decoded message type
@@ -54,13 +58,17 @@ func (m *WifiConfigAp) String() string {
 	builder.WriteString("Password:\t%v \n")
 	format := builder.String()
 
-	return fmt.Sprintf(
+	fmt.Fprintf(
+		writer,
 		format,
 		m.GetDialect(),
 		m.GetMessageName(),
 		m.SsID,
 		m.Password,
 	)
+
+	writer.Flush()
+	return string(buffer.Bytes())
 }
 
 // SetSsID encodes the input string to the SsID array

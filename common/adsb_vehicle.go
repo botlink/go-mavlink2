@@ -30,6 +30,7 @@ import (
 	"fmt"
 	"math"
 	"strings"
+	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -69,6 +70,9 @@ type AdsbVehicle struct {
 
 func (m *AdsbVehicle) String() string {
 	var builder strings.Builder
+	var buffer bytes.Buffer
+
+	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
 	builder.WriteString("Name:\t%v/%v\n")
 	// Output field values based on the decoded message type
@@ -87,7 +91,8 @@ func (m *AdsbVehicle) String() string {
 	builder.WriteString("Tslc:\t%v [s]\n")
 	format := builder.String()
 
-	return fmt.Sprintf(
+	fmt.Fprintf(
+		writer,
 		format,
 		m.GetDialect(),
 		m.GetMessageName(),
@@ -105,6 +110,9 @@ func (m *AdsbVehicle) String() string {
 		m.EmitterType,
 		m.Tslc,
 	)
+
+	writer.Flush()
+	return string(buffer.Bytes())
 }
 
 // SetCallsign encodes the input string to the Callsign array

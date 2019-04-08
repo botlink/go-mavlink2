@@ -30,6 +30,7 @@ import (
 	"fmt"
 	"math"
 	"strings"
+	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -63,6 +64,9 @@ type SmartBatteryInfo struct {
 
 func (m *SmartBatteryInfo) String() string {
 	var builder strings.Builder
+	var buffer bytes.Buffer
+
+	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
 	builder.WriteString("Name:\t%v/%v\n")
 	// Output field values based on the decoded message type
@@ -78,7 +82,8 @@ func (m *SmartBatteryInfo) String() string {
 	builder.WriteString("DeviceName:\t%v \n")
 	format := builder.String()
 
-	return fmt.Sprintf(
+	fmt.Fprintf(
+		writer,
 		format,
 		m.GetDialect(),
 		m.GetMessageName(),
@@ -93,6 +98,9 @@ func (m *SmartBatteryInfo) String() string {
 		m.ID,
 		m.DeviceName,
 	)
+
+	writer.Flush()
+	return string(buffer.Bytes())
 }
 
 // SetDeviceName encodes the input string to the DeviceName array

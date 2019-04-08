@@ -29,6 +29,7 @@ import (
 	"encoding/binary"
 	"fmt"
 	"strings"
+	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -68,6 +69,9 @@ type Gps2Rtk struct {
 
 func (m *Gps2Rtk) String() string {
 	var builder strings.Builder
+	var buffer bytes.Buffer
+
+	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
 	builder.WriteString("Name:\t%v/%v\n")
 	// Output field values based on the decoded message type
@@ -86,7 +90,8 @@ func (m *Gps2Rtk) String() string {
 	builder.WriteString("BaselineCoordsType:\t%v \n")
 	format := builder.String()
 
-	return fmt.Sprintf(
+	fmt.Fprintf(
+		writer,
 		format,
 		m.GetDialect(),
 		m.GetMessageName(),
@@ -104,6 +109,9 @@ func (m *Gps2Rtk) String() string {
 		m.Nsats,
 		m.BaselineCoordsType,
 	)
+
+	writer.Flush()
+	return string(buffer.Bytes())
 }
 
 // GetVersion gets the MAVLink version of the Message contents

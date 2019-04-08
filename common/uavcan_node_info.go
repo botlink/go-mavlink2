@@ -30,6 +30,7 @@ import (
 	"fmt"
 	"math"
 	"strings"
+	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -61,6 +62,9 @@ type UavcanNodeInfo struct {
 
 func (m *UavcanNodeInfo) String() string {
 	var builder strings.Builder
+	var buffer bytes.Buffer
+
+	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
 	builder.WriteString("Name:\t%v/%v\n")
 	// Output field values based on the decoded message type
@@ -75,7 +79,8 @@ func (m *UavcanNodeInfo) String() string {
 	builder.WriteString("SwVersionMinor:\t%v \n")
 	format := builder.String()
 
-	return fmt.Sprintf(
+	fmt.Fprintf(
+		writer,
 		format,
 		m.GetDialect(),
 		m.GetMessageName(),
@@ -89,6 +94,9 @@ func (m *UavcanNodeInfo) String() string {
 		m.SwVersionMajor,
 		m.SwVersionMinor,
 	)
+
+	writer.Flush()
+	return string(buffer.Bytes())
 }
 
 // SetName encodes the input string to the Name array

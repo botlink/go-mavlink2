@@ -29,6 +29,7 @@ import (
 	"encoding/binary"
 	"fmt"
 	"strings"
+	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -62,6 +63,9 @@ type ScaledImu2 struct {
 
 func (m *ScaledImu2) String() string {
 	var builder strings.Builder
+	var buffer bytes.Buffer
+
+	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
 	builder.WriteString("Name:\t%v/%v\n")
 	// Output field values based on the decoded message type
@@ -77,7 +81,8 @@ func (m *ScaledImu2) String() string {
 	builder.WriteString("Zmag:\t%v [mT]\n")
 	format := builder.String()
 
-	return fmt.Sprintf(
+	fmt.Fprintf(
+		writer,
 		format,
 		m.GetDialect(),
 		m.GetMessageName(),
@@ -92,6 +97,9 @@ func (m *ScaledImu2) String() string {
 		m.Ymag,
 		m.Zmag,
 	)
+
+	writer.Flush()
+	return string(buffer.Bytes())
 }
 
 // GetVersion gets the MAVLink version of the Message contents

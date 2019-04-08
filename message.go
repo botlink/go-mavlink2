@@ -24,7 +24,11 @@ OUT OF OR IN CONNECTION WITH THE GENERATED SOFTWARE OR THE USE OR OTHER DEALINGS
 IN THE GENERATED SOFTWARE.
 */
 
-import "fmt"
+import (
+	"bytes"
+	"fmt"
+	"text/tabwriter"
+)
 
 // MessageMeta stores metadata information about a MAVLink message
 type MessageMeta struct {
@@ -51,7 +55,13 @@ type UnknownMessage struct {
 }
 
 func (m *UnknownMessage) String() string {
-	return fmt.Sprintf("ID:\t%v\nVersion:\t%v\nRaw:\t%x\n", m.ID, m.Version, m.Raw)
+	var buffer bytes.Buffer
+
+	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
+	fmt.Fprintf(writer, "ID:\t%v\nVersion:\t%v\nRaw:\t%x\n", m.ID, m.Version, m.Raw)
+
+	writer.Flush()
+	return string(buffer.Bytes())
 }
 
 // GetVersion gets the MAVLink version of the Message contents

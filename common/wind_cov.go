@@ -29,6 +29,7 @@ import (
 	"encoding/binary"
 	"fmt"
 	"strings"
+	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -60,6 +61,9 @@ type WindCov struct {
 
 func (m *WindCov) String() string {
 	var builder strings.Builder
+	var buffer bytes.Buffer
+
+	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
 	builder.WriteString("Name:\t%v/%v\n")
 	// Output field values based on the decoded message type
@@ -74,7 +78,8 @@ func (m *WindCov) String() string {
 	builder.WriteString("VertAccuracy:\t%v [m]\n")
 	format := builder.String()
 
-	return fmt.Sprintf(
+	fmt.Fprintf(
+		writer,
 		format,
 		m.GetDialect(),
 		m.GetMessageName(),
@@ -88,6 +93,9 @@ func (m *WindCov) String() string {
 		m.HorizAccuracy,
 		m.VertAccuracy,
 	)
+
+	writer.Flush()
+	return string(buffer.Bytes())
 }
 
 // GetVersion gets the MAVLink version of the Message contents

@@ -30,6 +30,7 @@ import (
 	"fmt"
 	"math"
 	"strings"
+	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -65,6 +66,9 @@ type CameraImageCaptured struct {
 
 func (m *CameraImageCaptured) String() string {
 	var builder strings.Builder
+	var buffer bytes.Buffer
+
+	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
 	builder.WriteString("Name:\t%v/%v\n")
 	// Output field values based on the decoded message type
@@ -81,7 +85,8 @@ func (m *CameraImageCaptured) String() string {
 	builder.WriteString("FileURL:\t%v \n")
 	format := builder.String()
 
-	return fmt.Sprintf(
+	fmt.Fprintf(
+		writer,
 		format,
 		m.GetDialect(),
 		m.GetMessageName(),
@@ -97,6 +102,9 @@ func (m *CameraImageCaptured) String() string {
 		m.CaptureResult,
 		m.FileURL,
 	)
+
+	writer.Flush()
+	return string(buffer.Bytes())
 }
 
 // SetFileURL encodes the input string to the FileURL array

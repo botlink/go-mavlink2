@@ -29,6 +29,7 @@ import (
 	"encoding/binary"
 	"fmt"
 	"strings"
+	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
@@ -96,6 +97,9 @@ type HighLatency2 struct {
 
 func (m *HighLatency2) String() string {
 	var builder strings.Builder
+	var buffer bytes.Buffer
+
+	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
 	builder.WriteString("Name:\t%v/%v\n")
 	// Output field values based on the decoded message type
@@ -128,7 +132,8 @@ func (m *HighLatency2) String() string {
 	builder.WriteString("Custom2:\t%v \n")
 	format := builder.String()
 
-	return fmt.Sprintf(
+	fmt.Fprintf(
+		writer,
 		format,
 		m.GetDialect(),
 		m.GetMessageName(),
@@ -160,6 +165,9 @@ func (m *HighLatency2) String() string {
 		m.Custom1,
 		m.Custom2,
 	)
+
+	writer.Flush()
+	return string(buffer.Bytes())
 }
 
 // GetVersion gets the MAVLink version of the Message contents
