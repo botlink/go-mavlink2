@@ -35,6 +35,7 @@ type Dialect interface {
 // Dialects represents a collection of Dialects
 type Dialects []Dialect
 
+// GetMessage decodes the message in the Frame
 func (d Dialects) GetMessage(frame Frame) (message Message, err error) {
 	for _, dialect := range d {
 		message, err = dialect.GetMessage(frame)
