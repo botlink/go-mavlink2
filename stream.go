@@ -26,6 +26,7 @@ IN THE GENERATED SOFTWARE.
 
 import (
 	"bufio"
+	"fmt"
 	"io"
 )
 
@@ -43,12 +44,14 @@ type MAVLinkStream struct {
 	Version  int
 	Dialects Dialects
 	Frames   chan Frame
-	Messages chan Messages
+	Messages chan Message
 }
 
-func (s *MAVLinkStream) Run(reader *bufio.ReadWriter) {
+// Run consumes the MAVLink stream from the underlying Reader
+func (s *MAVLinkStream) Run(stream io.Reader) {
 	// Read Frames & Messages
 	go func() {
+		reader := bufio.NewReader(stream)
 		for {
 			frame, err := readFrame(reader)
 
@@ -60,7 +63,13 @@ func (s *MAVLinkStream) Run(reader *bufio.ReadWriter) {
 			select {
 			case s.Frames <- frame:
 			default:
-				fmt.Println("Dropped frame")
+			}
+
+			err = s.Dialects.Validate(frame)
+
+			if err != nil && err != ErrUnknownMessage {
+				fmt.Println(err)
+				continue
 			}
 
 			message, err := s.Dialects.GetMessage(frame)
@@ -73,13 +82,12 @@ func (s *MAVLinkStream) Run(reader *bufio.ReadWriter) {
 			select {
 			case s.Messages <- message:
 			default:
-				fmt.Println("Dropped message")
 			}
 		}
 	}()
 }
 
-func peekHeader(reader *bufio.Reader) (frameLength int, err error) {
+func peekHeader(reader *bufio.Reader) (frameLength uint16, err error) {
 	for {
 		var headerBytes []byte
 		headerBytes, err = reader.Peek(3)
@@ -92,7 +100,7 @@ func peekHeader(reader *bufio.Reader) (frameLength int, err error) {
 		startByte := headerBytes[0]
 
 		if startByte == V2StartByte {
-			frameLength = int(messageLength + 12)
+			frameLength = uint16(messageLength) + 12
 
 			if headerBytes[2]&CompatibilityFlagSignature == CompatibilityFlagSignature {
 				frameLength += 13
@@ -100,7 +108,7 @@ func peekHeader(reader *bufio.Reader) (frameLength int, err error) {
 
 			return
 		} else if startByte == V1StartByte {
-			frameLength = int(messageLength + 8)
+			frameLength = uint16(messageLength) + 8
 
 			return
 		} else {
@@ -113,8 +121,8 @@ func peekHeader(reader *bufio.Reader) (frameLength int, err error) {
 	}
 }
 
-func readFrame(reader *bufio.ReadWriter) (frame Frame, err error) {
-	frameLength, err := peekHeader()
+func readFrame(reader *bufio.Reader) (frame Frame, err error) {
+	frameLength, err := peekHeader(reader)
 
 	if err != nil {
 		return
