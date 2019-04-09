@@ -1,4 +1,4 @@
-package uAvionix
+package uavionix
 
 /*
 Generated using mavgen - https://github.com/ArduPilot/pymavlink/
@@ -137,7 +137,7 @@ func (m *UavionixAdsbOutDynamic) GetVersion() int {
 
 // GetDialect gets the name of the dialect that defines the Message
 func (m *UavionixAdsbOutDynamic) GetDialect() string {
-	return "uAvionix"
+	return "uavionix"
 }
 
 // GetMessageName gets the name of the Message

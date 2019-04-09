@@ -1,4 +1,4 @@
-package uAvionix
+package uavionix
 
 /*
 Generated using mavgen - https://github.com/ArduPilot/pymavlink/
