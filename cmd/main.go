@@ -21,8 +21,6 @@ func main() {
 
 	var wg sync.WaitGroup
 
-	// dialects := mavlink2.Dialects{common.DialectCommon{}}
-
 	stream := mavlink2.MAVLinkFrameStream{}
 
 	errors := make(chan error)
