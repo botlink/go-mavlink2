@@ -1,4 +1,4 @@
-package uAvionix
+package uavionix
 
 import mavlink2 "github.com/queue-b/go-mavlink2"
 
@@ -26,19 +26,19 @@ OUT OF OR IN CONNECTION WITH THE GENERATED SOFTWARE OR THE USE OR OTHER DEALINGS
 IN THE GENERATED SOFTWARE.
 */
 
-// DialectUavionix represents a collection of MAVLink messages
-type DialectUavionix struct{}
+// Dialect represents a collection of MAVLink messages
+type Dialect struct{}
 
 // GetName gets the name of the Dialect
-func (d DialectUavionix) GetName() string {
-	return "uAvionix"
+func (d Dialect) GetName() string {
+	return "uavionix"
 }
 
 // GetMeta retrieves the metadata for the message. If no metadata is found, ErrUnknownMessage is returned
-func (d DialectUavionix) GetMeta(messageID uint32) (meta mavlink2.MessageMeta, err error) {
+func (d Dialect) GetMeta(messageID uint32) (meta mavlink2.MessageMeta, err error) {
 	var ok bool
 
-	if meta, ok = uAvionixMessages[messageID]; !ok {
+	if meta, ok = uavionixMessages[messageID]; !ok {
 		err = mavlink2.ErrUnknownMessage
 	}
 
@@ -46,8 +46,8 @@ func (d DialectUavionix) GetMeta(messageID uint32) (meta mavlink2.MessageMeta, e
 }
 
 // GetMessage extracts and parses the message contained in the Frame
-func (d DialectUavionix) GetMessage(frame mavlink2.Frame) (message mavlink2.Message, err error) {
-	if parser, ok := uAvionixParsers[frame.GetMessageID()]; ok {
+func (d Dialect) GetMessage(frame mavlink2.Frame) (message mavlink2.Message, err error) {
+	if parser, ok := uavionixParsers[frame.GetMessageID()]; ok {
 		message, err = parser(frame)
 		return
 	}
@@ -56,7 +56,7 @@ func (d DialectUavionix) GetMessage(frame mavlink2.Frame) (message mavlink2.Mess
 	return
 }
 
-var uAvionixMessages = map[uint32]mavlink2.MessageMeta{
+var uavionixMessages = map[uint32]mavlink2.MessageMeta{
 	10001: mavlink2.MessageMeta{CRCExtra: 209, MinimumLength: 20, MaximumLength: 20},
 	10002: mavlink2.MessageMeta{CRCExtra: 186, MinimumLength: 41, MaximumLength: 41},
 	10003: mavlink2.MessageMeta{CRCExtra: 4, MinimumLength: 1, MaximumLength: 1},

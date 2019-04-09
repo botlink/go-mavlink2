@@ -26,16 +26,16 @@ OUT OF OR IN CONNECTION WITH THE GENERATED SOFTWARE OR THE USE OR OTHER DEALINGS
 IN THE GENERATED SOFTWARE.
 */
 
-// DialectCommon represents a collection of MAVLink messages
-type DialectCommon struct{}
+// Dialect represents a collection of MAVLink messages
+type Dialect struct{}
 
 // GetName gets the name of the Dialect
-func (d DialectCommon) GetName() string {
+func (d Dialect) GetName() string {
 	return "common"
 }
 
 // GetMeta retrieves the metadata for the message. If no metadata is found, ErrUnknownMessage is returned
-func (d DialectCommon) GetMeta(messageID uint32) (meta mavlink2.MessageMeta, err error) {
+func (d Dialect) GetMeta(messageID uint32) (meta mavlink2.MessageMeta, err error) {
 	var ok bool
 
 	if meta, ok = commonMessages[messageID]; !ok {
@@ -46,7 +46,7 @@ func (d DialectCommon) GetMeta(messageID uint32) (meta mavlink2.MessageMeta, err
 }
 
 // GetMessage extracts and parses the message contained in the Frame
-func (d DialectCommon) GetMessage(frame mavlink2.Frame) (message mavlink2.Message, err error) {
+func (d Dialect) GetMessage(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 	if parser, ok := commonParsers[frame.GetMessageID()]; ok {
 		message, err = parser(frame)
 		return
