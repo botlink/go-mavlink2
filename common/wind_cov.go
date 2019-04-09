@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -60,23 +59,22 @@ type WindCov struct {
 }
 
 func (m *WindCov) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("TimeUsec:\t%v [us]\n")
-	builder.WriteString("WindX:\t%v [m/s]\n")
-	builder.WriteString("WindY:\t%v [m/s]\n")
-	builder.WriteString("WindZ:\t%v [m/s]\n")
-	builder.WriteString("VarHoriz:\t%v [m/s]\n")
-	builder.WriteString("VarVert:\t%v [m/s]\n")
-	builder.WriteString("WindAlt:\t%v [m]\n")
-	builder.WriteString("HorizAccuracy:\t%v [m]\n")
-	builder.WriteString("VertAccuracy:\t%v [m]\n")
-	format := builder.String()
+	format += "TimeUsec:\t%v [us]\n"
+	format += "WindX:\t%v [m/s]\n"
+	format += "WindY:\t%v [m/s]\n"
+	format += "WindZ:\t%v [m/s]\n"
+	format += "VarHoriz:\t%v [m/s]\n"
+	format += "VarVert:\t%v [m/s]\n"
+	format += "WindAlt:\t%v [m]\n"
+	format += "HorizAccuracy:\t%v [m]\n"
+	format += "VertAccuracy:\t%v [m]\n"
 
 	fmt.Fprintf(
 		writer,

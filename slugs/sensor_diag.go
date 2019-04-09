@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -50,18 +49,17 @@ type SensorDiag struct {
 }
 
 func (m *SensorDiag) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("Float1:\t%v \n")
-	builder.WriteString("Float2:\t%v \n")
-	builder.WriteString("Int1:\t%v \n")
-	builder.WriteString("Char1:\t%v \n")
-	format := builder.String()
+	format += "Float1:\t%v \n"
+	format += "Float2:\t%v \n"
+	format += "Int1:\t%v \n"
+	format += "Char1:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -68,27 +67,26 @@ type AdapTuning struct {
 }
 
 func (m *AdapTuning) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("Desired:\t%v [deg/s]\n")
-	builder.WriteString("Achieved:\t%v [deg/s]\n")
-	builder.WriteString("Error:\t%v \n")
-	builder.WriteString("Theta:\t%v \n")
-	builder.WriteString("Omega:\t%v \n")
-	builder.WriteString("Sigma:\t%v \n")
-	builder.WriteString("ThetaDot:\t%v \n")
-	builder.WriteString("OmegaDot:\t%v \n")
-	builder.WriteString("SigmaDot:\t%v \n")
-	builder.WriteString("F:\t%v \n")
-	builder.WriteString("FDot:\t%v \n")
-	builder.WriteString("U:\t%v \n")
-	builder.WriteString("Axis:\t%v \n")
-	format := builder.String()
+	format += "Desired:\t%v [deg/s]\n"
+	format += "Achieved:\t%v [deg/s]\n"
+	format += "Error:\t%v \n"
+	format += "Theta:\t%v \n"
+	format += "Omega:\t%v \n"
+	format += "Sigma:\t%v \n"
+	format += "ThetaDot:\t%v \n"
+	format += "OmegaDot:\t%v \n"
+	format += "SigmaDot:\t%v \n"
+	format += "F:\t%v \n"
+	format += "FDot:\t%v \n"
+	format += "U:\t%v \n"
+	format += "Axis:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

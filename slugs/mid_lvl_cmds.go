@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -50,18 +49,17 @@ type MIDLvlCmds struct {
 }
 
 func (m *MIDLvlCmds) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("Hcommand:\t%v [m]\n")
-	builder.WriteString("Ucommand:\t%v [m/s]\n")
-	builder.WriteString("RCommand:\t%v [rad/s]\n")
-	builder.WriteString("Target:\t%v \n")
-	format := builder.String()
+	format += "Hcommand:\t%v [m]\n"
+	format += "Ucommand:\t%v [m/s]\n"
+	format += "RCommand:\t%v [rad/s]\n"
+	format += "Target:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

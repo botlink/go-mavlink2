@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -64,25 +63,24 @@ type RCChannelsScaled struct {
 }
 
 func (m *RCChannelsScaled) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("TimeBootMs:\t%v [ms]\n")
-	builder.WriteString("Chan1Scaled:\t%v \n")
-	builder.WriteString("Chan2Scaled:\t%v \n")
-	builder.WriteString("Chan3Scaled:\t%v \n")
-	builder.WriteString("Chan4Scaled:\t%v \n")
-	builder.WriteString("Chan5Scaled:\t%v \n")
-	builder.WriteString("Chan6Scaled:\t%v \n")
-	builder.WriteString("Chan7Scaled:\t%v \n")
-	builder.WriteString("Chan8Scaled:\t%v \n")
-	builder.WriteString("Port:\t%v \n")
-	builder.WriteString("RSSI:\t%v \n")
-	format := builder.String()
+	format += "TimeBootMs:\t%v [ms]\n"
+	format += "Chan1Scaled:\t%v \n"
+	format += "Chan2Scaled:\t%v \n"
+	format += "Chan3Scaled:\t%v \n"
+	format += "Chan4Scaled:\t%v \n"
+	format += "Chan5Scaled:\t%v \n"
+	format += "Chan6Scaled:\t%v \n"
+	format += "Chan7Scaled:\t%v \n"
+	format += "Chan8Scaled:\t%v \n"
+	format += "Port:\t%v \n"
+	format += "RSSI:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

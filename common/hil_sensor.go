@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -72,29 +71,28 @@ type HilSensor struct {
 }
 
 func (m *HilSensor) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("TimeUsec:\t%v [us]\n")
-	builder.WriteString("Xacc:\t%v [m/s/s]\n")
-	builder.WriteString("Yacc:\t%v [m/s/s]\n")
-	builder.WriteString("Zacc:\t%v [m/s/s]\n")
-	builder.WriteString("Xgyro:\t%v [rad/s]\n")
-	builder.WriteString("Ygyro:\t%v [rad/s]\n")
-	builder.WriteString("Zgyro:\t%v [rad/s]\n")
-	builder.WriteString("Xmag:\t%v [gauss]\n")
-	builder.WriteString("Ymag:\t%v [gauss]\n")
-	builder.WriteString("Zmag:\t%v [gauss]\n")
-	builder.WriteString("AbsPressure:\t%v [mbar]\n")
-	builder.WriteString("DiffPressure:\t%v [mbar]\n")
-	builder.WriteString("PressureAlt:\t%v \n")
-	builder.WriteString("Temperature:\t%v [degC]\n")
-	builder.WriteString("FieldsUpdated:\t%v \n")
-	format := builder.String()
+	format += "TimeUsec:\t%v [us]\n"
+	format += "Xacc:\t%v [m/s/s]\n"
+	format += "Yacc:\t%v [m/s/s]\n"
+	format += "Zacc:\t%v [m/s/s]\n"
+	format += "Xgyro:\t%v [rad/s]\n"
+	format += "Ygyro:\t%v [rad/s]\n"
+	format += "Zgyro:\t%v [rad/s]\n"
+	format += "Xmag:\t%v [gauss]\n"
+	format += "Ymag:\t%v [gauss]\n"
+	format += "Zmag:\t%v [gauss]\n"
+	format += "AbsPressure:\t%v [mbar]\n"
+	format += "DiffPressure:\t%v [mbar]\n"
+	format += "PressureAlt:\t%v \n"
+	format += "Temperature:\t%v [degC]\n"
+	format += "FieldsUpdated:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

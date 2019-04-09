@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -64,27 +63,26 @@ type DistanceSensor struct {
 }
 
 func (m *DistanceSensor) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("TimeBootMs:\t%v [ms]\n")
-	builder.WriteString("MinDistance:\t%v [cm]\n")
-	builder.WriteString("MaxDistance:\t%v [cm]\n")
-	builder.WriteString("CurrentDistance:\t%v [cm]\n")
-	builder.WriteString("Type:\t%v \n")
-	builder.WriteString("ID:\t%v \n")
-	builder.WriteString("Orientation:\t%v \n")
-	builder.WriteString("Covariance:\t%v [cm^2]\n")
+	format += "TimeBootMs:\t%v [ms]\n"
+	format += "MinDistance:\t%v [cm]\n"
+	format += "MaxDistance:\t%v [cm]\n"
+	format += "CurrentDistance:\t%v [cm]\n"
+	format += "Type:\t%v \n"
+	format += "ID:\t%v \n"
+	format += "Orientation:\t%v \n"
+	format += "Covariance:\t%v [cm^2]\n"
 	if m.HasExtensionFieldValues {
-		builder.WriteString("HorizontalFov:\t%v\n")
-		builder.WriteString("VerticalFov:\t%v\n")
-		builder.WriteString("Quaternion:\t%v\n")
+		format += "HorizontalFov:\t%v\n"
+		format += "VerticalFov:\t%v\n"
+		format += "Quaternion:\t%v\n"
 	}
-	format := builder.String()
 
 	if m.HasExtensionFieldValues {
 		fmt.Fprintf(

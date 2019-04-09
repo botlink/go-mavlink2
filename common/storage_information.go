@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -60,23 +59,22 @@ type StorageInformation struct {
 }
 
 func (m *StorageInformation) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("TimeBootMs:\t%v [ms]\n")
-	builder.WriteString("TotalCapacity:\t%v [MiB]\n")
-	builder.WriteString("UsedCapacity:\t%v [MiB]\n")
-	builder.WriteString("AvailableCapacity:\t%v [MiB]\n")
-	builder.WriteString("ReadSpeed:\t%v [MiB/s]\n")
-	builder.WriteString("WriteSpeed:\t%v [MiB/s]\n")
-	builder.WriteString("StorageID:\t%v \n")
-	builder.WriteString("StorageCount:\t%v \n")
-	builder.WriteString("Status:\t%v \n")
-	format := builder.String()
+	format += "TimeBootMs:\t%v [ms]\n"
+	format += "TotalCapacity:\t%v [MiB]\n"
+	format += "UsedCapacity:\t%v [MiB]\n"
+	format += "AvailableCapacity:\t%v [MiB]\n"
+	format += "ReadSpeed:\t%v [MiB/s]\n"
+	format += "WriteSpeed:\t%v [MiB/s]\n"
+	format += "StorageID:\t%v \n"
+	format += "StorageCount:\t%v \n"
+	format += "Status:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

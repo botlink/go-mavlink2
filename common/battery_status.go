@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -64,27 +63,26 @@ type BatteryStatus struct {
 }
 
 func (m *BatteryStatus) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("CurrentConsumed:\t%v [mAh]\n")
-	builder.WriteString("EnergyConsumed:\t%v [hJ]\n")
-	builder.WriteString("Temperature:\t%v [cdegC]\n")
-	builder.WriteString("Voltages:\t%v [mV]\n")
-	builder.WriteString("CurrentBattery:\t%v [cA]\n")
-	builder.WriteString("ID:\t%v \n")
-	builder.WriteString("BatteryFunction:\t%v \n")
-	builder.WriteString("Type:\t%v \n")
-	builder.WriteString("BatteryRemaining:\t%v \n")
+	format += "CurrentConsumed:\t%v [mAh]\n"
+	format += "EnergyConsumed:\t%v [hJ]\n"
+	format += "Temperature:\t%v [cdegC]\n"
+	format += "Voltages:\t%v [mV]\n"
+	format += "CurrentBattery:\t%v [cA]\n"
+	format += "ID:\t%v \n"
+	format += "BatteryFunction:\t%v \n"
+	format += "Type:\t%v \n"
+	format += "BatteryRemaining:\t%v \n"
 	if m.HasExtensionFieldValues {
-		builder.WriteString("TimeRemaining:\t%v\n")
-		builder.WriteString("ChargeState:\t%v\n")
+		format += "TimeRemaining:\t%v\n"
+		format += "ChargeState:\t%v\n"
 	}
-	format := builder.String()
 
 	if m.HasExtensionFieldValues {
 		fmt.Fprintf(

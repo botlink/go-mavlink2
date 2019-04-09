@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -56,21 +55,20 @@ type EKFExt struct {
 }
 
 func (m *EKFExt) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("Timestamp:\t%v [us]\n")
-	builder.WriteString("Windspeed:\t%v [m/s]\n")
-	builder.WriteString("Winddir:\t%v [rad]\n")
-	builder.WriteString("Windz:\t%v [m/s]\n")
-	builder.WriteString("Airspeed:\t%v [m/s]\n")
-	builder.WriteString("Beta:\t%v [rad]\n")
-	builder.WriteString("Alpha:\t%v [rad]\n")
-	format := builder.String()
+	format += "Timestamp:\t%v [us]\n"
+	format += "Windspeed:\t%v [m/s]\n"
+	format += "Winddir:\t%v [rad]\n"
+	format += "Windz:\t%v [m/s]\n"
+	format += "Airspeed:\t%v [m/s]\n"
+	format += "Beta:\t%v [rad]\n"
+	format += "Alpha:\t%v [rad]\n"
 
 	fmt.Fprintf(
 		writer,

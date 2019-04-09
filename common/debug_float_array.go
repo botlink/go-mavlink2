@@ -29,7 +29,6 @@ import (
 	"encoding/binary"
 	"fmt"
 	"math"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -51,20 +50,19 @@ type DebugFloatArray struct {
 }
 
 func (m *DebugFloatArray) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("TimeUsec:\t%v [us]\n")
-	builder.WriteString("ArrayID:\t%v \n")
-	builder.WriteString("Name:\t%v \n")
+	format += "TimeUsec:\t%v [us]\n"
+	format += "ArrayID:\t%v \n"
+	format += "Name:\t%v \n"
 	if m.HasExtensionFieldValues {
-		builder.WriteString("Data:\t%v\n")
+		format += "Data:\t%v\n"
 	}
-	format := builder.String()
 
 	if m.HasExtensionFieldValues {
 		fmt.Fprintf(

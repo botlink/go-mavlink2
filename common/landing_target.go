@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -70,30 +69,29 @@ type LandingTarget struct {
 }
 
 func (m *LandingTarget) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("TimeUsec:\t%v [us]\n")
-	builder.WriteString("AngleX:\t%v [rad]\n")
-	builder.WriteString("AngleY:\t%v [rad]\n")
-	builder.WriteString("Distance:\t%v [m]\n")
-	builder.WriteString("SizeX:\t%v [rad]\n")
-	builder.WriteString("SizeY:\t%v [rad]\n")
-	builder.WriteString("TargetNum:\t%v \n")
-	builder.WriteString("Frame:\t%v \n")
+	format += "TimeUsec:\t%v [us]\n"
+	format += "AngleX:\t%v [rad]\n"
+	format += "AngleY:\t%v [rad]\n"
+	format += "Distance:\t%v [m]\n"
+	format += "SizeX:\t%v [rad]\n"
+	format += "SizeY:\t%v [rad]\n"
+	format += "TargetNum:\t%v \n"
+	format += "Frame:\t%v \n"
 	if m.HasExtensionFieldValues {
-		builder.WriteString("X:\t%v\n")
-		builder.WriteString("Y:\t%v\n")
-		builder.WriteString("Z:\t%v\n")
-		builder.WriteString("Q:\t%v\n")
-		builder.WriteString("Type:\t%v\n")
-		builder.WriteString("PositionValID:\t%v\n")
+		format += "X:\t%v\n"
+		format += "Y:\t%v\n"
+		format += "Z:\t%v\n"
+		format += "Q:\t%v\n"
+		format += "Type:\t%v\n"
+		format += "PositionValID:\t%v\n"
 	}
-	format := builder.String()
 
 	if m.HasExtensionFieldValues {
 		fmt.Fprintf(

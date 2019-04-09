@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -66,26 +65,25 @@ type SensPowerBoard struct {
 }
 
 func (m *SensPowerBoard) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("Timestamp:\t%v [us]\n")
-	builder.WriteString("PwrBrdSystemVolt:\t%v [V]\n")
-	builder.WriteString("PwrBrdServoVolt:\t%v [V]\n")
-	builder.WriteString("PwrBrdDigitalVolt:\t%v [V]\n")
-	builder.WriteString("PwrBrdMotLAmp:\t%v [A]\n")
-	builder.WriteString("PwrBrdMotRAmp:\t%v [A]\n")
-	builder.WriteString("PwrBrdAnalogAmp:\t%v [A]\n")
-	builder.WriteString("PwrBrdDigitalAmp:\t%v [A]\n")
-	builder.WriteString("PwrBrdExtAmp:\t%v [A]\n")
-	builder.WriteString("PwrBrdAuxAmp:\t%v [A]\n")
-	builder.WriteString("PwrBrdStatus:\t%v \n")
-	builder.WriteString("PwrBrdLedStatus:\t%v \n")
-	format := builder.String()
+	format += "Timestamp:\t%v [us]\n"
+	format += "PwrBrdSystemVolt:\t%v [V]\n"
+	format += "PwrBrdServoVolt:\t%v [V]\n"
+	format += "PwrBrdDigitalVolt:\t%v [V]\n"
+	format += "PwrBrdMotLAmp:\t%v [A]\n"
+	format += "PwrBrdMotRAmp:\t%v [A]\n"
+	format += "PwrBrdAnalogAmp:\t%v [A]\n"
+	format += "PwrBrdDigitalAmp:\t%v [A]\n"
+	format += "PwrBrdExtAmp:\t%v [A]\n"
+	format += "PwrBrdAuxAmp:\t%v [A]\n"
+	format += "PwrBrdStatus:\t%v \n"
+	format += "PwrBrdLedStatus:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

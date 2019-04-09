@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -74,30 +73,29 @@ type UavionixAdsbOutDynamic struct {
 }
 
 func (m *UavionixAdsbOutDynamic) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("Utctime:\t%v [s]\n")
-	builder.WriteString("GPSlat:\t%v [degE7]\n")
-	builder.WriteString("GPSlon:\t%v [degE7]\n")
-	builder.WriteString("GPSalt:\t%v [mm]\n")
-	builder.WriteString("Baroaltmsl:\t%v [mbar]\n")
-	builder.WriteString("Accuracyhor:\t%v [mm]\n")
-	builder.WriteString("Accuracyvert:\t%v [cm]\n")
-	builder.WriteString("Accuracyvel:\t%v [mm/s]\n")
-	builder.WriteString("Velvert:\t%v [cm/s]\n")
-	builder.WriteString("Velns:\t%v [cm/s]\n")
-	builder.WriteString("Velew:\t%v [cm/s]\n")
-	builder.WriteString("State:\t%v \n")
-	builder.WriteString("Squawk:\t%v \n")
-	builder.WriteString("GPSfix:\t%v \n")
-	builder.WriteString("Numsats:\t%v \n")
-	builder.WriteString("Emergencystatus:\t%v \n")
-	format := builder.String()
+	format += "Utctime:\t%v [s]\n"
+	format += "GPSlat:\t%v [degE7]\n"
+	format += "GPSlon:\t%v [degE7]\n"
+	format += "GPSalt:\t%v [mm]\n"
+	format += "Baroaltmsl:\t%v [mbar]\n"
+	format += "Accuracyhor:\t%v [mm]\n"
+	format += "Accuracyvert:\t%v [cm]\n"
+	format += "Accuracyvel:\t%v [mm/s]\n"
+	format += "Velvert:\t%v [cm/s]\n"
+	format += "Velns:\t%v [cm/s]\n"
+	format += "Velew:\t%v [cm/s]\n"
+	format += "State:\t%v \n"
+	format += "Squawk:\t%v \n"
+	format += "GPSfix:\t%v \n"
+	format += "Numsats:\t%v \n"
+	format += "Emergencystatus:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

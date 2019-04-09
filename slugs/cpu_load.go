@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -48,17 +47,16 @@ type CpuLoad struct {
 }
 
 func (m *CpuLoad) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("Batvolt:\t%v [mV]\n")
-	builder.WriteString("Sensload:\t%v \n")
-	builder.WriteString("Ctrlload:\t%v \n")
-	format := builder.String()
+	format += "Batvolt:\t%v [mV]\n"
+	format += "Sensload:\t%v \n"
+	format += "Ctrlload:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

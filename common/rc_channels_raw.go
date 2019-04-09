@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -64,25 +63,24 @@ type RCChannelsRaw struct {
 }
 
 func (m *RCChannelsRaw) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("TimeBootMs:\t%v [ms]\n")
-	builder.WriteString("Chan1Raw:\t%v [us]\n")
-	builder.WriteString("Chan2Raw:\t%v [us]\n")
-	builder.WriteString("Chan3Raw:\t%v [us]\n")
-	builder.WriteString("Chan4Raw:\t%v [us]\n")
-	builder.WriteString("Chan5Raw:\t%v [us]\n")
-	builder.WriteString("Chan6Raw:\t%v [us]\n")
-	builder.WriteString("Chan7Raw:\t%v [us]\n")
-	builder.WriteString("Chan8Raw:\t%v [us]\n")
-	builder.WriteString("Port:\t%v \n")
-	builder.WriteString("RSSI:\t%v \n")
-	format := builder.String()
+	format += "TimeBootMs:\t%v [ms]\n"
+	format += "Chan1Raw:\t%v [us]\n"
+	format += "Chan2Raw:\t%v [us]\n"
+	format += "Chan3Raw:\t%v [us]\n"
+	format += "Chan4Raw:\t%v [us]\n"
+	format += "Chan5Raw:\t%v [us]\n"
+	format += "Chan6Raw:\t%v [us]\n"
+	format += "Chan7Raw:\t%v [us]\n"
+	format += "Chan8Raw:\t%v [us]\n"
+	format += "Port:\t%v \n"
+	format += "RSSI:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

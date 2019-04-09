@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -56,21 +55,20 @@ type SafetyAllowedArea struct {
 }
 
 func (m *SafetyAllowedArea) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("P1X:\t%v [m]\n")
-	builder.WriteString("P1Y:\t%v [m]\n")
-	builder.WriteString("P1Z:\t%v [m]\n")
-	builder.WriteString("P2X:\t%v [m]\n")
-	builder.WriteString("P2Y:\t%v [m]\n")
-	builder.WriteString("P2Z:\t%v [m]\n")
-	builder.WriteString("Frame:\t%v \n")
-	format := builder.String()
+	format += "P1X:\t%v [m]\n"
+	format += "P1Y:\t%v [m]\n"
+	format += "P1Z:\t%v [m]\n"
+	format += "P2X:\t%v [m]\n"
+	format += "P2Y:\t%v [m]\n"
+	format += "P2Z:\t%v [m]\n"
+	format += "Frame:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

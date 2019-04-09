@@ -29,7 +29,6 @@ import (
 	"encoding/binary"
 	"fmt"
 	"math"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -63,24 +62,23 @@ type SmartBatteryInfo struct {
 }
 
 func (m *SmartBatteryInfo) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("CapacityFullSpecification:\t%v [mAh]\n")
-	builder.WriteString("CapacityFull:\t%v [mAh]\n")
-	builder.WriteString("SerialNumber:\t%v \n")
-	builder.WriteString("CycleCount:\t%v \n")
-	builder.WriteString("Weight:\t%v [g]\n")
-	builder.WriteString("DischargeMinIMUmVoltage:\t%v [mV]\n")
-	builder.WriteString("ChargingMinIMUmVoltage:\t%v [mV]\n")
-	builder.WriteString("RestingMinIMUmVoltage:\t%v [mV]\n")
-	builder.WriteString("ID:\t%v \n")
-	builder.WriteString("DeviceName:\t%v \n")
-	format := builder.String()
+	format += "CapacityFullSpecification:\t%v [mAh]\n"
+	format += "CapacityFull:\t%v [mAh]\n"
+	format += "SerialNumber:\t%v \n"
+	format += "CycleCount:\t%v \n"
+	format += "Weight:\t%v [g]\n"
+	format += "DischargeMinIMUmVoltage:\t%v [mV]\n"
+	format += "ChargingMinIMUmVoltage:\t%v [mV]\n"
+	format += "RestingMinIMUmVoltage:\t%v [mV]\n"
+	format += "ID:\t%v \n"
+	format += "DeviceName:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

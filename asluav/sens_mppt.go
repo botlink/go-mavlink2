@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -68,27 +67,26 @@ type SensMppt struct {
 }
 
 func (m *SensMppt) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("MpptTimestamp:\t%v [us]\n")
-	builder.WriteString("Mppt1Volt:\t%v [V]\n")
-	builder.WriteString("Mppt1Amp:\t%v [A]\n")
-	builder.WriteString("Mppt2Volt:\t%v [V]\n")
-	builder.WriteString("Mppt2Amp:\t%v [A]\n")
-	builder.WriteString("Mppt3Volt:\t%v [V]\n")
-	builder.WriteString("Mppt3Amp:\t%v [A]\n")
-	builder.WriteString("Mppt1Pwm:\t%v [us]\n")
-	builder.WriteString("Mppt2Pwm:\t%v [us]\n")
-	builder.WriteString("Mppt3Pwm:\t%v [us]\n")
-	builder.WriteString("Mppt1Status:\t%v \n")
-	builder.WriteString("Mppt2Status:\t%v \n")
-	builder.WriteString("Mppt3Status:\t%v \n")
-	format := builder.String()
+	format += "MpptTimestamp:\t%v [us]\n"
+	format += "Mppt1Volt:\t%v [V]\n"
+	format += "Mppt1Amp:\t%v [A]\n"
+	format += "Mppt2Volt:\t%v [V]\n"
+	format += "Mppt2Amp:\t%v [A]\n"
+	format += "Mppt3Volt:\t%v [V]\n"
+	format += "Mppt3Amp:\t%v [A]\n"
+	format += "Mppt1Pwm:\t%v [us]\n"
+	format += "Mppt2Pwm:\t%v [us]\n"
+	format += "Mppt3Pwm:\t%v [us]\n"
+	format += "Mppt1Status:\t%v \n"
+	format += "Mppt2Status:\t%v \n"
+	format += "Mppt3Status:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

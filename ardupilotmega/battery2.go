@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -46,16 +45,15 @@ type Battery2 struct {
 }
 
 func (m *Battery2) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("Voltage:\t%v [mV]\n")
-	builder.WriteString("CurrentBattery:\t%v [cA]\n")
-	format := builder.String()
+	format += "Voltage:\t%v [mV]\n"
+	format += "CurrentBattery:\t%v [cA]\n"
 
 	fmt.Fprintf(
 		writer,

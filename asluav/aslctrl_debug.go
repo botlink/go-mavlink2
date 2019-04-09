@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -64,25 +63,24 @@ type AslctrlDebug struct {
 }
 
 func (m *AslctrlDebug) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("I321:\t%v \n")
-	builder.WriteString("F1:\t%v \n")
-	builder.WriteString("F2:\t%v \n")
-	builder.WriteString("F3:\t%v \n")
-	builder.WriteString("F4:\t%v \n")
-	builder.WriteString("F5:\t%v \n")
-	builder.WriteString("F6:\t%v \n")
-	builder.WriteString("F7:\t%v \n")
-	builder.WriteString("F8:\t%v \n")
-	builder.WriteString("I81:\t%v \n")
-	builder.WriteString("I82:\t%v \n")
-	format := builder.String()
+	format += "I321:\t%v \n"
+	format += "F1:\t%v \n"
+	format += "F2:\t%v \n"
+	format += "F3:\t%v \n"
+	format += "F4:\t%v \n"
+	format += "F5:\t%v \n"
+	format += "F6:\t%v \n"
+	format += "F7:\t%v \n"
+	format += "F8:\t%v \n"
+	format += "I81:\t%v \n"
+	format += "I82:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

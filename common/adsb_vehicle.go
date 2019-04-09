@@ -29,7 +29,6 @@ import (
 	"encoding/binary"
 	"fmt"
 	"math"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -69,27 +68,26 @@ type AdsbVehicle struct {
 }
 
 func (m *AdsbVehicle) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("IcaoAddress:\t%v \n")
-	builder.WriteString("Lat:\t%v [degE7]\n")
-	builder.WriteString("Lon:\t%v [degE7]\n")
-	builder.WriteString("Altitude:\t%v [mm]\n")
-	builder.WriteString("Heading:\t%v [cdeg]\n")
-	builder.WriteString("HorVelocity:\t%v [cm/s]\n")
-	builder.WriteString("VerVelocity:\t%v [cm/s]\n")
-	builder.WriteString("Flags:\t%v \n")
-	builder.WriteString("Squawk:\t%v \n")
-	builder.WriteString("AltitudeType:\t%v \n")
-	builder.WriteString("Callsign:\t%v \n")
-	builder.WriteString("EmitterType:\t%v \n")
-	builder.WriteString("Tslc:\t%v [s]\n")
-	format := builder.String()
+	format += "IcaoAddress:\t%v \n"
+	format += "Lat:\t%v [degE7]\n"
+	format += "Lon:\t%v [degE7]\n"
+	format += "Altitude:\t%v [mm]\n"
+	format += "Heading:\t%v [cdeg]\n"
+	format += "HorVelocity:\t%v [cm/s]\n"
+	format += "VerVelocity:\t%v [cm/s]\n"
+	format += "Flags:\t%v \n"
+	format += "Squawk:\t%v \n"
+	format += "AltitudeType:\t%v \n"
+	format += "Callsign:\t%v \n"
+	format += "EmitterType:\t%v \n"
+	format += "Tslc:\t%v [s]\n"
 
 	fmt.Fprintf(
 		writer,

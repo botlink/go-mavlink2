@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -62,24 +61,23 @@ type EstimatorStatus struct {
 }
 
 func (m *EstimatorStatus) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("TimeUsec:\t%v [us]\n")
-	builder.WriteString("VelRatio:\t%v \n")
-	builder.WriteString("PosHorizRatio:\t%v \n")
-	builder.WriteString("PosVertRatio:\t%v \n")
-	builder.WriteString("MagRatio:\t%v \n")
-	builder.WriteString("HaglRatio:\t%v \n")
-	builder.WriteString("TasRatio:\t%v \n")
-	builder.WriteString("PosHorizAccuracy:\t%v [m]\n")
-	builder.WriteString("PosVertAccuracy:\t%v [m]\n")
-	builder.WriteString("Flags:\t%v \n")
-	format := builder.String()
+	format += "TimeUsec:\t%v [us]\n"
+	format += "VelRatio:\t%v \n"
+	format += "PosHorizRatio:\t%v \n"
+	format += "PosVertRatio:\t%v \n"
+	format += "MagRatio:\t%v \n"
+	format += "HaglRatio:\t%v \n"
+	format += "TasRatio:\t%v \n"
+	format += "PosHorizAccuracy:\t%v [m]\n"
+	format += "PosVertAccuracy:\t%v [m]\n"
+	format += "Flags:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

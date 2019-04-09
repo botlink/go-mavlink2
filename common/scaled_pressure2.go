@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -50,18 +49,17 @@ type ScaledPressure2 struct {
 }
 
 func (m *ScaledPressure2) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("TimeBootMs:\t%v [ms]\n")
-	builder.WriteString("PressAbs:\t%v [hPa]\n")
-	builder.WriteString("PressDiff:\t%v [hPa]\n")
-	builder.WriteString("Temperature:\t%v [cdegC]\n")
-	format := builder.String()
+	format += "TimeBootMs:\t%v [ms]\n"
+	format += "PressAbs:\t%v [hPa]\n"
+	format += "PressDiff:\t%v [hPa]\n"
+	format += "Temperature:\t%v [cdegC]\n"
 
 	fmt.Fprintf(
 		writer,

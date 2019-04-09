@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -58,22 +57,21 @@ type AttitudeQuaternion struct {
 }
 
 func (m *AttitudeQuaternion) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("TimeBootMs:\t%v [ms]\n")
-	builder.WriteString("Q1:\t%v \n")
-	builder.WriteString("Q2:\t%v \n")
-	builder.WriteString("Q3:\t%v \n")
-	builder.WriteString("Q4:\t%v \n")
-	builder.WriteString("Rollspeed:\t%v [rad/s]\n")
-	builder.WriteString("Pitchspeed:\t%v [rad/s]\n")
-	builder.WriteString("Yawspeed:\t%v [rad/s]\n")
-	format := builder.String()
+	format += "TimeBootMs:\t%v [ms]\n"
+	format += "Q1:\t%v \n"
+	format += "Q2:\t%v \n"
+	format += "Q3:\t%v \n"
+	format += "Q4:\t%v \n"
+	format += "Rollspeed:\t%v [rad/s]\n"
+	format += "Pitchspeed:\t%v [rad/s]\n"
+	format += "Yawspeed:\t%v [rad/s]\n"
 
 	fmt.Fprintf(
 		writer,

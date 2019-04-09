@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -74,32 +73,31 @@ type Odometry struct {
 }
 
 func (m *Odometry) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("TimeUsec:\t%v [us]\n")
-	builder.WriteString("X:\t%v [m]\n")
-	builder.WriteString("Y:\t%v [m]\n")
-	builder.WriteString("Z:\t%v [m]\n")
-	builder.WriteString("Q:\t%v \n")
-	builder.WriteString("Vx:\t%v [m/s]\n")
-	builder.WriteString("Vy:\t%v [m/s]\n")
-	builder.WriteString("Vz:\t%v [m/s]\n")
-	builder.WriteString("Rollspeed:\t%v [rad/s]\n")
-	builder.WriteString("Pitchspeed:\t%v [rad/s]\n")
-	builder.WriteString("Yawspeed:\t%v [rad/s]\n")
-	builder.WriteString("PoseCovariance:\t%v \n")
-	builder.WriteString("VelocityCovariance:\t%v \n")
-	builder.WriteString("FrameID:\t%v \n")
-	builder.WriteString("ChildFrameID:\t%v \n")
+	format += "TimeUsec:\t%v [us]\n"
+	format += "X:\t%v [m]\n"
+	format += "Y:\t%v [m]\n"
+	format += "Z:\t%v [m]\n"
+	format += "Q:\t%v \n"
+	format += "Vx:\t%v [m/s]\n"
+	format += "Vy:\t%v [m/s]\n"
+	format += "Vz:\t%v [m/s]\n"
+	format += "Rollspeed:\t%v [rad/s]\n"
+	format += "Pitchspeed:\t%v [rad/s]\n"
+	format += "Yawspeed:\t%v [rad/s]\n"
+	format += "PoseCovariance:\t%v \n"
+	format += "VelocityCovariance:\t%v \n"
+	format += "FrameID:\t%v \n"
+	format += "ChildFrameID:\t%v \n"
 	if m.HasExtensionFieldValues {
-		builder.WriteString("ResetCounter:\t%v\n")
+		format += "ResetCounter:\t%v\n"
 	}
-	format := builder.String()
 
 	if m.HasExtensionFieldValues {
 		fmt.Fprintf(

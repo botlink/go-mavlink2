@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -73,31 +72,30 @@ type MissionItemInt struct {
 }
 
 func (m *MissionItemInt) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("Param1:\t%v \n")
-	builder.WriteString("Param2:\t%v \n")
-	builder.WriteString("Param3:\t%v \n")
-	builder.WriteString("Param4:\t%v \n")
-	builder.WriteString("X:\t%v \n")
-	builder.WriteString("Y:\t%v \n")
-	builder.WriteString("Z:\t%v \n")
-	builder.WriteString("Seq:\t%v \n")
-	builder.WriteString("Command:\t%v \n")
-	builder.WriteString("TargetSystem:\t%v \n")
-	builder.WriteString("TargetComponent:\t%v \n")
-	builder.WriteString("Frame:\t%v \n")
-	builder.WriteString("Current:\t%v \n")
-	builder.WriteString("Autocontinue:\t%v \n")
+	format += "Param1:\t%v \n"
+	format += "Param2:\t%v \n"
+	format += "Param3:\t%v \n"
+	format += "Param4:\t%v \n"
+	format += "X:\t%v \n"
+	format += "Y:\t%v \n"
+	format += "Z:\t%v \n"
+	format += "Seq:\t%v \n"
+	format += "Command:\t%v \n"
+	format += "TargetSystem:\t%v \n"
+	format += "TargetComponent:\t%v \n"
+	format += "Frame:\t%v \n"
+	format += "Current:\t%v \n"
+	format += "Autocontinue:\t%v \n"
 	if m.HasExtensionFieldValues {
-		builder.WriteString("MissionType:\t%v\n")
+		format += "MissionType:\t%v\n"
 	}
-	format := builder.String()
 
 	if m.HasExtensionFieldValues {
 		fmt.Fprintf(

@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -142,64 +141,63 @@ type SerialUdbExtraF2B struct {
 }
 
 func (m *SerialUdbExtraF2B) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("SueTime:\t%v \n")
-	builder.WriteString("SueFlags:\t%v \n")
-	builder.WriteString("SueBaromPress:\t%v \n")
-	builder.WriteString("SueBaromAlt:\t%v \n")
-	builder.WriteString("SuePwmInput1:\t%v \n")
-	builder.WriteString("SuePwmInput2:\t%v \n")
-	builder.WriteString("SuePwmInput3:\t%v \n")
-	builder.WriteString("SuePwmInput4:\t%v \n")
-	builder.WriteString("SuePwmInput5:\t%v \n")
-	builder.WriteString("SuePwmInput6:\t%v \n")
-	builder.WriteString("SuePwmInput7:\t%v \n")
-	builder.WriteString("SuePwmInput8:\t%v \n")
-	builder.WriteString("SuePwmInput9:\t%v \n")
-	builder.WriteString("SuePwmInput10:\t%v \n")
-	builder.WriteString("SuePwmInput11:\t%v \n")
-	builder.WriteString("SuePwmInput12:\t%v \n")
-	builder.WriteString("SuePwmOutput1:\t%v \n")
-	builder.WriteString("SuePwmOutput2:\t%v \n")
-	builder.WriteString("SuePwmOutput3:\t%v \n")
-	builder.WriteString("SuePwmOutput4:\t%v \n")
-	builder.WriteString("SuePwmOutput5:\t%v \n")
-	builder.WriteString("SuePwmOutput6:\t%v \n")
-	builder.WriteString("SuePwmOutput7:\t%v \n")
-	builder.WriteString("SuePwmOutput8:\t%v \n")
-	builder.WriteString("SuePwmOutput9:\t%v \n")
-	builder.WriteString("SuePwmOutput10:\t%v \n")
-	builder.WriteString("SuePwmOutput11:\t%v \n")
-	builder.WriteString("SuePwmOutput12:\t%v \n")
-	builder.WriteString("SueIMULocationX:\t%v \n")
-	builder.WriteString("SueIMULocationY:\t%v \n")
-	builder.WriteString("SueIMULocationZ:\t%v \n")
-	builder.WriteString("SueLocationErrorEarthX:\t%v \n")
-	builder.WriteString("SueLocationErrorEarthY:\t%v \n")
-	builder.WriteString("SueLocationErrorEarthZ:\t%v \n")
-	builder.WriteString("SueOscFails:\t%v \n")
-	builder.WriteString("SueIMUVelocityX:\t%v \n")
-	builder.WriteString("SueIMUVelocityY:\t%v \n")
-	builder.WriteString("SueIMUVelocityZ:\t%v \n")
-	builder.WriteString("SueWaypointGoalX:\t%v \n")
-	builder.WriteString("SueWaypointGoalY:\t%v \n")
-	builder.WriteString("SueWaypointGoalZ:\t%v \n")
-	builder.WriteString("SueAeroX:\t%v \n")
-	builder.WriteString("SueAeroY:\t%v \n")
-	builder.WriteString("SueAeroZ:\t%v \n")
-	builder.WriteString("SueBaromTemp:\t%v \n")
-	builder.WriteString("SueBatVolt:\t%v \n")
-	builder.WriteString("SueBatAmp:\t%v \n")
-	builder.WriteString("SueBatAmpHours:\t%v \n")
-	builder.WriteString("SueDesiredHeight:\t%v \n")
-	builder.WriteString("SueMemoryStackFree:\t%v \n")
-	format := builder.String()
+	format += "SueTime:\t%v \n"
+	format += "SueFlags:\t%v \n"
+	format += "SueBaromPress:\t%v \n"
+	format += "SueBaromAlt:\t%v \n"
+	format += "SuePwmInput1:\t%v \n"
+	format += "SuePwmInput2:\t%v \n"
+	format += "SuePwmInput3:\t%v \n"
+	format += "SuePwmInput4:\t%v \n"
+	format += "SuePwmInput5:\t%v \n"
+	format += "SuePwmInput6:\t%v \n"
+	format += "SuePwmInput7:\t%v \n"
+	format += "SuePwmInput8:\t%v \n"
+	format += "SuePwmInput9:\t%v \n"
+	format += "SuePwmInput10:\t%v \n"
+	format += "SuePwmInput11:\t%v \n"
+	format += "SuePwmInput12:\t%v \n"
+	format += "SuePwmOutput1:\t%v \n"
+	format += "SuePwmOutput2:\t%v \n"
+	format += "SuePwmOutput3:\t%v \n"
+	format += "SuePwmOutput4:\t%v \n"
+	format += "SuePwmOutput5:\t%v \n"
+	format += "SuePwmOutput6:\t%v \n"
+	format += "SuePwmOutput7:\t%v \n"
+	format += "SuePwmOutput8:\t%v \n"
+	format += "SuePwmOutput9:\t%v \n"
+	format += "SuePwmOutput10:\t%v \n"
+	format += "SuePwmOutput11:\t%v \n"
+	format += "SuePwmOutput12:\t%v \n"
+	format += "SueIMULocationX:\t%v \n"
+	format += "SueIMULocationY:\t%v \n"
+	format += "SueIMULocationZ:\t%v \n"
+	format += "SueLocationErrorEarthX:\t%v \n"
+	format += "SueLocationErrorEarthY:\t%v \n"
+	format += "SueLocationErrorEarthZ:\t%v \n"
+	format += "SueOscFails:\t%v \n"
+	format += "SueIMUVelocityX:\t%v \n"
+	format += "SueIMUVelocityY:\t%v \n"
+	format += "SueIMUVelocityZ:\t%v \n"
+	format += "SueWaypointGoalX:\t%v \n"
+	format += "SueWaypointGoalY:\t%v \n"
+	format += "SueWaypointGoalZ:\t%v \n"
+	format += "SueAeroX:\t%v \n"
+	format += "SueAeroY:\t%v \n"
+	format += "SueAeroZ:\t%v \n"
+	format += "SueBaromTemp:\t%v \n"
+	format += "SueBatVolt:\t%v \n"
+	format += "SueBatAmp:\t%v \n"
+	format += "SueBatAmpHours:\t%v \n"
+	format += "SueDesiredHeight:\t%v \n"
+	format += "SueMemoryStackFree:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

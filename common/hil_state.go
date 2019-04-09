@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -74,30 +73,29 @@ type HilState struct {
 }
 
 func (m *HilState) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("TimeUsec:\t%v [us]\n")
-	builder.WriteString("Roll:\t%v [rad]\n")
-	builder.WriteString("Pitch:\t%v [rad]\n")
-	builder.WriteString("Yaw:\t%v [rad]\n")
-	builder.WriteString("Rollspeed:\t%v [rad/s]\n")
-	builder.WriteString("Pitchspeed:\t%v [rad/s]\n")
-	builder.WriteString("Yawspeed:\t%v [rad/s]\n")
-	builder.WriteString("Lat:\t%v [degE7]\n")
-	builder.WriteString("Lon:\t%v [degE7]\n")
-	builder.WriteString("Alt:\t%v [mm]\n")
-	builder.WriteString("Vx:\t%v [cm/s]\n")
-	builder.WriteString("Vy:\t%v [cm/s]\n")
-	builder.WriteString("Vz:\t%v [cm/s]\n")
-	builder.WriteString("Xacc:\t%v [mG]\n")
-	builder.WriteString("Yacc:\t%v [mG]\n")
-	builder.WriteString("Zacc:\t%v [mG]\n")
-	format := builder.String()
+	format += "TimeUsec:\t%v [us]\n"
+	format += "Roll:\t%v [rad]\n"
+	format += "Pitch:\t%v [rad]\n"
+	format += "Yaw:\t%v [rad]\n"
+	format += "Rollspeed:\t%v [rad/s]\n"
+	format += "Pitchspeed:\t%v [rad/s]\n"
+	format += "Yawspeed:\t%v [rad/s]\n"
+	format += "Lat:\t%v [degE7]\n"
+	format += "Lon:\t%v [degE7]\n"
+	format += "Alt:\t%v [mm]\n"
+	format += "Vx:\t%v [cm/s]\n"
+	format += "Vy:\t%v [cm/s]\n"
+	format += "Vz:\t%v [cm/s]\n"
+	format += "Xacc:\t%v [mG]\n"
+	format += "Yacc:\t%v [mG]\n"
+	format += "Zacc:\t%v [mG]\n"
 
 	fmt.Fprintf(
 		writer,

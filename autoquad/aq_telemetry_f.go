@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -84,35 +83,34 @@ type AqTelemetryF struct {
 }
 
 func (m *AqTelemetryF) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("Value1:\t%v \n")
-	builder.WriteString("Value2:\t%v \n")
-	builder.WriteString("Value3:\t%v \n")
-	builder.WriteString("Value4:\t%v \n")
-	builder.WriteString("Value5:\t%v \n")
-	builder.WriteString("Value6:\t%v \n")
-	builder.WriteString("Value7:\t%v \n")
-	builder.WriteString("Value8:\t%v \n")
-	builder.WriteString("Value9:\t%v \n")
-	builder.WriteString("Value10:\t%v \n")
-	builder.WriteString("Value11:\t%v \n")
-	builder.WriteString("Value12:\t%v \n")
-	builder.WriteString("Value13:\t%v \n")
-	builder.WriteString("Value14:\t%v \n")
-	builder.WriteString("Value15:\t%v \n")
-	builder.WriteString("Value16:\t%v \n")
-	builder.WriteString("Value17:\t%v \n")
-	builder.WriteString("Value18:\t%v \n")
-	builder.WriteString("Value19:\t%v \n")
-	builder.WriteString("Value20:\t%v \n")
-	builder.WriteString("Index:\t%v \n")
-	format := builder.String()
+	format += "Value1:\t%v \n"
+	format += "Value2:\t%v \n"
+	format += "Value3:\t%v \n"
+	format += "Value4:\t%v \n"
+	format += "Value5:\t%v \n"
+	format += "Value6:\t%v \n"
+	format += "Value7:\t%v \n"
+	format += "Value8:\t%v \n"
+	format += "Value9:\t%v \n"
+	format += "Value10:\t%v \n"
+	format += "Value11:\t%v \n"
+	format += "Value12:\t%v \n"
+	format += "Value13:\t%v \n"
+	format += "Value14:\t%v \n"
+	format += "Value15:\t%v \n"
+	format += "Value16:\t%v \n"
+	format += "Value17:\t%v \n"
+	format += "Value18:\t%v \n"
+	format += "Value19:\t%v \n"
+	format += "Value20:\t%v \n"
+	format += "Index:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -68,27 +67,26 @@ type GPSRtk struct {
 }
 
 func (m *GPSRtk) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("TimeLastBaselineMs:\t%v [ms]\n")
-	builder.WriteString("Tow:\t%v [ms]\n")
-	builder.WriteString("BaselineAMm:\t%v [mm]\n")
-	builder.WriteString("BaselineBMm:\t%v [mm]\n")
-	builder.WriteString("BaselineCMm:\t%v [mm]\n")
-	builder.WriteString("Accuracy:\t%v \n")
-	builder.WriteString("IarNumHypotheses:\t%v \n")
-	builder.WriteString("Wn:\t%v \n")
-	builder.WriteString("RtkReceiverID:\t%v \n")
-	builder.WriteString("RtkHealth:\t%v \n")
-	builder.WriteString("RtkRate:\t%v [Hz]\n")
-	builder.WriteString("Nsats:\t%v \n")
-	builder.WriteString("BaselineCoordsType:\t%v \n")
-	format := builder.String()
+	format += "TimeLastBaselineMs:\t%v [ms]\n"
+	format += "Tow:\t%v [ms]\n"
+	format += "BaselineAMm:\t%v [mm]\n"
+	format += "BaselineBMm:\t%v [mm]\n"
+	format += "BaselineCMm:\t%v [mm]\n"
+	format += "Accuracy:\t%v \n"
+	format += "IarNumHypotheses:\t%v \n"
+	format += "Wn:\t%v \n"
+	format += "RtkReceiverID:\t%v \n"
+	format += "RtkHealth:\t%v \n"
+	format += "RtkRate:\t%v [Hz]\n"
+	format += "Nsats:\t%v \n"
+	format += "BaselineCoordsType:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

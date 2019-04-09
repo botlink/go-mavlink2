@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -48,19 +47,18 @@ type MissionClearAll struct {
 }
 
 func (m *MissionClearAll) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("TargetSystem:\t%v \n")
-	builder.WriteString("TargetComponent:\t%v \n")
+	format += "TargetSystem:\t%v \n"
+	format += "TargetComponent:\t%v \n"
 	if m.HasExtensionFieldValues {
-		builder.WriteString("MissionType:\t%v\n")
+		format += "MissionType:\t%v\n"
 	}
-	format := builder.String()
 
 	if m.HasExtensionFieldValues {
 		fmt.Fprintf(

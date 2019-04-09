@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -52,19 +51,18 @@ type RequestDataStream struct {
 }
 
 func (m *RequestDataStream) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("ReqMessageRate:\t%v [Hz]\n")
-	builder.WriteString("TargetSystem:\t%v \n")
-	builder.WriteString("TargetComponent:\t%v \n")
-	builder.WriteString("ReqStreamID:\t%v \n")
-	builder.WriteString("StartStop:\t%v \n")
-	format := builder.String()
+	format += "ReqMessageRate:\t%v [Hz]\n"
+	format += "TargetSystem:\t%v \n"
+	format += "TargetComponent:\t%v \n"
+	format += "ReqStreamID:\t%v \n"
+	format += "StartStop:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

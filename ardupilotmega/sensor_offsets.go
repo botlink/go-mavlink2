@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -66,26 +65,25 @@ type SensorOffsets struct {
 }
 
 func (m *SensorOffsets) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("MagDeclination:\t%v [rad]\n")
-	builder.WriteString("RawPress:\t%v \n")
-	builder.WriteString("RawTemp:\t%v \n")
-	builder.WriteString("GyroCalX:\t%v \n")
-	builder.WriteString("GyroCalY:\t%v \n")
-	builder.WriteString("GyroCalZ:\t%v \n")
-	builder.WriteString("AccelCalX:\t%v \n")
-	builder.WriteString("AccelCalY:\t%v \n")
-	builder.WriteString("AccelCalZ:\t%v \n")
-	builder.WriteString("MagOfsX:\t%v \n")
-	builder.WriteString("MagOfsY:\t%v \n")
-	builder.WriteString("MagOfsZ:\t%v \n")
-	format := builder.String()
+	format += "MagDeclination:\t%v [rad]\n"
+	format += "RawPress:\t%v \n"
+	format += "RawTemp:\t%v \n"
+	format += "GyroCalX:\t%v \n"
+	format += "GyroCalY:\t%v \n"
+	format += "GyroCalZ:\t%v \n"
+	format += "AccelCalX:\t%v \n"
+	format += "AccelCalY:\t%v \n"
+	format += "AccelCalZ:\t%v \n"
+	format += "MagOfsX:\t%v \n"
+	format += "MagOfsY:\t%v \n"
+	format += "MagOfsZ:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

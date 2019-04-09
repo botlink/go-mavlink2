@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -62,24 +61,23 @@ type ScaledIMU3 struct {
 }
 
 func (m *ScaledIMU3) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("TimeBootMs:\t%v [ms]\n")
-	builder.WriteString("Xacc:\t%v [mG]\n")
-	builder.WriteString("Yacc:\t%v [mG]\n")
-	builder.WriteString("Zacc:\t%v [mG]\n")
-	builder.WriteString("Xgyro:\t%v [mrad/s]\n")
-	builder.WriteString("Ygyro:\t%v [mrad/s]\n")
-	builder.WriteString("Zgyro:\t%v [mrad/s]\n")
-	builder.WriteString("Xmag:\t%v [mT]\n")
-	builder.WriteString("Ymag:\t%v [mT]\n")
-	builder.WriteString("Zmag:\t%v [mT]\n")
-	format := builder.String()
+	format += "TimeBootMs:\t%v [ms]\n"
+	format += "Xacc:\t%v [mG]\n"
+	format += "Yacc:\t%v [mG]\n"
+	format += "Zacc:\t%v [mG]\n"
+	format += "Xgyro:\t%v [mrad/s]\n"
+	format += "Ygyro:\t%v [mrad/s]\n"
+	format += "Zgyro:\t%v [mrad/s]\n"
+	format += "Xmag:\t%v [mT]\n"
+	format += "Ymag:\t%v [mT]\n"
+	format += "Zmag:\t%v [mT]\n"
 
 	fmt.Fprintf(
 		writer,

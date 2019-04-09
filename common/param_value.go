@@ -29,7 +29,6 @@ import (
 	"encoding/binary"
 	"fmt"
 	"math"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -53,19 +52,18 @@ type ParamValue struct {
 }
 
 func (m *ParamValue) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("ParamValue:\t%v \n")
-	builder.WriteString("ParamCount:\t%v \n")
-	builder.WriteString("ParamIndex:\t%v \n")
-	builder.WriteString("ParamID:\t%v \n")
-	builder.WriteString("ParamType:\t%v \n")
-	format := builder.String()
+	format += "ParamValue:\t%v \n"
+	format += "ParamCount:\t%v \n"
+	format += "ParamIndex:\t%v \n"
+	format += "ParamID:\t%v \n"
+	format += "ParamType:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

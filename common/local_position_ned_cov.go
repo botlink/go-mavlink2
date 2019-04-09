@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -66,26 +65,25 @@ type LocalPositionNedCov struct {
 }
 
 func (m *LocalPositionNedCov) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("TimeUsec:\t%v [us]\n")
-	builder.WriteString("X:\t%v [m]\n")
-	builder.WriteString("Y:\t%v [m]\n")
-	builder.WriteString("Z:\t%v [m]\n")
-	builder.WriteString("Vx:\t%v [m/s]\n")
-	builder.WriteString("Vy:\t%v [m/s]\n")
-	builder.WriteString("Vz:\t%v [m/s]\n")
-	builder.WriteString("Ax:\t%v [m/s/s]\n")
-	builder.WriteString("Ay:\t%v [m/s/s]\n")
-	builder.WriteString("Az:\t%v [m/s/s]\n")
-	builder.WriteString("Covariance:\t%v \n")
-	builder.WriteString("EstimatorType:\t%v \n")
-	format := builder.String()
+	format += "TimeUsec:\t%v [us]\n"
+	format += "X:\t%v [m]\n"
+	format += "Y:\t%v [m]\n"
+	format += "Z:\t%v [m]\n"
+	format += "Vx:\t%v [m/s]\n"
+	format += "Vy:\t%v [m/s]\n"
+	format += "Vz:\t%v [m/s]\n"
+	format += "Ax:\t%v [m/s/s]\n"
+	format += "Ay:\t%v [m/s/s]\n"
+	format += "Az:\t%v [m/s/s]\n"
+	format += "Covariance:\t%v \n"
+	format += "EstimatorType:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

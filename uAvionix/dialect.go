@@ -62,7 +62,7 @@ var uavionixMessages = map[uint32]mavlink2.MessageMeta{
 	10003: mavlink2.MessageMeta{CRCExtra: 4, MinimumLength: 1, MaximumLength: 1},
 }
 
-var uAvionixParsers = map[uint32]mavlink2.FrameParser{
+var uavionixParsers = map[uint32]mavlink2.FrameParser{
 	10001: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &UavionixAdsbOutCfg{}
 

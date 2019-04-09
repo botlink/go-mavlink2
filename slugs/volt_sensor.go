@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -48,17 +47,16 @@ type VoltSensor struct {
 }
 
 func (m *VoltSensor) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("Voltage:\t%v \n")
-	builder.WriteString("Reading2:\t%v \n")
-	builder.WriteString("R2Type:\t%v \n")
-	format := builder.String()
+	format += "Voltage:\t%v \n"
+	format += "Reading2:\t%v \n"
+	format += "R2Type:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

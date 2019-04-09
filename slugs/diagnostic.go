@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -54,20 +53,19 @@ type Diagnostic struct {
 }
 
 func (m *Diagnostic) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("Diagfl1:\t%v \n")
-	builder.WriteString("Diagfl2:\t%v \n")
-	builder.WriteString("Diagfl3:\t%v \n")
-	builder.WriteString("Diagsh1:\t%v \n")
-	builder.WriteString("Diagsh2:\t%v \n")
-	builder.WriteString("Diagsh3:\t%v \n")
-	format := builder.String()
+	format += "Diagfl1:\t%v \n"
+	format += "Diagfl2:\t%v \n"
+	format += "Diagfl3:\t%v \n"
+	format += "Diagsh1:\t%v \n"
+	format += "Diagsh2:\t%v \n"
+	format += "Diagsh3:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

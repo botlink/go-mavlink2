@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -54,20 +53,19 @@ type CameraCaptureStatus struct {
 }
 
 func (m *CameraCaptureStatus) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("TimeBootMs:\t%v [ms]\n")
-	builder.WriteString("ImageInterval:\t%v [s]\n")
-	builder.WriteString("RecordingTimeMs:\t%v [ms]\n")
-	builder.WriteString("AvailableCapacity:\t%v [MiB]\n")
-	builder.WriteString("ImageStatus:\t%v \n")
-	builder.WriteString("VIDeoStatus:\t%v \n")
-	format := builder.String()
+	format += "TimeBootMs:\t%v [ms]\n"
+	format += "ImageInterval:\t%v [s]\n"
+	format += "RecordingTimeMs:\t%v [ms]\n"
+	format += "AvailableCapacity:\t%v [MiB]\n"
+	format += "ImageStatus:\t%v \n"
+	format += "VIDeoStatus:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

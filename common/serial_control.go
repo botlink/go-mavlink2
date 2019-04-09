@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -54,20 +53,19 @@ type SerialControl struct {
 }
 
 func (m *SerialControl) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("Baudrate:\t%v [bits/s]\n")
-	builder.WriteString("Timeout:\t%v [ms]\n")
-	builder.WriteString("Device:\t%v \n")
-	builder.WriteString("Flags:\t%v \n")
-	builder.WriteString("Count:\t%v [bytes]\n")
-	builder.WriteString("Data:\t%v \n")
-	format := builder.String()
+	format += "Baudrate:\t%v [bits/s]\n"
+	format += "Timeout:\t%v [ms]\n"
+	format += "Device:\t%v \n"
+	format += "Flags:\t%v \n"
+	format += "Count:\t%v [bytes]\n"
+	format += "Data:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

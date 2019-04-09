@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -54,22 +53,21 @@ type AttPosMocap struct {
 }
 
 func (m *AttPosMocap) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("TimeUsec:\t%v [us]\n")
-	builder.WriteString("Q:\t%v \n")
-	builder.WriteString("X:\t%v [m]\n")
-	builder.WriteString("Y:\t%v [m]\n")
-	builder.WriteString("Z:\t%v [m]\n")
+	format += "TimeUsec:\t%v [us]\n"
+	format += "Q:\t%v \n"
+	format += "X:\t%v [m]\n"
+	format += "Y:\t%v [m]\n"
+	format += "Z:\t%v [m]\n"
 	if m.HasExtensionFieldValues {
-		builder.WriteString("Covariance:\t%v\n")
+		format += "Covariance:\t%v\n"
 	}
-	format := builder.String()
 
 	if m.HasExtensionFieldValues {
 		fmt.Fprintf(

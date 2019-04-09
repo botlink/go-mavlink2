@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -54,20 +53,19 @@ type SensorBias struct {
 }
 
 func (m *SensorBias) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("Axbias:\t%v [m/s]\n")
-	builder.WriteString("Aybias:\t%v [m/s]\n")
-	builder.WriteString("Azbias:\t%v [m/s]\n")
-	builder.WriteString("Gxbias:\t%v [rad/s]\n")
-	builder.WriteString("Gybias:\t%v [rad/s]\n")
-	builder.WriteString("Gzbias:\t%v [rad/s]\n")
-	format := builder.String()
+	format += "Axbias:\t%v [m/s]\n"
+	format += "Aybias:\t%v [m/s]\n"
+	format += "Azbias:\t%v [m/s]\n"
+	format += "Gxbias:\t%v [rad/s]\n"
+	format += "Gybias:\t%v [rad/s]\n"
+	format += "Gzbias:\t%v [rad/s]\n"
 
 	fmt.Fprintf(
 		writer,

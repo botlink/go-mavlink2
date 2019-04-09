@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -68,27 +67,26 @@ type SerialUdbExtraF20 struct {
 }
 
 func (m *SerialUdbExtraF20) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("SueTrimValueInput1:\t%v \n")
-	builder.WriteString("SueTrimValueInput2:\t%v \n")
-	builder.WriteString("SueTrimValueInput3:\t%v \n")
-	builder.WriteString("SueTrimValueInput4:\t%v \n")
-	builder.WriteString("SueTrimValueInput5:\t%v \n")
-	builder.WriteString("SueTrimValueInput6:\t%v \n")
-	builder.WriteString("SueTrimValueInput7:\t%v \n")
-	builder.WriteString("SueTrimValueInput8:\t%v \n")
-	builder.WriteString("SueTrimValueInput9:\t%v \n")
-	builder.WriteString("SueTrimValueInput10:\t%v \n")
-	builder.WriteString("SueTrimValueInput11:\t%v \n")
-	builder.WriteString("SueTrimValueInput12:\t%v \n")
-	builder.WriteString("SueNumberOfInputs:\t%v \n")
-	format := builder.String()
+	format += "SueTrimValueInput1:\t%v \n"
+	format += "SueTrimValueInput2:\t%v \n"
+	format += "SueTrimValueInput3:\t%v \n"
+	format += "SueTrimValueInput4:\t%v \n"
+	format += "SueTrimValueInput5:\t%v \n"
+	format += "SueTrimValueInput6:\t%v \n"
+	format += "SueTrimValueInput7:\t%v \n"
+	format += "SueTrimValueInput8:\t%v \n"
+	format += "SueTrimValueInput9:\t%v \n"
+	format += "SueTrimValueInput10:\t%v \n"
+	format += "SueTrimValueInput11:\t%v \n"
+	format += "SueTrimValueInput12:\t%v \n"
+	format += "SueNumberOfInputs:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

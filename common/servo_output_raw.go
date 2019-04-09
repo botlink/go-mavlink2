@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -78,34 +77,33 @@ type ServoOutputRaw struct {
 }
 
 func (m *ServoOutputRaw) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("TimeUsec:\t%v [us]\n")
-	builder.WriteString("Servo1Raw:\t%v [us]\n")
-	builder.WriteString("Servo2Raw:\t%v [us]\n")
-	builder.WriteString("Servo3Raw:\t%v [us]\n")
-	builder.WriteString("Servo4Raw:\t%v [us]\n")
-	builder.WriteString("Servo5Raw:\t%v [us]\n")
-	builder.WriteString("Servo6Raw:\t%v [us]\n")
-	builder.WriteString("Servo7Raw:\t%v [us]\n")
-	builder.WriteString("Servo8Raw:\t%v [us]\n")
-	builder.WriteString("Port:\t%v \n")
+	format += "TimeUsec:\t%v [us]\n"
+	format += "Servo1Raw:\t%v [us]\n"
+	format += "Servo2Raw:\t%v [us]\n"
+	format += "Servo3Raw:\t%v [us]\n"
+	format += "Servo4Raw:\t%v [us]\n"
+	format += "Servo5Raw:\t%v [us]\n"
+	format += "Servo6Raw:\t%v [us]\n"
+	format += "Servo7Raw:\t%v [us]\n"
+	format += "Servo8Raw:\t%v [us]\n"
+	format += "Port:\t%v \n"
 	if m.HasExtensionFieldValues {
-		builder.WriteString("Servo9Raw:\t%v\n")
-		builder.WriteString("Servo10Raw:\t%v\n")
-		builder.WriteString("Servo11Raw:\t%v\n")
-		builder.WriteString("Servo12Raw:\t%v\n")
-		builder.WriteString("Servo13Raw:\t%v\n")
-		builder.WriteString("Servo14Raw:\t%v\n")
-		builder.WriteString("Servo15Raw:\t%v\n")
-		builder.WriteString("Servo16Raw:\t%v\n")
+		format += "Servo9Raw:\t%v\n"
+		format += "Servo10Raw:\t%v\n"
+		format += "Servo11Raw:\t%v\n"
+		format += "Servo12Raw:\t%v\n"
+		format += "Servo13Raw:\t%v\n"
+		format += "Servo14Raw:\t%v\n"
+		format += "Servo15Raw:\t%v\n"
+		format += "Servo16Raw:\t%v\n"
 	}
-	format := builder.String()
 
 	if m.HasExtensionFieldValues {
 		fmt.Fprintf(

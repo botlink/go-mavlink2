@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -48,17 +47,16 @@ type GoproHeartbeat struct {
 }
 
 func (m *GoproHeartbeat) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("Status:\t%v \n")
-	builder.WriteString("CaptureMode:\t%v \n")
-	builder.WriteString("Flags:\t%v \n")
-	format := builder.String()
+	format += "Status:\t%v \n"
+	format += "CaptureMode:\t%v \n"
+	format += "Flags:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

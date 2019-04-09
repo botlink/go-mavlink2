@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -56,21 +55,20 @@ type Altitudes struct {
 }
 
 func (m *Altitudes) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("TimeBootMs:\t%v \n")
-	builder.WriteString("AltGPS:\t%v \n")
-	builder.WriteString("AltIMU:\t%v \n")
-	builder.WriteString("AltBarometric:\t%v \n")
-	builder.WriteString("AltOpticalFlow:\t%v \n")
-	builder.WriteString("AltRangeFinder:\t%v \n")
-	builder.WriteString("AltExtra:\t%v \n")
-	format := builder.String()
+	format += "TimeBootMs:\t%v \n"
+	format += "AltGPS:\t%v \n"
+	format += "AltIMU:\t%v \n"
+	format += "AltBarometric:\t%v \n"
+	format += "AltOpticalFlow:\t%v \n"
+	format += "AltRangeFinder:\t%v \n"
+	format += "AltExtra:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

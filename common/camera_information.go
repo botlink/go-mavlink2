@@ -29,7 +29,6 @@ import (
 	"encoding/binary"
 	"fmt"
 	"math"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -69,27 +68,26 @@ type CameraInformation struct {
 }
 
 func (m *CameraInformation) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("TimeBootMs:\t%v [ms]\n")
-	builder.WriteString("FirmwareVersion:\t%v \n")
-	builder.WriteString("FocalLength:\t%v [mm]\n")
-	builder.WriteString("SensorSizeH:\t%v [mm]\n")
-	builder.WriteString("SensorSizeV:\t%v [mm]\n")
-	builder.WriteString("Flags:\t%v \n")
-	builder.WriteString("ResolutionH:\t%v [pix]\n")
-	builder.WriteString("ResolutionV:\t%v [pix]\n")
-	builder.WriteString("CamDefinitionVersion:\t%v \n")
-	builder.WriteString("VendorName:\t%v \n")
-	builder.WriteString("ModelName:\t%v \n")
-	builder.WriteString("LensID:\t%v \n")
-	builder.WriteString("CamDefinitionURI:\t%v \n")
-	format := builder.String()
+	format += "TimeBootMs:\t%v [ms]\n"
+	format += "FirmwareVersion:\t%v \n"
+	format += "FocalLength:\t%v [mm]\n"
+	format += "SensorSizeH:\t%v [mm]\n"
+	format += "SensorSizeV:\t%v [mm]\n"
+	format += "Flags:\t%v \n"
+	format += "ResolutionH:\t%v [pix]\n"
+	format += "ResolutionV:\t%v [pix]\n"
+	format += "CamDefinitionVersion:\t%v \n"
+	format += "VendorName:\t%v \n"
+	format += "ModelName:\t%v \n"
+	format += "LensID:\t%v \n"
+	format += "CamDefinitionURI:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

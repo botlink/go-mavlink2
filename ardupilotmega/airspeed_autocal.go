@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -66,26 +65,25 @@ type AirspeedAutocal struct {
 }
 
 func (m *AirspeedAutocal) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("Vx:\t%v [m/s]\n")
-	builder.WriteString("Vy:\t%v [m/s]\n")
-	builder.WriteString("Vz:\t%v [m/s]\n")
-	builder.WriteString("DiffPressure:\t%v [Pa]\n")
-	builder.WriteString("Eas2Tas:\t%v \n")
-	builder.WriteString("Ratio:\t%v \n")
-	builder.WriteString("StateX:\t%v \n")
-	builder.WriteString("StateY:\t%v \n")
-	builder.WriteString("StateZ:\t%v \n")
-	builder.WriteString("Pax:\t%v \n")
-	builder.WriteString("Pby:\t%v \n")
-	builder.WriteString("Pcz:\t%v \n")
-	format := builder.String()
+	format += "Vx:\t%v [m/s]\n"
+	format += "Vy:\t%v [m/s]\n"
+	format += "Vz:\t%v [m/s]\n"
+	format += "DiffPressure:\t%v [Pa]\n"
+	format += "Eas2Tas:\t%v \n"
+	format += "Ratio:\t%v \n"
+	format += "StateX:\t%v \n"
+	format += "StateY:\t%v \n"
+	format += "StateZ:\t%v \n"
+	format += "Pax:\t%v \n"
+	format += "Pby:\t%v \n"
+	format += "Pcz:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

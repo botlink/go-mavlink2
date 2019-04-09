@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -54,20 +53,19 @@ type CompassmotStatus struct {
 }
 
 func (m *CompassmotStatus) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("Current:\t%v [A]\n")
-	builder.WriteString("Compensationx:\t%v \n")
-	builder.WriteString("Compensationy:\t%v \n")
-	builder.WriteString("Compensationz:\t%v \n")
-	builder.WriteString("Throttle:\t%v \n")
-	builder.WriteString("Interference:\t%v \n")
-	format := builder.String()
+	format += "Current:\t%v [A]\n"
+	format += "Compensationx:\t%v \n"
+	format += "Compensationy:\t%v \n"
+	format += "Compensationz:\t%v \n"
+	format += "Throttle:\t%v \n"
+	format += "Interference:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

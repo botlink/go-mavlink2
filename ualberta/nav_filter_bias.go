@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -56,21 +55,20 @@ type NAVFilterBias struct {
 }
 
 func (m *NAVFilterBias) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("Usec:\t%v \n")
-	builder.WriteString("Accel0:\t%v \n")
-	builder.WriteString("Accel1:\t%v \n")
-	builder.WriteString("Accel2:\t%v \n")
-	builder.WriteString("Gyro0:\t%v \n")
-	builder.WriteString("Gyro1:\t%v \n")
-	builder.WriteString("Gyro2:\t%v \n")
-	format := builder.String()
+	format += "Usec:\t%v \n"
+	format += "Accel0:\t%v \n"
+	format += "Accel1:\t%v \n"
+	format += "Accel2:\t%v \n"
+	format += "Gyro0:\t%v \n"
+	format += "Gyro1:\t%v \n"
+	format += "Gyro2:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

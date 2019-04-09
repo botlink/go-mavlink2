@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -74,30 +73,29 @@ type IcarousKinematicBands struct {
 }
 
 func (m *IcarousKinematicBands) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("Min1:\t%v [deg]\n")
-	builder.WriteString("Max1:\t%v [deg]\n")
-	builder.WriteString("Min2:\t%v [deg]\n")
-	builder.WriteString("Max2:\t%v [deg]\n")
-	builder.WriteString("Min3:\t%v [deg]\n")
-	builder.WriteString("Max3:\t%v [deg]\n")
-	builder.WriteString("Min4:\t%v [deg]\n")
-	builder.WriteString("Max4:\t%v [deg]\n")
-	builder.WriteString("Min5:\t%v [deg]\n")
-	builder.WriteString("Max5:\t%v [deg]\n")
-	builder.WriteString("Numbands:\t%v \n")
-	builder.WriteString("Type1:\t%v \n")
-	builder.WriteString("Type2:\t%v \n")
-	builder.WriteString("Type3:\t%v \n")
-	builder.WriteString("Type4:\t%v \n")
-	builder.WriteString("Type5:\t%v \n")
-	format := builder.String()
+	format += "Min1:\t%v [deg]\n"
+	format += "Max1:\t%v [deg]\n"
+	format += "Min2:\t%v [deg]\n"
+	format += "Max2:\t%v [deg]\n"
+	format += "Min3:\t%v [deg]\n"
+	format += "Max3:\t%v [deg]\n"
+	format += "Min4:\t%v [deg]\n"
+	format += "Max4:\t%v [deg]\n"
+	format += "Min5:\t%v [deg]\n"
+	format += "Max5:\t%v [deg]\n"
+	format += "Numbands:\t%v \n"
+	format += "Type1:\t%v \n"
+	format += "Type2:\t%v \n"
+	format += "Type3:\t%v \n"
+	format += "Type4:\t%v \n"
+	format += "Type5:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

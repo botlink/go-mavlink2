@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -84,35 +83,34 @@ type SimState struct {
 }
 
 func (m *SimState) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("Q1:\t%v \n")
-	builder.WriteString("Q2:\t%v \n")
-	builder.WriteString("Q3:\t%v \n")
-	builder.WriteString("Q4:\t%v \n")
-	builder.WriteString("Roll:\t%v \n")
-	builder.WriteString("Pitch:\t%v \n")
-	builder.WriteString("Yaw:\t%v \n")
-	builder.WriteString("Xacc:\t%v [m/s/s]\n")
-	builder.WriteString("Yacc:\t%v [m/s/s]\n")
-	builder.WriteString("Zacc:\t%v [m/s/s]\n")
-	builder.WriteString("Xgyro:\t%v [rad/s]\n")
-	builder.WriteString("Ygyro:\t%v [rad/s]\n")
-	builder.WriteString("Zgyro:\t%v [rad/s]\n")
-	builder.WriteString("Lat:\t%v [deg]\n")
-	builder.WriteString("Lon:\t%v [deg]\n")
-	builder.WriteString("Alt:\t%v [m]\n")
-	builder.WriteString("StdDevHorz:\t%v \n")
-	builder.WriteString("StdDevVert:\t%v \n")
-	builder.WriteString("Vn:\t%v [m/s]\n")
-	builder.WriteString("Ve:\t%v [m/s]\n")
-	builder.WriteString("Vd:\t%v [m/s]\n")
-	format := builder.String()
+	format += "Q1:\t%v \n"
+	format += "Q2:\t%v \n"
+	format += "Q3:\t%v \n"
+	format += "Q4:\t%v \n"
+	format += "Roll:\t%v \n"
+	format += "Pitch:\t%v \n"
+	format += "Yaw:\t%v \n"
+	format += "Xacc:\t%v [m/s/s]\n"
+	format += "Yacc:\t%v [m/s/s]\n"
+	format += "Zacc:\t%v [m/s/s]\n"
+	format += "Xgyro:\t%v [rad/s]\n"
+	format += "Ygyro:\t%v [rad/s]\n"
+	format += "Zgyro:\t%v [rad/s]\n"
+	format += "Lat:\t%v [deg]\n"
+	format += "Lon:\t%v [deg]\n"
+	format += "Alt:\t%v [m]\n"
+	format += "StdDevHorz:\t%v \n"
+	format += "StdDevVert:\t%v \n"
+	format += "Vn:\t%v [m/s]\n"
+	format += "Ve:\t%v [m/s]\n"
+	format += "Vd:\t%v [m/s]\n"
 
 	fmt.Fprintf(
 		writer,

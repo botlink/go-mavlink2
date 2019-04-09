@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -50,20 +49,19 @@ type CameraSettings struct {
 }
 
 func (m *CameraSettings) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("TimeBootMs:\t%v [ms]\n")
-	builder.WriteString("ModeID:\t%v \n")
+	format += "TimeBootMs:\t%v [ms]\n"
+	format += "ModeID:\t%v \n"
 	if m.HasExtensionFieldValues {
-		builder.WriteString("Zoomlevel:\t%v\n")
-		builder.WriteString("Focuslevel:\t%v\n")
+		format += "Zoomlevel:\t%v\n"
+		format += "Focuslevel:\t%v\n"
 	}
-	format := builder.String()
 
 	if m.HasExtensionFieldValues {
 		fmt.Fprintf(

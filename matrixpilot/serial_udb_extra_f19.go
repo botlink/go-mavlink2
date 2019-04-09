@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -58,22 +57,21 @@ type SerialUdbExtraF19 struct {
 }
 
 func (m *SerialUdbExtraF19) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("SueAileronOutputChannel:\t%v \n")
-	builder.WriteString("SueAileronReversed:\t%v \n")
-	builder.WriteString("SueElevatorOutputChannel:\t%v \n")
-	builder.WriteString("SueElevatorReversed:\t%v \n")
-	builder.WriteString("SueThrottleOutputChannel:\t%v \n")
-	builder.WriteString("SueThrottleReversed:\t%v \n")
-	builder.WriteString("SueRudderOutputChannel:\t%v \n")
-	builder.WriteString("SueRudderReversed:\t%v \n")
-	format := builder.String()
+	format += "SueAileronOutputChannel:\t%v \n"
+	format += "SueAileronReversed:\t%v \n"
+	format += "SueElevatorOutputChannel:\t%v \n"
+	format += "SueElevatorReversed:\t%v \n"
+	format += "SueThrottleOutputChannel:\t%v \n"
+	format += "SueThrottleReversed:\t%v \n"
+	format += "SueRudderOutputChannel:\t%v \n"
+	format += "SueRudderReversed:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -56,23 +55,22 @@ type EKFStatusReport struct {
 }
 
 func (m *EKFStatusReport) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("VelocityVariance:\t%v \n")
-	builder.WriteString("PosHorizVariance:\t%v \n")
-	builder.WriteString("PosVertVariance:\t%v \n")
-	builder.WriteString("CompassVariance:\t%v \n")
-	builder.WriteString("TerrainAltVariance:\t%v \n")
-	builder.WriteString("Flags:\t%v \n")
+	format += "VelocityVariance:\t%v \n"
+	format += "PosHorizVariance:\t%v \n"
+	format += "PosVertVariance:\t%v \n"
+	format += "CompassVariance:\t%v \n"
+	format += "TerrainAltVariance:\t%v \n"
+	format += "Flags:\t%v \n"
 	if m.HasExtensionFieldValues {
-		builder.WriteString("AirspeedVariance:\t%v\n")
+		format += "AirspeedVariance:\t%v\n"
 	}
-	format := builder.String()
 
 	if m.HasExtensionFieldValues {
 		fmt.Fprintf(

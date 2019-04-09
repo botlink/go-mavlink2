@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -56,21 +55,20 @@ type FlexifunctionBufferFunction struct {
 }
 
 func (m *FlexifunctionBufferFunction) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("FuncIndex:\t%v \n")
-	builder.WriteString("FuncCount:\t%v \n")
-	builder.WriteString("DataAddress:\t%v \n")
-	builder.WriteString("DataSize:\t%v \n")
-	builder.WriteString("TargetSystem:\t%v \n")
-	builder.WriteString("TargetComponent:\t%v \n")
-	builder.WriteString("Data:\t%v \n")
-	format := builder.String()
+	format += "FuncIndex:\t%v \n"
+	format += "FuncCount:\t%v \n"
+	format += "DataAddress:\t%v \n"
+	format += "DataSize:\t%v \n"
+	format += "TargetSystem:\t%v \n"
+	format += "TargetComponent:\t%v \n"
+	format += "Data:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

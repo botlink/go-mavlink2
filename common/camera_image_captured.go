@@ -29,7 +29,6 @@ import (
 	"encoding/binary"
 	"fmt"
 	"math"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -65,25 +64,24 @@ type CameraImageCaptured struct {
 }
 
 func (m *CameraImageCaptured) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("TimeUtc:\t%v [us]\n")
-	builder.WriteString("TimeBootMs:\t%v [ms]\n")
-	builder.WriteString("Lat:\t%v [degE7]\n")
-	builder.WriteString("Lon:\t%v [degE7]\n")
-	builder.WriteString("Alt:\t%v [mm]\n")
-	builder.WriteString("RelativeAlt:\t%v [mm]\n")
-	builder.WriteString("Q:\t%v \n")
-	builder.WriteString("ImageIndex:\t%v \n")
-	builder.WriteString("CameraID:\t%v \n")
-	builder.WriteString("CaptureResult:\t%v \n")
-	builder.WriteString("FileURL:\t%v \n")
-	format := builder.String()
+	format += "TimeUtc:\t%v [us]\n"
+	format += "TimeBootMs:\t%v [ms]\n"
+	format += "Lat:\t%v [degE7]\n"
+	format += "Lon:\t%v [degE7]\n"
+	format += "Alt:\t%v [mm]\n"
+	format += "RelativeAlt:\t%v [mm]\n"
+	format += "Q:\t%v \n"
+	format += "ImageIndex:\t%v \n"
+	format += "CameraID:\t%v \n"
+	format += "CaptureResult:\t%v \n"
+	format += "FileURL:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

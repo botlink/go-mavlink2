@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -64,25 +63,24 @@ type FollowTarget struct {
 }
 
 func (m *FollowTarget) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("Timestamp:\t%v [ms]\n")
-	builder.WriteString("CustomState:\t%v \n")
-	builder.WriteString("Lat:\t%v [degE7]\n")
-	builder.WriteString("Lon:\t%v [degE7]\n")
-	builder.WriteString("Alt:\t%v [m]\n")
-	builder.WriteString("Vel:\t%v [m/s]\n")
-	builder.WriteString("Acc:\t%v [m/s/s]\n")
-	builder.WriteString("AttitudeQ:\t%v \n")
-	builder.WriteString("Rates:\t%v \n")
-	builder.WriteString("PositionCov:\t%v \n")
-	builder.WriteString("EstCapabilities:\t%v \n")
-	format := builder.String()
+	format += "Timestamp:\t%v [ms]\n"
+	format += "CustomState:\t%v \n"
+	format += "Lat:\t%v [degE7]\n"
+	format += "Lon:\t%v [degE7]\n"
+	format += "Alt:\t%v [m]\n"
+	format += "Vel:\t%v [m/s]\n"
+	format += "Acc:\t%v [m/s/s]\n"
+	format += "AttitudeQ:\t%v \n"
+	format += "Rates:\t%v \n"
+	format += "PositionCov:\t%v \n"
+	format += "EstCapabilities:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

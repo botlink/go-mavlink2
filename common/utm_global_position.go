@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -78,32 +77,31 @@ type UtmGlobalPosition struct {
 }
 
 func (m *UtmGlobalPosition) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("Time:\t%v [us]\n")
-	builder.WriteString("Lat:\t%v [degE7]\n")
-	builder.WriteString("Lon:\t%v [degE7]\n")
-	builder.WriteString("Alt:\t%v [mm]\n")
-	builder.WriteString("RelativeAlt:\t%v [mm]\n")
-	builder.WriteString("NextLat:\t%v [degE7]\n")
-	builder.WriteString("NextLon:\t%v [degE7]\n")
-	builder.WriteString("NextAlt:\t%v [mm]\n")
-	builder.WriteString("Vx:\t%v [cm/s]\n")
-	builder.WriteString("Vy:\t%v [cm/s]\n")
-	builder.WriteString("Vz:\t%v [cm/s]\n")
-	builder.WriteString("HAcc:\t%v [mm]\n")
-	builder.WriteString("VAcc:\t%v [mm]\n")
-	builder.WriteString("VelAcc:\t%v [cm/s]\n")
-	builder.WriteString("UpdateRate:\t%v [cs]\n")
-	builder.WriteString("UasID:\t%v \n")
-	builder.WriteString("FlightState:\t%v \n")
-	builder.WriteString("Flags:\t%v \n")
-	format := builder.String()
+	format += "Time:\t%v [us]\n"
+	format += "Lat:\t%v [degE7]\n"
+	format += "Lon:\t%v [degE7]\n"
+	format += "Alt:\t%v [mm]\n"
+	format += "RelativeAlt:\t%v [mm]\n"
+	format += "NextLat:\t%v [degE7]\n"
+	format += "NextLon:\t%v [degE7]\n"
+	format += "NextAlt:\t%v [mm]\n"
+	format += "Vx:\t%v [cm/s]\n"
+	format += "Vy:\t%v [cm/s]\n"
+	format += "Vz:\t%v [cm/s]\n"
+	format += "HAcc:\t%v [mm]\n"
+	format += "VAcc:\t%v [mm]\n"
+	format += "VelAcc:\t%v [cm/s]\n"
+	format += "UpdateRate:\t%v [cs]\n"
+	format += "UasID:\t%v \n"
+	format += "FlightState:\t%v \n"
+	format += "Flags:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -64,25 +63,24 @@ type SimState struct {
 }
 
 func (m *SimState) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("Roll:\t%v [rad]\n")
-	builder.WriteString("Pitch:\t%v [rad]\n")
-	builder.WriteString("Yaw:\t%v [rad]\n")
-	builder.WriteString("Xacc:\t%v [m/s/s]\n")
-	builder.WriteString("Yacc:\t%v [m/s/s]\n")
-	builder.WriteString("Zacc:\t%v [m/s/s]\n")
-	builder.WriteString("Xgyro:\t%v [rad/s]\n")
-	builder.WriteString("Ygyro:\t%v [rad/s]\n")
-	builder.WriteString("Zgyro:\t%v [rad/s]\n")
-	builder.WriteString("Lat:\t%v [degE7]\n")
-	builder.WriteString("Lng:\t%v [degE7]\n")
-	format := builder.String()
+	format += "Roll:\t%v [rad]\n"
+	format += "Pitch:\t%v [rad]\n"
+	format += "Yaw:\t%v [rad]\n"
+	format += "Xacc:\t%v [m/s/s]\n"
+	format += "Yacc:\t%v [m/s/s]\n"
+	format += "Zacc:\t%v [m/s/s]\n"
+	format += "Xgyro:\t%v [rad/s]\n"
+	format += "Ygyro:\t%v [rad/s]\n"
+	format += "Zgyro:\t%v [rad/s]\n"
+	format += "Lat:\t%v [degE7]\n"
+	format += "Lng:\t%v [degE7]\n"
 
 	fmt.Fprintf(
 		writer,

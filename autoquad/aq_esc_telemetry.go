@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -71,23 +70,22 @@ type AqEscTelemetry struct {
 }
 
 func (m *AqEscTelemetry) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("TimeBootMs:\t%v \n")
-	builder.WriteString("Data0:\t%v \n")
-	builder.WriteString("Data1:\t%v \n")
-	builder.WriteString("StatusAge:\t%v \n")
-	builder.WriteString("Seq:\t%v \n")
-	builder.WriteString("NumMotors:\t%v \n")
-	builder.WriteString("NumInSeq:\t%v \n")
-	builder.WriteString("EscID:\t%v \n")
-	builder.WriteString("DataVersion:\t%v \n")
-	format := builder.String()
+	format += "TimeBootMs:\t%v \n"
+	format += "Data0:\t%v \n"
+	format += "Data1:\t%v \n"
+	format += "StatusAge:\t%v \n"
+	format += "Seq:\t%v \n"
+	format += "NumMotors:\t%v \n"
+	format += "NumInSeq:\t%v \n"
+	format += "EscID:\t%v \n"
+	format += "DataVersion:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

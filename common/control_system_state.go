@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -76,31 +75,30 @@ type ControlSystemState struct {
 }
 
 func (m *ControlSystemState) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("TimeUsec:\t%v [us]\n")
-	builder.WriteString("XAcc:\t%v [m/s/s]\n")
-	builder.WriteString("YAcc:\t%v [m/s/s]\n")
-	builder.WriteString("ZAcc:\t%v [m/s/s]\n")
-	builder.WriteString("XVel:\t%v [m/s]\n")
-	builder.WriteString("YVel:\t%v [m/s]\n")
-	builder.WriteString("ZVel:\t%v [m/s]\n")
-	builder.WriteString("XPos:\t%v [m]\n")
-	builder.WriteString("YPos:\t%v [m]\n")
-	builder.WriteString("ZPos:\t%v [m]\n")
-	builder.WriteString("Airspeed:\t%v [m/s]\n")
-	builder.WriteString("VelVariance:\t%v \n")
-	builder.WriteString("PosVariance:\t%v \n")
-	builder.WriteString("Q:\t%v \n")
-	builder.WriteString("RollRate:\t%v [rad/s]\n")
-	builder.WriteString("PitchRate:\t%v [rad/s]\n")
-	builder.WriteString("YawRate:\t%v [rad/s]\n")
-	format := builder.String()
+	format += "TimeUsec:\t%v [us]\n"
+	format += "XAcc:\t%v [m/s/s]\n"
+	format += "YAcc:\t%v [m/s/s]\n"
+	format += "ZAcc:\t%v [m/s/s]\n"
+	format += "XVel:\t%v [m/s]\n"
+	format += "YVel:\t%v [m/s]\n"
+	format += "ZVel:\t%v [m/s]\n"
+	format += "XPos:\t%v [m]\n"
+	format += "YPos:\t%v [m]\n"
+	format += "ZPos:\t%v [m]\n"
+	format += "Airspeed:\t%v [m/s]\n"
+	format += "VelVariance:\t%v \n"
+	format += "PosVariance:\t%v \n"
+	format += "Q:\t%v \n"
+	format += "RollRate:\t%v [rad/s]\n"
+	format += "PitchRate:\t%v [rad/s]\n"
+	format += "YawRate:\t%v [rad/s]\n"
 
 	fmt.Fprintf(
 		writer,

@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -92,39 +91,38 @@ type AslctrlData struct {
 }
 
 func (m *AslctrlData) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("Timestamp:\t%v [us]\n")
-	builder.WriteString("H:\t%v \n")
-	builder.WriteString("Href:\t%v \n")
-	builder.WriteString("HrefT:\t%v \n")
-	builder.WriteString("Pitchangle:\t%v [deg]\n")
-	builder.WriteString("Pitchangleref:\t%v [deg]\n")
-	builder.WriteString("Q:\t%v \n")
-	builder.WriteString("Qref:\t%v \n")
-	builder.WriteString("Uelev:\t%v \n")
-	builder.WriteString("Uthrot:\t%v \n")
-	builder.WriteString("Uthrot2:\t%v \n")
-	builder.WriteString("Nz:\t%v \n")
-	builder.WriteString("Airspeedref:\t%v [m/s]\n")
-	builder.WriteString("Yawangle:\t%v [deg]\n")
-	builder.WriteString("Yawangleref:\t%v [deg]\n")
-	builder.WriteString("Rollangle:\t%v [deg]\n")
-	builder.WriteString("Rollangleref:\t%v [deg]\n")
-	builder.WriteString("P:\t%v \n")
-	builder.WriteString("Pref:\t%v \n")
-	builder.WriteString("R:\t%v \n")
-	builder.WriteString("Rref:\t%v \n")
-	builder.WriteString("Uail:\t%v \n")
-	builder.WriteString("Urud:\t%v \n")
-	builder.WriteString("AslctrlMode:\t%v \n")
-	builder.WriteString("Spoilersengaged:\t%v \n")
-	format := builder.String()
+	format += "Timestamp:\t%v [us]\n"
+	format += "H:\t%v \n"
+	format += "Href:\t%v \n"
+	format += "HrefT:\t%v \n"
+	format += "Pitchangle:\t%v [deg]\n"
+	format += "Pitchangleref:\t%v [deg]\n"
+	format += "Q:\t%v \n"
+	format += "Qref:\t%v \n"
+	format += "Uelev:\t%v \n"
+	format += "Uthrot:\t%v \n"
+	format += "Uthrot2:\t%v \n"
+	format += "Nz:\t%v \n"
+	format += "Airspeedref:\t%v [m/s]\n"
+	format += "Yawangle:\t%v [deg]\n"
+	format += "Yawangleref:\t%v [deg]\n"
+	format += "Rollangle:\t%v [deg]\n"
+	format += "Rollangleref:\t%v [deg]\n"
+	format += "P:\t%v \n"
+	format += "Pref:\t%v \n"
+	format += "R:\t%v \n"
+	format += "Rref:\t%v \n"
+	format += "Uail:\t%v \n"
+	format += "Urud:\t%v \n"
+	format += "AslctrlMode:\t%v \n"
+	format += "Spoilersengaged:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

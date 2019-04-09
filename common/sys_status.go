@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -68,27 +67,26 @@ type SysStatus struct {
 }
 
 func (m *SysStatus) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("OnboardControlSensorsPresent:\t%v \n")
-	builder.WriteString("OnboardControlSensorsEnabled:\t%v \n")
-	builder.WriteString("OnboardControlSensorsHealth:\t%v \n")
-	builder.WriteString("Load:\t%v \n")
-	builder.WriteString("VoltageBattery:\t%v [mV]\n")
-	builder.WriteString("CurrentBattery:\t%v [cA]\n")
-	builder.WriteString("DropRateComm:\t%v \n")
-	builder.WriteString("ErrorsComm:\t%v \n")
-	builder.WriteString("ErrorsCount1:\t%v \n")
-	builder.WriteString("ErrorsCount2:\t%v \n")
-	builder.WriteString("ErrorsCount3:\t%v \n")
-	builder.WriteString("ErrorsCount4:\t%v \n")
-	builder.WriteString("BatteryRemaining:\t%v \n")
-	format := builder.String()
+	format += "OnboardControlSensorsPresent:\t%v \n"
+	format += "OnboardControlSensorsEnabled:\t%v \n"
+	format += "OnboardControlSensorsHealth:\t%v \n"
+	format += "Load:\t%v \n"
+	format += "VoltageBattery:\t%v [mV]\n"
+	format += "CurrentBattery:\t%v [cA]\n"
+	format += "DropRateComm:\t%v \n"
+	format += "ErrorsComm:\t%v \n"
+	format += "ErrorsCount1:\t%v \n"
+	format += "ErrorsCount2:\t%v \n"
+	format += "ErrorsCount3:\t%v \n"
+	format += "ErrorsCount4:\t%v \n"
+	format += "BatteryRemaining:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

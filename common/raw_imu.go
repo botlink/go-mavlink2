@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -62,24 +61,23 @@ type RawIMU struct {
 }
 
 func (m *RawIMU) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("TimeUsec:\t%v [us]\n")
-	builder.WriteString("Xacc:\t%v \n")
-	builder.WriteString("Yacc:\t%v \n")
-	builder.WriteString("Zacc:\t%v \n")
-	builder.WriteString("Xgyro:\t%v \n")
-	builder.WriteString("Ygyro:\t%v \n")
-	builder.WriteString("Zgyro:\t%v \n")
-	builder.WriteString("Xmag:\t%v \n")
-	builder.WriteString("Ymag:\t%v \n")
-	builder.WriteString("Zmag:\t%v \n")
-	format := builder.String()
+	format += "TimeUsec:\t%v [us]\n"
+	format += "Xacc:\t%v \n"
+	format += "Yacc:\t%v \n"
+	format += "Zacc:\t%v \n"
+	format += "Xgyro:\t%v \n"
+	format += "Ygyro:\t%v \n"
+	format += "Zgyro:\t%v \n"
+	format += "Xmag:\t%v \n"
+	format += "Ymag:\t%v \n"
+	format += "Zmag:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

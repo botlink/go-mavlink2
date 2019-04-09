@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -56,21 +55,20 @@ type DataTransmissionHandshake struct {
 }
 
 func (m *DataTransmissionHandshake) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("Size:\t%v [bytes]\n")
-	builder.WriteString("WIDth:\t%v \n")
-	builder.WriteString("Height:\t%v \n")
-	builder.WriteString("Packets:\t%v \n")
-	builder.WriteString("Type:\t%v \n")
-	builder.WriteString("Payload:\t%v [bytes]\n")
-	builder.WriteString("JpgQuality:\t%v \n")
-	format := builder.String()
+	format += "Size:\t%v [bytes]\n"
+	format += "WIDth:\t%v \n"
+	format += "Height:\t%v \n"
+	format += "Packets:\t%v \n"
+	format += "Type:\t%v \n"
+	format += "Payload:\t%v [bytes]\n"
+	format += "JpgQuality:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

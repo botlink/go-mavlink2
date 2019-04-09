@@ -29,7 +29,6 @@ import (
 	"encoding/binary"
 	"fmt"
 	"math"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -63,24 +62,23 @@ type DeviceOpWrite struct {
 }
 
 func (m *DeviceOpWrite) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("RequestID:\t%v \n")
-	builder.WriteString("TargetSystem:\t%v \n")
-	builder.WriteString("TargetComponent:\t%v \n")
-	builder.WriteString("Bustype:\t%v \n")
-	builder.WriteString("Bus:\t%v \n")
-	builder.WriteString("Address:\t%v \n")
-	builder.WriteString("Busname:\t%v \n")
-	builder.WriteString("Regstart:\t%v \n")
-	builder.WriteString("Count:\t%v \n")
-	builder.WriteString("Data:\t%v \n")
-	format := builder.String()
+	format += "RequestID:\t%v \n"
+	format += "TargetSystem:\t%v \n"
+	format += "TargetComponent:\t%v \n"
+	format += "Bustype:\t%v \n"
+	format += "Bus:\t%v \n"
+	format += "Address:\t%v \n"
+	format += "Busname:\t%v \n"
+	format += "Regstart:\t%v \n"
+	format += "Count:\t%v \n"
+	format += "Data:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

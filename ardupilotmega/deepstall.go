@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -62,24 +61,23 @@ type Deepstall struct {
 }
 
 func (m *Deepstall) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("LandingLat:\t%v [degE7]\n")
-	builder.WriteString("LandingLon:\t%v [degE7]\n")
-	builder.WriteString("PathLat:\t%v [degE7]\n")
-	builder.WriteString("PathLon:\t%v [degE7]\n")
-	builder.WriteString("ARCEntryLat:\t%v [degE7]\n")
-	builder.WriteString("ARCEntryLon:\t%v [degE7]\n")
-	builder.WriteString("Altitude:\t%v [m]\n")
-	builder.WriteString("ExpectedTravelDistance:\t%v [m]\n")
-	builder.WriteString("CrossTrackError:\t%v [m]\n")
-	builder.WriteString("Stage:\t%v \n")
-	format := builder.String()
+	format += "LandingLat:\t%v [degE7]\n"
+	format += "LandingLon:\t%v [degE7]\n"
+	format += "PathLat:\t%v [degE7]\n"
+	format += "PathLon:\t%v [degE7]\n"
+	format += "ARCEntryLat:\t%v [degE7]\n"
+	format += "ARCEntryLon:\t%v [degE7]\n"
+	format += "Altitude:\t%v [m]\n"
+	format += "ExpectedTravelDistance:\t%v [m]\n"
+	format += "CrossTrackError:\t%v [m]\n"
+	format += "Stage:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

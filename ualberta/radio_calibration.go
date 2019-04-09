@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -54,20 +53,19 @@ type RadioCalibration struct {
 }
 
 func (m *RadioCalibration) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("Aileron:\t%v \n")
-	builder.WriteString("Elevator:\t%v \n")
-	builder.WriteString("Rudder:\t%v \n")
-	builder.WriteString("Gyro:\t%v \n")
-	builder.WriteString("Pitch:\t%v \n")
-	builder.WriteString("Throttle:\t%v \n")
-	format := builder.String()
+	format += "Aileron:\t%v \n"
+	format += "Elevator:\t%v \n"
+	format += "Rudder:\t%v \n"
+	format += "Gyro:\t%v \n"
+	format += "Pitch:\t%v \n"
+	format += "Throttle:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

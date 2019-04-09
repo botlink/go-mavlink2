@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -54,20 +53,19 @@ type ManualControl struct {
 }
 
 func (m *ManualControl) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("X:\t%v \n")
-	builder.WriteString("Y:\t%v \n")
-	builder.WriteString("Z:\t%v \n")
-	builder.WriteString("R:\t%v \n")
-	builder.WriteString("Buttons:\t%v \n")
-	builder.WriteString("Target:\t%v \n")
-	format := builder.String()
+	format += "X:\t%v \n"
+	format += "Y:\t%v \n"
+	format += "Z:\t%v \n"
+	format += "R:\t%v \n"
+	format += "Buttons:\t%v \n"
+	format += "Target:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

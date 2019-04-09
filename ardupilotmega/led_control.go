@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -54,20 +53,19 @@ type LedControl struct {
 }
 
 func (m *LedControl) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("TargetSystem:\t%v \n")
-	builder.WriteString("TargetComponent:\t%v \n")
-	builder.WriteString("Instance:\t%v \n")
-	builder.WriteString("Pattern:\t%v \n")
-	builder.WriteString("CustomLen:\t%v \n")
-	builder.WriteString("CustomBytes:\t%v \n")
-	format := builder.String()
+	format += "TargetSystem:\t%v \n"
+	format += "TargetComponent:\t%v \n"
+	format += "Instance:\t%v \n"
+	format += "Pattern:\t%v \n"
+	format += "CustomLen:\t%v \n"
+	format += "CustomBytes:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

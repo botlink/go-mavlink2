@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -56,21 +55,20 @@ type Radio struct {
 }
 
 func (m *Radio) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("Rxerrors:\t%v \n")
-	builder.WriteString("Fixed:\t%v \n")
-	builder.WriteString("RSSI:\t%v \n")
-	builder.WriteString("RemRSSI:\t%v \n")
-	builder.WriteString("Txbuf:\t%v \n")
-	builder.WriteString("Noise:\t%v \n")
-	builder.WriteString("Remnoise:\t%v \n")
-	format := builder.String()
+	format += "Rxerrors:\t%v \n"
+	format += "Fixed:\t%v \n"
+	format += "RSSI:\t%v \n"
+	format += "RemRSSI:\t%v \n"
+	format += "Txbuf:\t%v \n"
+	format += "Noise:\t%v \n"
+	format += "Remnoise:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

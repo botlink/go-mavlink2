@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -60,23 +59,22 @@ type SetAttitudeTarget struct {
 }
 
 func (m *SetAttitudeTarget) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("TimeBootMs:\t%v [ms]\n")
-	builder.WriteString("Q:\t%v \n")
-	builder.WriteString("BodyRollRate:\t%v [rad/s]\n")
-	builder.WriteString("BodyPitchRate:\t%v [rad/s]\n")
-	builder.WriteString("BodyYawRate:\t%v [rad/s]\n")
-	builder.WriteString("Thrust:\t%v \n")
-	builder.WriteString("TargetSystem:\t%v \n")
-	builder.WriteString("TargetComponent:\t%v \n")
-	builder.WriteString("TypeMask:\t%v \n")
-	format := builder.String()
+	format += "TimeBootMs:\t%v [ms]\n"
+	format += "Q:\t%v \n"
+	format += "BodyRollRate:\t%v [rad/s]\n"
+	format += "BodyPitchRate:\t%v [rad/s]\n"
+	format += "BodyYawRate:\t%v [rad/s]\n"
+	format += "Thrust:\t%v \n"
+	format += "TargetSystem:\t%v \n"
+	format += "TargetComponent:\t%v \n"
+	format += "TypeMask:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

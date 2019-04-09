@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -72,29 +71,28 @@ type SensBatmon struct {
 }
 
 func (m *SensBatmon) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("BatmonTimestamp:\t%v [us]\n")
-	builder.WriteString("Temperature:\t%v [degC]\n")
-	builder.WriteString("Safetystatus:\t%v \n")
-	builder.WriteString("Operationstatus:\t%v \n")
-	builder.WriteString("Voltage:\t%v [mV]\n")
-	builder.WriteString("Current:\t%v [mA]\n")
-	builder.WriteString("Batterystatus:\t%v \n")
-	builder.WriteString("Serialnumber:\t%v \n")
-	builder.WriteString("Cellvoltage1:\t%v [mV]\n")
-	builder.WriteString("Cellvoltage2:\t%v [mV]\n")
-	builder.WriteString("Cellvoltage3:\t%v [mV]\n")
-	builder.WriteString("Cellvoltage4:\t%v [mV]\n")
-	builder.WriteString("Cellvoltage5:\t%v [mV]\n")
-	builder.WriteString("Cellvoltage6:\t%v [mV]\n")
-	builder.WriteString("Soc:\t%v \n")
-	format := builder.String()
+	format += "BatmonTimestamp:\t%v [us]\n"
+	format += "Temperature:\t%v [degC]\n"
+	format += "Safetystatus:\t%v \n"
+	format += "Operationstatus:\t%v \n"
+	format += "Voltage:\t%v [mV]\n"
+	format += "Current:\t%v [mA]\n"
+	format += "Batterystatus:\t%v \n"
+	format += "Serialnumber:\t%v \n"
+	format += "Cellvoltage1:\t%v [mV]\n"
+	format += "Cellvoltage2:\t%v [mV]\n"
+	format += "Cellvoltage3:\t%v [mV]\n"
+	format += "Cellvoltage4:\t%v [mV]\n"
+	format += "Cellvoltage5:\t%v [mV]\n"
+	format += "Cellvoltage6:\t%v [mV]\n"
+	format += "Soc:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

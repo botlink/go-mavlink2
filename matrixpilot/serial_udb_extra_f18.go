@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -52,19 +51,18 @@ type SerialUdbExtraF18 struct {
 }
 
 func (m *SerialUdbExtraF18) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("AngleOfAttackNormal:\t%v \n")
-	builder.WriteString("AngleOfAttackInverted:\t%v \n")
-	builder.WriteString("ElevatorTrimNormal:\t%v \n")
-	builder.WriteString("ElevatorTrimInverted:\t%v \n")
-	builder.WriteString("ReferenceSpeed:\t%v \n")
-	format := builder.String()
+	format += "AngleOfAttackNormal:\t%v \n"
+	format += "AngleOfAttackInverted:\t%v \n"
+	format += "ElevatorTrimNormal:\t%v \n"
+	format += "ElevatorTrimInverted:\t%v \n"
+	format += "ReferenceSpeed:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

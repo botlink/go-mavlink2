@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -62,24 +61,23 @@ type SerialUdbExtraF4 struct {
 }
 
 func (m *SerialUdbExtraF4) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("SueRollStabilizationAilerons:\t%v \n")
-	builder.WriteString("SueRollStabilizationRudder:\t%v \n")
-	builder.WriteString("SuePitchStabilization:\t%v \n")
-	builder.WriteString("SueYawStabilizationRudder:\t%v \n")
-	builder.WriteString("SueYawStabilizationAileron:\t%v \n")
-	builder.WriteString("SueAileronNAVigation:\t%v \n")
-	builder.WriteString("SueRudderNAVigation:\t%v \n")
-	builder.WriteString("SueAltitudeholdStabilized:\t%v \n")
-	builder.WriteString("SueAltitudeholdWaypoint:\t%v \n")
-	builder.WriteString("SueRacingMode:\t%v \n")
-	format := builder.String()
+	format += "SueRollStabilizationAilerons:\t%v \n"
+	format += "SueRollStabilizationRudder:\t%v \n"
+	format += "SuePitchStabilization:\t%v \n"
+	format += "SueYawStabilizationRudder:\t%v \n"
+	format += "SueYawStabilizationAileron:\t%v \n"
+	format += "SueAileronNAVigation:\t%v \n"
+	format += "SueRudderNAVigation:\t%v \n"
+	format += "SueAltitudeholdStabilized:\t%v \n"
+	format += "SueAltitudeholdWaypoint:\t%v \n"
+	format += "SueRacingMode:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

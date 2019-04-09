@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -52,19 +51,18 @@ type ResouRCeRequest struct {
 }
 
 func (m *ResouRCeRequest) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("RequestID:\t%v \n")
-	builder.WriteString("URIType:\t%v \n")
-	builder.WriteString("URI:\t%v \n")
-	builder.WriteString("TransferType:\t%v \n")
-	builder.WriteString("Storage:\t%v \n")
-	format := builder.String()
+	format += "RequestID:\t%v \n"
+	format += "URIType:\t%v \n"
+	format += "URI:\t%v \n"
+	format += "TransferType:\t%v \n"
+	format += "Storage:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

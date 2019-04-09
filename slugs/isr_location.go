@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -56,21 +55,20 @@ type IsrLocation struct {
 }
 
 func (m *IsrLocation) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("Latitude:\t%v [deg]\n")
-	builder.WriteString("Longitude:\t%v [deg]\n")
-	builder.WriteString("Height:\t%v \n")
-	builder.WriteString("Target:\t%v \n")
-	builder.WriteString("Option1:\t%v \n")
-	builder.WriteString("Option2:\t%v \n")
-	builder.WriteString("Option3:\t%v \n")
-	format := builder.String()
+	format += "Latitude:\t%v [deg]\n"
+	format += "Longitude:\t%v [deg]\n"
+	format += "Height:\t%v \n"
+	format += "Target:\t%v \n"
+	format += "Option1:\t%v \n"
+	format += "Option2:\t%v \n"
+	format += "Option3:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

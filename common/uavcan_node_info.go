@@ -29,7 +29,6 @@ import (
 	"encoding/binary"
 	"fmt"
 	"math"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -61,23 +60,22 @@ type UavcanNodeInfo struct {
 }
 
 func (m *UavcanNodeInfo) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("TimeUsec:\t%v [us]\n")
-	builder.WriteString("UptimeSec:\t%v [s]\n")
-	builder.WriteString("SwVcsCommit:\t%v \n")
-	builder.WriteString("Name:\t%v \n")
-	builder.WriteString("HWVersionMajor:\t%v \n")
-	builder.WriteString("HWVersionMinor:\t%v \n")
-	builder.WriteString("HWUniqueID:\t%v \n")
-	builder.WriteString("SwVersionMajor:\t%v \n")
-	builder.WriteString("SwVersionMinor:\t%v \n")
-	format := builder.String()
+	format += "TimeUsec:\t%v [us]\n"
+	format += "UptimeSec:\t%v [s]\n"
+	format += "SwVcsCommit:\t%v \n"
+	format += "Name:\t%v \n"
+	format += "HWVersionMajor:\t%v \n"
+	format += "HWVersionMinor:\t%v \n"
+	format += "HWUniqueID:\t%v \n"
+	format += "SwVersionMajor:\t%v \n"
+	format += "SwVersionMinor:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -62,24 +61,23 @@ type RallyPoint struct {
 }
 
 func (m *RallyPoint) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("Lat:\t%v [degE7]\n")
-	builder.WriteString("Lng:\t%v [degE7]\n")
-	builder.WriteString("Alt:\t%v [m]\n")
-	builder.WriteString("BreakAlt:\t%v [m]\n")
-	builder.WriteString("LandDir:\t%v [cdeg]\n")
-	builder.WriteString("TargetSystem:\t%v \n")
-	builder.WriteString("TargetComponent:\t%v \n")
-	builder.WriteString("IDx:\t%v \n")
-	builder.WriteString("Count:\t%v \n")
-	builder.WriteString("Flags:\t%v \n")
-	format := builder.String()
+	format += "Lat:\t%v [degE7]\n"
+	format += "Lng:\t%v [degE7]\n"
+	format += "Alt:\t%v [m]\n"
+	format += "BreakAlt:\t%v [m]\n"
+	format += "LandDir:\t%v [cdeg]\n"
+	format += "TargetSystem:\t%v \n"
+	format += "TargetComponent:\t%v \n"
+	format += "IDx:\t%v \n"
+	format += "Count:\t%v \n"
+	format += "Flags:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

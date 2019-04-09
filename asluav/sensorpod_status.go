@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -58,22 +57,21 @@ type SensorpodStatus struct {
 }
 
 func (m *SensorpodStatus) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("Timestamp:\t%v [ms]\n")
-	builder.WriteString("FreeSpace:\t%v \n")
-	builder.WriteString("VisensorRate1:\t%v \n")
-	builder.WriteString("VisensorRate2:\t%v \n")
-	builder.WriteString("VisensorRate3:\t%v \n")
-	builder.WriteString("VisensorRate4:\t%v \n")
-	builder.WriteString("RecordingNodesCount:\t%v \n")
-	builder.WriteString("CpuTemp:\t%v [degC]\n")
-	format := builder.String()
+	format += "Timestamp:\t%v [ms]\n"
+	format += "FreeSpace:\t%v \n"
+	format += "VisensorRate1:\t%v \n"
+	format += "VisensorRate2:\t%v \n"
+	format += "VisensorRate3:\t%v \n"
+	format += "VisensorRate4:\t%v \n"
+	format += "RecordingNodesCount:\t%v \n"
+	format += "CpuTemp:\t%v [degC]\n"
 
 	fmt.Fprintf(
 		writer,

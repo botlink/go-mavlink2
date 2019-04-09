@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -56,21 +55,20 @@ type GsmLinkStatus struct {
 }
 
 func (m *GsmLinkStatus) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("Timestamp:\t%v [us]\n")
-	builder.WriteString("GsmModemType:\t%v \n")
-	builder.WriteString("GsmLinkType:\t%v \n")
-	builder.WriteString("RSSI:\t%v \n")
-	builder.WriteString("RsrpRscp:\t%v \n")
-	builder.WriteString("SinrEcio:\t%v \n")
-	builder.WriteString("Rsrq:\t%v \n")
-	format := builder.String()
+	format += "Timestamp:\t%v [us]\n"
+	format += "GsmModemType:\t%v \n"
+	format += "GsmLinkType:\t%v \n"
+	format += "RSSI:\t%v \n"
+	format += "RsrpRscp:\t%v \n"
+	format += "SinrEcio:\t%v \n"
+	format += "Rsrq:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

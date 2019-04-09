@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -92,39 +91,38 @@ type FwSoaringData struct {
 }
 
 func (m *FwSoaringData) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("Timestamp:\t%v [ms]\n")
-	builder.WriteString("Timestampmodechanged:\t%v [ms]\n")
-	builder.WriteString("Xw:\t%v [m/s]\n")
-	builder.WriteString("Xr:\t%v [m]\n")
-	builder.WriteString("Xlat:\t%v [deg]\n")
-	builder.WriteString("Xlon:\t%v [deg]\n")
-	builder.WriteString("Varw:\t%v \n")
-	builder.WriteString("Varr:\t%v \n")
-	builder.WriteString("Varlat:\t%v \n")
-	builder.WriteString("Varlon:\t%v \n")
-	builder.WriteString("Loiterradius:\t%v [m]\n")
-	builder.WriteString("Loiterdirection:\t%v \n")
-	builder.WriteString("Disttosoarpoint:\t%v [m]\n")
-	builder.WriteString("Vsinkexp:\t%v [m/s]\n")
-	builder.WriteString("Z1Localupdraftspeed:\t%v [m/s]\n")
-	builder.WriteString("Z2Deltaroll:\t%v [deg]\n")
-	builder.WriteString("Z1Exp:\t%v \n")
-	builder.WriteString("Z2Exp:\t%v \n")
-	builder.WriteString("Thermalgsnorth:\t%v [m/s]\n")
-	builder.WriteString("Thermalgseast:\t%v [m/s]\n")
-	builder.WriteString("TseDot:\t%v [m/s]\n")
-	builder.WriteString("Debugvar1:\t%v \n")
-	builder.WriteString("Debugvar2:\t%v \n")
-	builder.WriteString("Controlmode:\t%v \n")
-	builder.WriteString("ValID:\t%v \n")
-	format := builder.String()
+	format += "Timestamp:\t%v [ms]\n"
+	format += "Timestampmodechanged:\t%v [ms]\n"
+	format += "Xw:\t%v [m/s]\n"
+	format += "Xr:\t%v [m]\n"
+	format += "Xlat:\t%v [deg]\n"
+	format += "Xlon:\t%v [deg]\n"
+	format += "Varw:\t%v \n"
+	format += "Varr:\t%v \n"
+	format += "Varlat:\t%v \n"
+	format += "Varlon:\t%v \n"
+	format += "Loiterradius:\t%v [m]\n"
+	format += "Loiterdirection:\t%v \n"
+	format += "Disttosoarpoint:\t%v [m]\n"
+	format += "Vsinkexp:\t%v [m/s]\n"
+	format += "Z1Localupdraftspeed:\t%v [m/s]\n"
+	format += "Z2Deltaroll:\t%v [deg]\n"
+	format += "Z1Exp:\t%v \n"
+	format += "Z2Exp:\t%v \n"
+	format += "Thermalgsnorth:\t%v [m/s]\n"
+	format += "Thermalgseast:\t%v [m/s]\n"
+	format += "TseDot:\t%v [m/s]\n"
+	format += "Debugvar1:\t%v \n"
+	format += "Debugvar2:\t%v \n"
+	format += "Controlmode:\t%v \n"
+	format += "ValID:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

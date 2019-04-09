@@ -29,7 +29,6 @@ import (
 	"encoding/binary"
 	"fmt"
 	"math"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -59,22 +58,21 @@ type UavionixAdsbOutCfg struct {
 }
 
 func (m *UavionixAdsbOutCfg) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("Icao:\t%v \n")
-	builder.WriteString("Stallspeed:\t%v [cm/s]\n")
-	builder.WriteString("Callsign:\t%v \n")
-	builder.WriteString("Emittertype:\t%v \n")
-	builder.WriteString("AiRCraftsize:\t%v \n")
-	builder.WriteString("GPSoffsetlat:\t%v \n")
-	builder.WriteString("GPSoffsetlon:\t%v \n")
-	builder.WriteString("Rfselect:\t%v \n")
-	format := builder.String()
+	format += "Icao:\t%v \n"
+	format += "Stallspeed:\t%v [cm/s]\n"
+	format += "Callsign:\t%v \n"
+	format += "Emittertype:\t%v \n"
+	format += "AiRCraftsize:\t%v \n"
+	format += "GPSoffsetlat:\t%v \n"
+	format += "GPSoffsetlon:\t%v \n"
+	format += "Rfselect:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -58,22 +57,21 @@ type SatcomLinkStatus struct {
 }
 
 func (m *SatcomLinkStatus) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("Timestamp:\t%v [us]\n")
-	builder.WriteString("LastHeartbeat:\t%v [us]\n")
-	builder.WriteString("FailedSessions:\t%v \n")
-	builder.WriteString("SuccessfulSessions:\t%v \n")
-	builder.WriteString("SignalQuality:\t%v \n")
-	builder.WriteString("RingPending:\t%v \n")
-	builder.WriteString("TxSessionPending:\t%v \n")
-	builder.WriteString("RxSessionPending:\t%v \n")
-	format := builder.String()
+	format += "Timestamp:\t%v [us]\n"
+	format += "LastHeartbeat:\t%v [us]\n"
+	format += "FailedSessions:\t%v \n"
+	format += "SuccessfulSessions:\t%v \n"
+	format += "SignalQuality:\t%v \n"
+	format += "RingPending:\t%v \n"
+	format += "TxSessionPending:\t%v \n"
+	format += "RxSessionPending:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

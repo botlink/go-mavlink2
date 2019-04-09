@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -78,32 +77,31 @@ type GPSInput struct {
 }
 
 func (m *GPSInput) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("TimeUsec:\t%v [us]\n")
-	builder.WriteString("TimeWeekMs:\t%v [ms]\n")
-	builder.WriteString("Lat:\t%v [degE7]\n")
-	builder.WriteString("Lon:\t%v [degE7]\n")
-	builder.WriteString("Alt:\t%v [m]\n")
-	builder.WriteString("Hdop:\t%v [m]\n")
-	builder.WriteString("Vdop:\t%v [m]\n")
-	builder.WriteString("Vn:\t%v [m/s]\n")
-	builder.WriteString("Ve:\t%v [m/s]\n")
-	builder.WriteString("Vd:\t%v [m/s]\n")
-	builder.WriteString("SpeedAccuracy:\t%v [m/s]\n")
-	builder.WriteString("HorizAccuracy:\t%v [m]\n")
-	builder.WriteString("VertAccuracy:\t%v [m]\n")
-	builder.WriteString("IgnoreFlags:\t%v \n")
-	builder.WriteString("TimeWeek:\t%v \n")
-	builder.WriteString("GPSID:\t%v \n")
-	builder.WriteString("FixType:\t%v \n")
-	builder.WriteString("SatellitesVisible:\t%v \n")
-	format := builder.String()
+	format += "TimeUsec:\t%v [us]\n"
+	format += "TimeWeekMs:\t%v [ms]\n"
+	format += "Lat:\t%v [degE7]\n"
+	format += "Lon:\t%v [degE7]\n"
+	format += "Alt:\t%v [m]\n"
+	format += "Hdop:\t%v [m]\n"
+	format += "Vdop:\t%v [m]\n"
+	format += "Vn:\t%v [m/s]\n"
+	format += "Ve:\t%v [m/s]\n"
+	format += "Vd:\t%v [m/s]\n"
+	format += "SpeedAccuracy:\t%v [m/s]\n"
+	format += "HorizAccuracy:\t%v [m]\n"
+	format += "VertAccuracy:\t%v [m]\n"
+	format += "IgnoreFlags:\t%v \n"
+	format += "TimeWeek:\t%v \n"
+	format += "GPSID:\t%v \n"
+	format += "FixType:\t%v \n"
+	format += "SatellitesVisible:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

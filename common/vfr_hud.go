@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -54,20 +53,19 @@ type VFRHUD struct {
 }
 
 func (m *VFRHUD) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("Airspeed:\t%v [m/s]\n")
-	builder.WriteString("Groundspeed:\t%v [m/s]\n")
-	builder.WriteString("Alt:\t%v [m]\n")
-	builder.WriteString("Climb:\t%v [m/s]\n")
-	builder.WriteString("Heading:\t%v [deg]\n")
-	builder.WriteString("Throttle:\t%v \n")
-	format := builder.String()
+	format += "Airspeed:\t%v [m/s]\n"
+	format += "Groundspeed:\t%v [m/s]\n"
+	format += "Alt:\t%v [m]\n"
+	format += "Climb:\t%v [m/s]\n"
+	format += "Heading:\t%v [deg]\n"
+	format += "Throttle:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

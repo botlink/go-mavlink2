@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -60,23 +59,22 @@ type CameraStatus struct {
 }
 
 func (m *CameraStatus) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("TimeUsec:\t%v [us]\n")
-	builder.WriteString("P1:\t%v \n")
-	builder.WriteString("P2:\t%v \n")
-	builder.WriteString("P3:\t%v \n")
-	builder.WriteString("P4:\t%v \n")
-	builder.WriteString("ImgIDx:\t%v \n")
-	builder.WriteString("TargetSystem:\t%v \n")
-	builder.WriteString("CamIDx:\t%v \n")
-	builder.WriteString("EventID:\t%v \n")
-	format := builder.String()
+	format += "TimeUsec:\t%v [us]\n"
+	format += "P1:\t%v \n"
+	format += "P2:\t%v \n"
+	format += "P3:\t%v \n"
+	format += "P4:\t%v \n"
+	format += "ImgIDx:\t%v \n"
+	format += "TargetSystem:\t%v \n"
+	format += "CamIDx:\t%v \n"
+	format += "EventID:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

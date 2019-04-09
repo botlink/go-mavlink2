@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -54,20 +53,19 @@ type GPSStatus struct {
 }
 
 func (m *GPSStatus) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("SatellitesVisible:\t%v \n")
-	builder.WriteString("SatellitePrn:\t%v \n")
-	builder.WriteString("SatelliteUsed:\t%v \n")
-	builder.WriteString("SatelliteElevation:\t%v [deg]\n")
-	builder.WriteString("SatelliteAzIMUth:\t%v [deg]\n")
-	builder.WriteString("SatelliteSnr:\t%v [dB]\n")
-	format := builder.String()
+	format += "SatellitesVisible:\t%v \n"
+	format += "SatellitePrn:\t%v \n"
+	format += "SatelliteUsed:\t%v \n"
+	format += "SatelliteElevation:\t%v [deg]\n"
+	format += "SatelliteAzIMUth:\t%v [deg]\n"
+	format += "SatelliteSnr:\t%v [dB]\n"
 
 	fmt.Fprintf(
 		writer,

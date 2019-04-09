@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -96,41 +95,40 @@ type SerialUdbExtraF2A struct {
 }
 
 func (m *SerialUdbExtraF2A) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("SueTime:\t%v \n")
-	builder.WriteString("SueLatitude:\t%v \n")
-	builder.WriteString("SueLongitude:\t%v \n")
-	builder.WriteString("SueAltitude:\t%v \n")
-	builder.WriteString("SueWaypointIndex:\t%v \n")
-	builder.WriteString("SueRmat0:\t%v \n")
-	builder.WriteString("SueRmat1:\t%v \n")
-	builder.WriteString("SueRmat2:\t%v \n")
-	builder.WriteString("SueRmat3:\t%v \n")
-	builder.WriteString("SueRmat4:\t%v \n")
-	builder.WriteString("SueRmat5:\t%v \n")
-	builder.WriteString("SueRmat6:\t%v \n")
-	builder.WriteString("SueRmat7:\t%v \n")
-	builder.WriteString("SueRmat8:\t%v \n")
-	builder.WriteString("SueCog:\t%v \n")
-	builder.WriteString("SueSog:\t%v \n")
-	builder.WriteString("SueCpuLoad:\t%v \n")
-	builder.WriteString("SueAirSpeed3DIMU:\t%v \n")
-	builder.WriteString("SueEstimatedWind0:\t%v \n")
-	builder.WriteString("SueEstimatedWind1:\t%v \n")
-	builder.WriteString("SueEstimatedWind2:\t%v \n")
-	builder.WriteString("SueMagfieldearth0:\t%v \n")
-	builder.WriteString("SueMagfieldearth1:\t%v \n")
-	builder.WriteString("SueMagfieldearth2:\t%v \n")
-	builder.WriteString("SueSvs:\t%v \n")
-	builder.WriteString("SueHdop:\t%v \n")
-	builder.WriteString("SueStatus:\t%v \n")
-	format := builder.String()
+	format += "SueTime:\t%v \n"
+	format += "SueLatitude:\t%v \n"
+	format += "SueLongitude:\t%v \n"
+	format += "SueAltitude:\t%v \n"
+	format += "SueWaypointIndex:\t%v \n"
+	format += "SueRmat0:\t%v \n"
+	format += "SueRmat1:\t%v \n"
+	format += "SueRmat2:\t%v \n"
+	format += "SueRmat3:\t%v \n"
+	format += "SueRmat4:\t%v \n"
+	format += "SueRmat5:\t%v \n"
+	format += "SueRmat6:\t%v \n"
+	format += "SueRmat7:\t%v \n"
+	format += "SueRmat8:\t%v \n"
+	format += "SueCog:\t%v \n"
+	format += "SueSog:\t%v \n"
+	format += "SueCpuLoad:\t%v \n"
+	format += "SueAirSpeed3DIMU:\t%v \n"
+	format += "SueEstimatedWind0:\t%v \n"
+	format += "SueEstimatedWind1:\t%v \n"
+	format += "SueEstimatedWind2:\t%v \n"
+	format += "SueMagfieldearth0:\t%v \n"
+	format += "SueMagfieldearth1:\t%v \n"
+	format += "SueMagfieldearth2:\t%v \n"
+	format += "SueSvs:\t%v \n"
+	format += "SueHdop:\t%v \n"
+	format += "SueStatus:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

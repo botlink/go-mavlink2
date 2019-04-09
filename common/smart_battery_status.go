@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -58,22 +57,21 @@ type SmartBatteryStatus struct {
 }
 
 func (m *SmartBatteryStatus) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("FaultBitmask:\t%v \n")
-	builder.WriteString("TimeRemaining:\t%v [s]\n")
-	builder.WriteString("ID:\t%v \n")
-	builder.WriteString("CapacityRemaining:\t%v \n")
-	builder.WriteString("Current:\t%v [cA]\n")
-	builder.WriteString("Temperature:\t%v [cdegC]\n")
-	builder.WriteString("CellOffset:\t%v \n")
-	builder.WriteString("Voltages:\t%v [mV]\n")
-	format := builder.String()
+	format += "FaultBitmask:\t%v \n"
+	format += "TimeRemaining:\t%v [s]\n"
+	format += "ID:\t%v \n"
+	format += "CapacityRemaining:\t%v \n"
+	format += "Current:\t%v [cA]\n"
+	format += "Temperature:\t%v [cdegC]\n"
+	format += "CellOffset:\t%v \n"
+	format += "Voltages:\t%v [mV]\n"
 
 	fmt.Fprintf(
 		writer,

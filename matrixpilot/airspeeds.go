@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -56,21 +55,20 @@ type Airspeeds struct {
 }
 
 func (m *Airspeeds) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("TimeBootMs:\t%v \n")
-	builder.WriteString("AirspeedIMU:\t%v \n")
-	builder.WriteString("AirspeedPitot:\t%v \n")
-	builder.WriteString("AirspeedHotWire:\t%v \n")
-	builder.WriteString("AirspeedUltrasonic:\t%v \n")
-	builder.WriteString("Aoa:\t%v \n")
-	builder.WriteString("Aoy:\t%v \n")
-	format := builder.String()
+	format += "TimeBootMs:\t%v \n"
+	format += "AirspeedIMU:\t%v \n"
+	format += "AirspeedPitot:\t%v \n"
+	format += "AirspeedHotWire:\t%v \n"
+	format += "AirspeedUltrasonic:\t%v \n"
+	format += "Aoa:\t%v \n"
+	format += "Aoy:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

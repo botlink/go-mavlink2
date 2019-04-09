@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -56,21 +55,20 @@ type Collision struct {
 }
 
 func (m *Collision) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("ID:\t%v \n")
-	builder.WriteString("TimeToMinIMUmDelta:\t%v [s]\n")
-	builder.WriteString("AltitudeMinIMUmDelta:\t%v [m]\n")
-	builder.WriteString("HorizontalMinIMUmDelta:\t%v [m]\n")
-	builder.WriteString("SRC:\t%v \n")
-	builder.WriteString("Action:\t%v \n")
-	builder.WriteString("ThreatLevel:\t%v \n")
-	format := builder.String()
+	format += "ID:\t%v \n"
+	format += "TimeToMinIMUmDelta:\t%v [s]\n"
+	format += "AltitudeMinIMUmDelta:\t%v [m]\n"
+	format += "HorizontalMinIMUmDelta:\t%v [m]\n"
+	format += "SRC:\t%v \n"
+	format += "Action:\t%v \n"
+	format += "ThreatLevel:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

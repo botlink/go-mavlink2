@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -56,21 +55,20 @@ type PIDTuning struct {
 }
 
 func (m *PIDTuning) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("Desired:\t%v [deg/s]\n")
-	builder.WriteString("Achieved:\t%v [deg/s]\n")
-	builder.WriteString("Ff:\t%v \n")
-	builder.WriteString("P:\t%v \n")
-	builder.WriteString("I:\t%v \n")
-	builder.WriteString("D:\t%v \n")
-	builder.WriteString("Axis:\t%v \n")
-	format := builder.String()
+	format += "Desired:\t%v [deg/s]\n"
+	format += "Achieved:\t%v [deg/s]\n"
+	format += "Ff:\t%v \n"
+	format += "P:\t%v \n"
+	format += "I:\t%v \n"
+	format += "D:\t%v \n"
+	format += "Axis:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

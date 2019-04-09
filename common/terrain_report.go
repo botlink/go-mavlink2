@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -56,21 +55,20 @@ type TerrainReport struct {
 }
 
 func (m *TerrainReport) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("Lat:\t%v [degE7]\n")
-	builder.WriteString("Lon:\t%v [degE7]\n")
-	builder.WriteString("TerrainHeight:\t%v [m]\n")
-	builder.WriteString("CurrentHeight:\t%v [m]\n")
-	builder.WriteString("Spacing:\t%v \n")
-	builder.WriteString("Pending:\t%v \n")
-	builder.WriteString("Loaded:\t%v \n")
-	format := builder.String()
+	format += "Lat:\t%v [degE7]\n"
+	format += "Lon:\t%v [degE7]\n"
+	format += "TerrainHeight:\t%v [m]\n"
+	format += "CurrentHeight:\t%v [m]\n"
+	format += "Spacing:\t%v \n"
+	format += "Pending:\t%v \n"
+	format += "Loaded:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

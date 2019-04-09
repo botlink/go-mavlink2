@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -54,20 +53,19 @@ type ObstacleDistance struct {
 }
 
 func (m *ObstacleDistance) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("TimeUsec:\t%v [us]\n")
-	builder.WriteString("Distances:\t%v [cm]\n")
-	builder.WriteString("MinDistance:\t%v [cm]\n")
-	builder.WriteString("MaxDistance:\t%v [cm]\n")
-	builder.WriteString("SensorType:\t%v \n")
-	builder.WriteString("Increment:\t%v [deg]\n")
-	format := builder.String()
+	format += "TimeUsec:\t%v [us]\n"
+	format += "Distances:\t%v [cm]\n"
+	format += "MinDistance:\t%v [cm]\n"
+	format += "MaxDistance:\t%v [cm]\n"
+	format += "SensorType:\t%v \n"
+	format += "Increment:\t%v [deg]\n"
 
 	fmt.Fprintf(
 		writer,

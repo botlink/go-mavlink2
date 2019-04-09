@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -52,19 +51,18 @@ type SerialUdbExtraF6 struct {
 }
 
 func (m *SerialUdbExtraF6) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("SuePitchgain:\t%v \n")
-	builder.WriteString("SuePitchkd:\t%v \n")
-	builder.WriteString("SueRudderElevMix:\t%v \n")
-	builder.WriteString("SueRollElevMix:\t%v \n")
-	builder.WriteString("SueElevatorBoost:\t%v \n")
-	format := builder.String()
+	format += "SuePitchgain:\t%v \n"
+	format += "SuePitchkd:\t%v \n"
+	format += "SueRudderElevMix:\t%v \n"
+	format += "SueRollElevMix:\t%v \n"
+	format += "SueElevatorBoost:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -66,26 +65,25 @@ type GimbalReport struct {
 }
 
 func (m *GimbalReport) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("DeltaTime:\t%v [s]\n")
-	builder.WriteString("DeltaAngleX:\t%v [rad]\n")
-	builder.WriteString("DeltaAngleY:\t%v [rad]\n")
-	builder.WriteString("DeltaAngleZ:\t%v [rad]\n")
-	builder.WriteString("DeltaVelocityX:\t%v [m/s]\n")
-	builder.WriteString("DeltaVelocityY:\t%v [m/s]\n")
-	builder.WriteString("DeltaVelocityZ:\t%v [m/s]\n")
-	builder.WriteString("JointRoll:\t%v [rad]\n")
-	builder.WriteString("JointEl:\t%v [rad]\n")
-	builder.WriteString("JointAz:\t%v [rad]\n")
-	builder.WriteString("TargetSystem:\t%v \n")
-	builder.WriteString("TargetComponent:\t%v \n")
-	format := builder.String()
+	format += "DeltaTime:\t%v [s]\n"
+	format += "DeltaAngleX:\t%v [rad]\n"
+	format += "DeltaAngleY:\t%v [rad]\n"
+	format += "DeltaAngleZ:\t%v [rad]\n"
+	format += "DeltaVelocityX:\t%v [m/s]\n"
+	format += "DeltaVelocityY:\t%v [m/s]\n"
+	format += "DeltaVelocityZ:\t%v [m/s]\n"
+	format += "JointRoll:\t%v [rad]\n"
+	format += "JointEl:\t%v [rad]\n"
+	format += "JointAz:\t%v [rad]\n"
+	format += "TargetSystem:\t%v \n"
+	format += "TargetComponent:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

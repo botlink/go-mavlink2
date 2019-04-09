@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -58,22 +57,21 @@ type VIDeoStreamStatus struct {
 }
 
 func (m *VIDeoStreamStatus) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("Framerate:\t%v [Hz]\n")
-	builder.WriteString("Bitrate:\t%v [bits/s]\n")
-	builder.WriteString("Flags:\t%v \n")
-	builder.WriteString("ResolutionH:\t%v [pix]\n")
-	builder.WriteString("ResolutionV:\t%v [pix]\n")
-	builder.WriteString("Rotation:\t%v [deg]\n")
-	builder.WriteString("Hfov:\t%v [deg]\n")
-	builder.WriteString("StreamID:\t%v \n")
-	format := builder.String()
+	format += "Framerate:\t%v [Hz]\n"
+	format += "Bitrate:\t%v [bits/s]\n"
+	format += "Flags:\t%v \n"
+	format += "ResolutionH:\t%v [pix]\n"
+	format += "ResolutionV:\t%v [pix]\n"
+	format += "Rotation:\t%v [deg]\n"
+	format += "Hfov:\t%v [deg]\n"
+	format += "StreamID:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

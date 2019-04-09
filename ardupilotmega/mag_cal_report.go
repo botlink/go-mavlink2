@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -76,33 +75,32 @@ type MagCalReport struct {
 }
 
 func (m *MagCalReport) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("Fitness:\t%v [mgauss]\n")
-	builder.WriteString("OfsX:\t%v \n")
-	builder.WriteString("OfsY:\t%v \n")
-	builder.WriteString("OfsZ:\t%v \n")
-	builder.WriteString("DiagX:\t%v \n")
-	builder.WriteString("DiagY:\t%v \n")
-	builder.WriteString("DiagZ:\t%v \n")
-	builder.WriteString("OffdiagX:\t%v \n")
-	builder.WriteString("OffdiagY:\t%v \n")
-	builder.WriteString("OffdiagZ:\t%v \n")
-	builder.WriteString("CompassID:\t%v \n")
-	builder.WriteString("CalMask:\t%v \n")
-	builder.WriteString("CalStatus:\t%v \n")
-	builder.WriteString("Autosaved:\t%v \n")
+	format += "Fitness:\t%v [mgauss]\n"
+	format += "OfsX:\t%v \n"
+	format += "OfsY:\t%v \n"
+	format += "OfsZ:\t%v \n"
+	format += "DiagX:\t%v \n"
+	format += "DiagY:\t%v \n"
+	format += "DiagZ:\t%v \n"
+	format += "OffdiagX:\t%v \n"
+	format += "OffdiagY:\t%v \n"
+	format += "OffdiagZ:\t%v \n"
+	format += "CompassID:\t%v \n"
+	format += "CalMask:\t%v \n"
+	format += "CalStatus:\t%v \n"
+	format += "Autosaved:\t%v \n"
 	if m.HasExtensionFieldValues {
-		builder.WriteString("OrientationConfIDence:\t%v\n")
-		builder.WriteString("OldOrientation:\t%v\n")
-		builder.WriteString("NewOrientation:\t%v\n")
+		format += "OrientationConfIDence:\t%v\n"
+		format += "OldOrientation:\t%v\n"
+		format += "NewOrientation:\t%v\n"
 	}
-	format := builder.String()
 
 	if m.HasExtensionFieldValues {
 		fmt.Fprintf(

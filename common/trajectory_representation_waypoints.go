@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -68,27 +67,26 @@ type TrajectoryRepresentationWaypoints struct {
 }
 
 func (m *TrajectoryRepresentationWaypoints) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("TimeUsec:\t%v [us]\n")
-	builder.WriteString("PosX:\t%v [m]\n")
-	builder.WriteString("PosY:\t%v [m]\n")
-	builder.WriteString("PosZ:\t%v [m]\n")
-	builder.WriteString("VelX:\t%v [m/s]\n")
-	builder.WriteString("VelY:\t%v [m/s]\n")
-	builder.WriteString("VelZ:\t%v [m/s]\n")
-	builder.WriteString("AccX:\t%v [m/s/s]\n")
-	builder.WriteString("AccY:\t%v [m/s/s]\n")
-	builder.WriteString("AccZ:\t%v [m/s/s]\n")
-	builder.WriteString("PosYaw:\t%v [rad]\n")
-	builder.WriteString("VelYaw:\t%v [rad/s]\n")
-	builder.WriteString("ValIDPoints:\t%v \n")
-	format := builder.String()
+	format += "TimeUsec:\t%v [us]\n"
+	format += "PosX:\t%v [m]\n"
+	format += "PosY:\t%v [m]\n"
+	format += "PosZ:\t%v [m]\n"
+	format += "VelX:\t%v [m/s]\n"
+	format += "VelY:\t%v [m/s]\n"
+	format += "VelZ:\t%v [m/s]\n"
+	format += "AccX:\t%v [m/s/s]\n"
+	format += "AccY:\t%v [m/s/s]\n"
+	format += "AccZ:\t%v [m/s/s]\n"
+	format += "PosYaw:\t%v [rad]\n"
+	format += "VelYaw:\t%v [rad/s]\n"
+	format += "ValIDPoints:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

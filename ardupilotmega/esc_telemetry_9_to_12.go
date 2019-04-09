@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -54,20 +53,19 @@ type EscTelemetry9To12 struct {
 }
 
 func (m *EscTelemetry9To12) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("Voltage:\t%v [cV]\n")
-	builder.WriteString("Current:\t%v [cA]\n")
-	builder.WriteString("Totalcurrent:\t%v [mAh]\n")
-	builder.WriteString("Rpm:\t%v [rpm]\n")
-	builder.WriteString("Count:\t%v \n")
-	builder.WriteString("Temperature:\t%v [degC]\n")
-	format := builder.String()
+	format += "Voltage:\t%v [cV]\n"
+	format += "Current:\t%v [cA]\n"
+	format += "Totalcurrent:\t%v [mAh]\n"
+	format += "Rpm:\t%v [rpm]\n"
+	format += "Count:\t%v \n"
+	format += "Temperature:\t%v [degC]\n"
 
 	fmt.Fprintf(
 		writer,

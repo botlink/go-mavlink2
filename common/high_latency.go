@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -90,38 +89,37 @@ type HighLatency struct {
 }
 
 func (m *HighLatency) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("CustomMode:\t%v \n")
-	builder.WriteString("Latitude:\t%v [degE7]\n")
-	builder.WriteString("Longitude:\t%v [degE7]\n")
-	builder.WriteString("Roll:\t%v [cdeg]\n")
-	builder.WriteString("Pitch:\t%v [cdeg]\n")
-	builder.WriteString("Heading:\t%v [cdeg]\n")
-	builder.WriteString("HeadingSp:\t%v [cdeg]\n")
-	builder.WriteString("AltitudeAmsl:\t%v [m]\n")
-	builder.WriteString("AltitudeSp:\t%v [m]\n")
-	builder.WriteString("WpDistance:\t%v [m]\n")
-	builder.WriteString("BaseMode:\t%v \n")
-	builder.WriteString("LandedState:\t%v \n")
-	builder.WriteString("Throttle:\t%v \n")
-	builder.WriteString("Airspeed:\t%v [m/s]\n")
-	builder.WriteString("AirspeedSp:\t%v [m/s]\n")
-	builder.WriteString("Groundspeed:\t%v [m/s]\n")
-	builder.WriteString("ClimbRate:\t%v [m/s]\n")
-	builder.WriteString("GPSNsat:\t%v \n")
-	builder.WriteString("GPSFixType:\t%v \n")
-	builder.WriteString("BatteryRemaining:\t%v \n")
-	builder.WriteString("Temperature:\t%v [degC]\n")
-	builder.WriteString("TemperatureAir:\t%v [degC]\n")
-	builder.WriteString("Failsafe:\t%v \n")
-	builder.WriteString("WpNum:\t%v \n")
-	format := builder.String()
+	format += "CustomMode:\t%v \n"
+	format += "Latitude:\t%v [degE7]\n"
+	format += "Longitude:\t%v [degE7]\n"
+	format += "Roll:\t%v [cdeg]\n"
+	format += "Pitch:\t%v [cdeg]\n"
+	format += "Heading:\t%v [cdeg]\n"
+	format += "HeadingSp:\t%v [cdeg]\n"
+	format += "AltitudeAmsl:\t%v [m]\n"
+	format += "AltitudeSp:\t%v [m]\n"
+	format += "WpDistance:\t%v [m]\n"
+	format += "BaseMode:\t%v \n"
+	format += "LandedState:\t%v \n"
+	format += "Throttle:\t%v \n"
+	format += "Airspeed:\t%v [m/s]\n"
+	format += "AirspeedSp:\t%v [m/s]\n"
+	format += "Groundspeed:\t%v [m/s]\n"
+	format += "ClimbRate:\t%v [m/s]\n"
+	format += "GPSNsat:\t%v \n"
+	format += "GPSFixType:\t%v \n"
+	format += "BatteryRemaining:\t%v \n"
+	format += "Temperature:\t%v [degC]\n"
+	format += "TemperatureAir:\t%v [degC]\n"
+	format += "Failsafe:\t%v \n"
+	format += "WpNum:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

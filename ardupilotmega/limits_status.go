@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -60,23 +59,22 @@ type LimitsStatus struct {
 }
 
 func (m *LimitsStatus) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("LastTrigger:\t%v [ms]\n")
-	builder.WriteString("LastAction:\t%v [ms]\n")
-	builder.WriteString("LastRecovery:\t%v [ms]\n")
-	builder.WriteString("LastClear:\t%v [ms]\n")
-	builder.WriteString("BreachCount:\t%v \n")
-	builder.WriteString("LimitsState:\t%v \n")
-	builder.WriteString("ModsEnabled:\t%v \n")
-	builder.WriteString("ModsRequired:\t%v \n")
-	builder.WriteString("ModsTriggered:\t%v \n")
-	format := builder.String()
+	format += "LastTrigger:\t%v [ms]\n"
+	format += "LastAction:\t%v [ms]\n"
+	format += "LastRecovery:\t%v [ms]\n"
+	format += "LastClear:\t%v [ms]\n"
+	format += "BreachCount:\t%v \n"
+	format += "LimitsState:\t%v \n"
+	format += "ModsEnabled:\t%v \n"
+	format += "ModsRequired:\t%v \n"
+	format += "ModsTriggered:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

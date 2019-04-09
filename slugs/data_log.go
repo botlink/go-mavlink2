@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -54,20 +53,19 @@ type DataLog struct {
 }
 
 func (m *DataLog) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("Fl1:\t%v \n")
-	builder.WriteString("Fl2:\t%v \n")
-	builder.WriteString("Fl3:\t%v \n")
-	builder.WriteString("Fl4:\t%v \n")
-	builder.WriteString("Fl5:\t%v \n")
-	builder.WriteString("Fl6:\t%v \n")
-	format := builder.String()
+	format += "Fl1:\t%v \n"
+	format += "Fl2:\t%v \n"
+	format += "Fl3:\t%v \n"
+	format += "Fl4:\t%v \n"
+	format += "Fl5:\t%v \n"
+	format += "Fl6:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -54,20 +53,19 @@ type FencePoint struct {
 }
 
 func (m *FencePoint) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("Lat:\t%v [deg]\n")
-	builder.WriteString("Lng:\t%v [deg]\n")
-	builder.WriteString("TargetSystem:\t%v \n")
-	builder.WriteString("TargetComponent:\t%v \n")
-	builder.WriteString("IDx:\t%v \n")
-	builder.WriteString("Count:\t%v \n")
-	format := builder.String()
+	format += "Lat:\t%v [deg]\n"
+	format += "Lng:\t%v [deg]\n"
+	format += "TargetSystem:\t%v \n"
+	format += "TargetComponent:\t%v \n"
+	format += "IDx:\t%v \n"
+	format += "Count:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

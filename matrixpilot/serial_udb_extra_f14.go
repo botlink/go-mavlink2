@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -64,25 +63,24 @@ type SerialUdbExtraF14 struct {
 }
 
 func (m *SerialUdbExtraF14) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("SueTrapSouRCe:\t%v \n")
-	builder.WriteString("SueRCon:\t%v \n")
-	builder.WriteString("SueTrapFlags:\t%v \n")
-	builder.WriteString("SueOscFailCount:\t%v \n")
-	builder.WriteString("SueWindEstimation:\t%v \n")
-	builder.WriteString("SueGPSType:\t%v \n")
-	builder.WriteString("SueDr:\t%v \n")
-	builder.WriteString("SueBoardType:\t%v \n")
-	builder.WriteString("SueAirframe:\t%v \n")
-	builder.WriteString("SueClockConfig:\t%v \n")
-	builder.WriteString("SueFlightPlanType:\t%v \n")
-	format := builder.String()
+	format += "SueTrapSouRCe:\t%v \n"
+	format += "SueRCon:\t%v \n"
+	format += "SueTrapFlags:\t%v \n"
+	format += "SueOscFailCount:\t%v \n"
+	format += "SueWindEstimation:\t%v \n"
+	format += "SueGPSType:\t%v \n"
+	format += "SueDr:\t%v \n"
+	format += "SueBoardType:\t%v \n"
+	format += "SueAirframe:\t%v \n"
+	format += "SueClockConfig:\t%v \n"
+	format += "SueFlightPlanType:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

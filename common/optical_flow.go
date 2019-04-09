@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -62,26 +61,25 @@ type OpticalFlow struct {
 }
 
 func (m *OpticalFlow) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("TimeUsec:\t%v [us]\n")
-	builder.WriteString("FlowCompMX:\t%v [m]\n")
-	builder.WriteString("FlowCompMY:\t%v [m]\n")
-	builder.WriteString("GroundDistance:\t%v [m]\n")
-	builder.WriteString("FlowX:\t%v [dpix]\n")
-	builder.WriteString("FlowY:\t%v [dpix]\n")
-	builder.WriteString("SensorID:\t%v \n")
-	builder.WriteString("Quality:\t%v \n")
+	format += "TimeUsec:\t%v [us]\n"
+	format += "FlowCompMX:\t%v [m]\n"
+	format += "FlowCompMY:\t%v [m]\n"
+	format += "GroundDistance:\t%v [m]\n"
+	format += "FlowX:\t%v [dpix]\n"
+	format += "FlowY:\t%v [dpix]\n"
+	format += "SensorID:\t%v \n"
+	format += "Quality:\t%v \n"
 	if m.HasExtensionFieldValues {
-		builder.WriteString("FlowRateX:\t%v\n")
-		builder.WriteString("FlowRateY:\t%v\n")
+		format += "FlowRateX:\t%v\n"
+		format += "FlowRateY:\t%v\n"
 	}
-	format := builder.String()
 
 	if m.HasExtensionFieldValues {
 		fmt.Fprintf(

@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -96,41 +95,40 @@ type HighLatency2 struct {
 }
 
 func (m *HighLatency2) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("Timestamp:\t%v [ms]\n")
-	builder.WriteString("Latitude:\t%v [degE7]\n")
-	builder.WriteString("Longitude:\t%v [degE7]\n")
-	builder.WriteString("CustomMode:\t%v \n")
-	builder.WriteString("Altitude:\t%v [m]\n")
-	builder.WriteString("TargetAltitude:\t%v [m]\n")
-	builder.WriteString("TargetDistance:\t%v [dam]\n")
-	builder.WriteString("WpNum:\t%v \n")
-	builder.WriteString("FailureFlags:\t%v \n")
-	builder.WriteString("Type:\t%v \n")
-	builder.WriteString("Autopilot:\t%v \n")
-	builder.WriteString("Heading:\t%v [deg/2]\n")
-	builder.WriteString("TargetHeading:\t%v [deg/2]\n")
-	builder.WriteString("Throttle:\t%v \n")
-	builder.WriteString("Airspeed:\t%v [m/s*5]\n")
-	builder.WriteString("AirspeedSp:\t%v [m/s*5]\n")
-	builder.WriteString("Groundspeed:\t%v [m/s*5]\n")
-	builder.WriteString("Windspeed:\t%v [m/s*5]\n")
-	builder.WriteString("WindHeading:\t%v [deg/2]\n")
-	builder.WriteString("Eph:\t%v [dm]\n")
-	builder.WriteString("Epv:\t%v [dm]\n")
-	builder.WriteString("TemperatureAir:\t%v [degC]\n")
-	builder.WriteString("ClimbRate:\t%v [dm/s]\n")
-	builder.WriteString("Battery:\t%v \n")
-	builder.WriteString("Custom0:\t%v \n")
-	builder.WriteString("Custom1:\t%v \n")
-	builder.WriteString("Custom2:\t%v \n")
-	format := builder.String()
+	format += "Timestamp:\t%v [ms]\n"
+	format += "Latitude:\t%v [degE7]\n"
+	format += "Longitude:\t%v [degE7]\n"
+	format += "CustomMode:\t%v \n"
+	format += "Altitude:\t%v [m]\n"
+	format += "TargetAltitude:\t%v [m]\n"
+	format += "TargetDistance:\t%v [dam]\n"
+	format += "WpNum:\t%v \n"
+	format += "FailureFlags:\t%v \n"
+	format += "Type:\t%v \n"
+	format += "Autopilot:\t%v \n"
+	format += "Heading:\t%v [deg/2]\n"
+	format += "TargetHeading:\t%v [deg/2]\n"
+	format += "Throttle:\t%v \n"
+	format += "Airspeed:\t%v [m/s*5]\n"
+	format += "AirspeedSp:\t%v [m/s*5]\n"
+	format += "Groundspeed:\t%v [m/s*5]\n"
+	format += "Windspeed:\t%v [m/s*5]\n"
+	format += "WindHeading:\t%v [deg/2]\n"
+	format += "Eph:\t%v [dm]\n"
+	format += "Epv:\t%v [dm]\n"
+	format += "TemperatureAir:\t%v [degC]\n"
+	format += "ClimbRate:\t%v [dm/s]\n"
+	format += "Battery:\t%v \n"
+	format += "Custom0:\t%v \n"
+	format += "Custom1:\t%v \n"
+	format += "Custom2:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

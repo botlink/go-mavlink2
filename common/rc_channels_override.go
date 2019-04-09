@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -82,36 +81,35 @@ type RCChannelsOverrIDe struct {
 }
 
 func (m *RCChannelsOverrIDe) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("Chan1Raw:\t%v [us]\n")
-	builder.WriteString("Chan2Raw:\t%v [us]\n")
-	builder.WriteString("Chan3Raw:\t%v [us]\n")
-	builder.WriteString("Chan4Raw:\t%v [us]\n")
-	builder.WriteString("Chan5Raw:\t%v [us]\n")
-	builder.WriteString("Chan6Raw:\t%v [us]\n")
-	builder.WriteString("Chan7Raw:\t%v [us]\n")
-	builder.WriteString("Chan8Raw:\t%v [us]\n")
-	builder.WriteString("TargetSystem:\t%v \n")
-	builder.WriteString("TargetComponent:\t%v \n")
+	format += "Chan1Raw:\t%v [us]\n"
+	format += "Chan2Raw:\t%v [us]\n"
+	format += "Chan3Raw:\t%v [us]\n"
+	format += "Chan4Raw:\t%v [us]\n"
+	format += "Chan5Raw:\t%v [us]\n"
+	format += "Chan6Raw:\t%v [us]\n"
+	format += "Chan7Raw:\t%v [us]\n"
+	format += "Chan8Raw:\t%v [us]\n"
+	format += "TargetSystem:\t%v \n"
+	format += "TargetComponent:\t%v \n"
 	if m.HasExtensionFieldValues {
-		builder.WriteString("Chan9Raw:\t%v\n")
-		builder.WriteString("Chan10Raw:\t%v\n")
-		builder.WriteString("Chan11Raw:\t%v\n")
-		builder.WriteString("Chan12Raw:\t%v\n")
-		builder.WriteString("Chan13Raw:\t%v\n")
-		builder.WriteString("Chan14Raw:\t%v\n")
-		builder.WriteString("Chan15Raw:\t%v\n")
-		builder.WriteString("Chan16Raw:\t%v\n")
-		builder.WriteString("Chan17Raw:\t%v\n")
-		builder.WriteString("Chan18Raw:\t%v\n")
+		format += "Chan9Raw:\t%v\n"
+		format += "Chan10Raw:\t%v\n"
+		format += "Chan11Raw:\t%v\n"
+		format += "Chan12Raw:\t%v\n"
+		format += "Chan13Raw:\t%v\n"
+		format += "Chan14Raw:\t%v\n"
+		format += "Chan15Raw:\t%v\n"
+		format += "Chan16Raw:\t%v\n"
+		format += "Chan17Raw:\t%v\n"
+		format += "Chan18Raw:\t%v\n"
 	}
-	format := builder.String()
 
 	if m.HasExtensionFieldValues {
 		fmt.Fprintf(

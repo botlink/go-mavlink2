@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -56,21 +55,20 @@ type ManualSetpoint struct {
 }
 
 func (m *ManualSetpoint) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("TimeBootMs:\t%v [ms]\n")
-	builder.WriteString("Roll:\t%v [rad/s]\n")
-	builder.WriteString("Pitch:\t%v [rad/s]\n")
-	builder.WriteString("Yaw:\t%v [rad/s]\n")
-	builder.WriteString("Thrust:\t%v \n")
-	builder.WriteString("ModeSwitch:\t%v \n")
-	builder.WriteString("ManualOverrIDeSwitch:\t%v \n")
-	format := builder.String()
+	format += "TimeBootMs:\t%v [ms]\n"
+	format += "Roll:\t%v [rad/s]\n"
+	format += "Pitch:\t%v [rad/s]\n"
+	format += "Yaw:\t%v [rad/s]\n"
+	format += "Thrust:\t%v \n"
+	format += "ModeSwitch:\t%v \n"
+	format += "ManualOverrIDeSwitch:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

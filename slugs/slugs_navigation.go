@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -62,24 +61,23 @@ type SlugsNAVigation struct {
 }
 
 func (m *SlugsNAVigation) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("UM:\t%v [m/s]\n")
-	builder.WriteString("PhiC:\t%v \n")
-	builder.WriteString("ThetaC:\t%v \n")
-	builder.WriteString("PsIDotC:\t%v \n")
-	builder.WriteString("AyBody:\t%v \n")
-	builder.WriteString("Totaldist:\t%v \n")
-	builder.WriteString("Dist2Go:\t%v \n")
-	builder.WriteString("HC:\t%v [dm]\n")
-	builder.WriteString("Fromwp:\t%v \n")
-	builder.WriteString("Towp:\t%v \n")
-	format := builder.String()
+	format += "UM:\t%v [m/s]\n"
+	format += "PhiC:\t%v \n"
+	format += "ThetaC:\t%v \n"
+	format += "PsIDotC:\t%v \n"
+	format += "AyBody:\t%v \n"
+	format += "Totaldist:\t%v \n"
+	format += "Dist2Go:\t%v \n"
+	format += "HC:\t%v [dm]\n"
+	format += "Fromwp:\t%v \n"
+	format += "Towp:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -70,30 +69,29 @@ type CameraFeedback struct {
 }
 
 func (m *CameraFeedback) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("TimeUsec:\t%v [us]\n")
-	builder.WriteString("Lat:\t%v [degE7]\n")
-	builder.WriteString("Lng:\t%v [degE7]\n")
-	builder.WriteString("AltMsl:\t%v [m]\n")
-	builder.WriteString("AltRel:\t%v [m]\n")
-	builder.WriteString("Roll:\t%v [deg]\n")
-	builder.WriteString("Pitch:\t%v [deg]\n")
-	builder.WriteString("Yaw:\t%v [deg]\n")
-	builder.WriteString("FocLen:\t%v [mm]\n")
-	builder.WriteString("ImgIDx:\t%v \n")
-	builder.WriteString("TargetSystem:\t%v \n")
-	builder.WriteString("CamIDx:\t%v \n")
-	builder.WriteString("Flags:\t%v \n")
+	format += "TimeUsec:\t%v [us]\n"
+	format += "Lat:\t%v [degE7]\n"
+	format += "Lng:\t%v [degE7]\n"
+	format += "AltMsl:\t%v [m]\n"
+	format += "AltRel:\t%v [m]\n"
+	format += "Roll:\t%v [deg]\n"
+	format += "Pitch:\t%v [deg]\n"
+	format += "Yaw:\t%v [deg]\n"
+	format += "FocLen:\t%v [mm]\n"
+	format += "ImgIDx:\t%v \n"
+	format += "TargetSystem:\t%v \n"
+	format += "CamIDx:\t%v \n"
+	format += "Flags:\t%v \n"
 	if m.HasExtensionFieldValues {
-		builder.WriteString("CompletedCaptures:\t%v\n")
+		format += "CompletedCaptures:\t%v\n"
 	}
-	format := builder.String()
 
 	if m.HasExtensionFieldValues {
 		fmt.Fprintf(

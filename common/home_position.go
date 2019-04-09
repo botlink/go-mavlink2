@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -64,27 +63,26 @@ type HomePosition struct {
 }
 
 func (m *HomePosition) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("Latitude:\t%v [degE7]\n")
-	builder.WriteString("Longitude:\t%v [degE7]\n")
-	builder.WriteString("Altitude:\t%v [mm]\n")
-	builder.WriteString("X:\t%v [m]\n")
-	builder.WriteString("Y:\t%v [m]\n")
-	builder.WriteString("Z:\t%v [m]\n")
-	builder.WriteString("Q:\t%v \n")
-	builder.WriteString("ApproachX:\t%v [m]\n")
-	builder.WriteString("ApproachY:\t%v [m]\n")
-	builder.WriteString("ApproachZ:\t%v [m]\n")
+	format += "Latitude:\t%v [degE7]\n"
+	format += "Longitude:\t%v [degE7]\n"
+	format += "Altitude:\t%v [mm]\n"
+	format += "X:\t%v [m]\n"
+	format += "Y:\t%v [m]\n"
+	format += "Z:\t%v [m]\n"
+	format += "Q:\t%v \n"
+	format += "ApproachX:\t%v [m]\n"
+	format += "ApproachY:\t%v [m]\n"
+	format += "ApproachZ:\t%v [m]\n"
 	if m.HasExtensionFieldValues {
-		builder.WriteString("TimeUsec:\t%v\n")
+		format += "TimeUsec:\t%v\n"
 	}
-	format := builder.String()
 
 	if m.HasExtensionFieldValues {
 		fmt.Fprintf(

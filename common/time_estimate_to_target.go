@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -52,19 +51,18 @@ type TimeEstimateToTarget struct {
 }
 
 func (m *TimeEstimateToTarget) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("SafeReturn:\t%v [s]\n")
-	builder.WriteString("Land:\t%v [s]\n")
-	builder.WriteString("MissionNextItem:\t%v [s]\n")
-	builder.WriteString("MissionEnd:\t%v [s]\n")
-	builder.WriteString("CommandedAction:\t%v [s]\n")
-	format := builder.String()
+	format += "SafeReturn:\t%v [s]\n"
+	format += "Land:\t%v [s]\n"
+	format += "MissionNextItem:\t%v [s]\n"
+	format += "MissionEnd:\t%v [s]\n"
+	format += "CommandedAction:\t%v [s]\n"
 
 	fmt.Fprintf(
 		writer,

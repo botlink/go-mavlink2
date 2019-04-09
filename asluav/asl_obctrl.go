@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -58,22 +57,21 @@ type AslObctrl struct {
 }
 
 func (m *AslObctrl) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("Timestamp:\t%v [us]\n")
-	builder.WriteString("Uelev:\t%v \n")
-	builder.WriteString("Uthrot:\t%v \n")
-	builder.WriteString("Uthrot2:\t%v \n")
-	builder.WriteString("Uaill:\t%v \n")
-	builder.WriteString("Uailr:\t%v \n")
-	builder.WriteString("Urud:\t%v \n")
-	builder.WriteString("ObctrlStatus:\t%v \n")
-	format := builder.String()
+	format += "Timestamp:\t%v [us]\n"
+	format += "Uelev:\t%v \n"
+	format += "Uthrot:\t%v \n"
+	format += "Uthrot2:\t%v \n"
+	format += "Uaill:\t%v \n"
+	format += "Uailr:\t%v \n"
+	format += "Urud:\t%v \n"
+	format += "ObctrlStatus:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

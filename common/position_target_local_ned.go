@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -70,28 +69,27 @@ type PositionTargetLocalNed struct {
 }
 
 func (m *PositionTargetLocalNed) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("TimeBootMs:\t%v [ms]\n")
-	builder.WriteString("X:\t%v [m]\n")
-	builder.WriteString("Y:\t%v [m]\n")
-	builder.WriteString("Z:\t%v [m]\n")
-	builder.WriteString("Vx:\t%v [m/s]\n")
-	builder.WriteString("Vy:\t%v [m/s]\n")
-	builder.WriteString("Vz:\t%v [m/s]\n")
-	builder.WriteString("Afx:\t%v [m/s/s]\n")
-	builder.WriteString("Afy:\t%v [m/s/s]\n")
-	builder.WriteString("Afz:\t%v [m/s/s]\n")
-	builder.WriteString("Yaw:\t%v [rad]\n")
-	builder.WriteString("YawRate:\t%v [rad/s]\n")
-	builder.WriteString("TypeMask:\t%v \n")
-	builder.WriteString("CoordinateFrame:\t%v \n")
-	format := builder.String()
+	format += "TimeBootMs:\t%v [ms]\n"
+	format += "X:\t%v [m]\n"
+	format += "Y:\t%v [m]\n"
+	format += "Z:\t%v [m]\n"
+	format += "Vx:\t%v [m/s]\n"
+	format += "Vy:\t%v [m/s]\n"
+	format += "Vz:\t%v [m/s]\n"
+	format += "Afx:\t%v [m/s/s]\n"
+	format += "Afy:\t%v [m/s/s]\n"
+	format += "Afz:\t%v [m/s/s]\n"
+	format += "Yaw:\t%v [rad]\n"
+	format += "YawRate:\t%v [rad/s]\n"
+	format += "TypeMask:\t%v \n"
+	format += "CoordinateFrame:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -66,28 +65,27 @@ type AutopilotVersion struct {
 }
 
 func (m *AutopilotVersion) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("Capabilities:\t%v \n")
-	builder.WriteString("UID:\t%v \n")
-	builder.WriteString("FlightSwVersion:\t%v \n")
-	builder.WriteString("MIDdlewareSwVersion:\t%v \n")
-	builder.WriteString("OsSwVersion:\t%v \n")
-	builder.WriteString("BoardVersion:\t%v \n")
-	builder.WriteString("VendorID:\t%v \n")
-	builder.WriteString("ProductID:\t%v \n")
-	builder.WriteString("FlightCustomVersion:\t%v \n")
-	builder.WriteString("MIDdlewareCustomVersion:\t%v \n")
-	builder.WriteString("OsCustomVersion:\t%v \n")
+	format += "Capabilities:\t%v \n"
+	format += "UID:\t%v \n"
+	format += "FlightSwVersion:\t%v \n"
+	format += "MIDdlewareSwVersion:\t%v \n"
+	format += "OsSwVersion:\t%v \n"
+	format += "BoardVersion:\t%v \n"
+	format += "VendorID:\t%v \n"
+	format += "ProductID:\t%v \n"
+	format += "FlightCustomVersion:\t%v \n"
+	format += "MIDdlewareCustomVersion:\t%v \n"
+	format += "OsCustomVersion:\t%v \n"
 	if m.HasExtensionFieldValues {
-		builder.WriteString("UID2:\t%v\n")
+		format += "UID2:\t%v\n"
 	}
-	format := builder.String()
 
 	if m.HasExtensionFieldValues {
 		fmt.Fprintf(

@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -66,26 +65,25 @@ type GPSDateTime struct {
 }
 
 func (m *GPSDateTime) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("Year:\t%v \n")
-	builder.WriteString("Month:\t%v \n")
-	builder.WriteString("Day:\t%v \n")
-	builder.WriteString("Hour:\t%v \n")
-	builder.WriteString("Min:\t%v \n")
-	builder.WriteString("Sec:\t%v \n")
-	builder.WriteString("Clockstat:\t%v \n")
-	builder.WriteString("Vissat:\t%v \n")
-	builder.WriteString("Usesat:\t%v \n")
-	builder.WriteString("Gppgl:\t%v \n")
-	builder.WriteString("Sigusedmask:\t%v \n")
-	builder.WriteString("PeRCentused:\t%v \n")
-	format := builder.String()
+	format += "Year:\t%v \n"
+	format += "Month:\t%v \n"
+	format += "Day:\t%v \n"
+	format += "Hour:\t%v \n"
+	format += "Min:\t%v \n"
+	format += "Sec:\t%v \n"
+	format += "Clockstat:\t%v \n"
+	format += "Vissat:\t%v \n"
+	format += "Usesat:\t%v \n"
+	format += "Gppgl:\t%v \n"
+	format += "Sigusedmask:\t%v \n"
+	format += "PeRCentused:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

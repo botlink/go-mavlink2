@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -56,21 +55,20 @@ type NovatelDiag struct {
 }
 
 func (m *NovatelDiag) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("Receiverstatus:\t%v \n")
-	builder.WriteString("Possolage:\t%v [s]\n")
-	builder.WriteString("Csfails:\t%v \n")
-	builder.WriteString("Timestatus:\t%v \n")
-	builder.WriteString("Solstatus:\t%v \n")
-	builder.WriteString("Postype:\t%v \n")
-	builder.WriteString("Veltype:\t%v \n")
-	format := builder.String()
+	format += "Receiverstatus:\t%v \n"
+	format += "Possolage:\t%v [s]\n"
+	format += "Csfails:\t%v \n"
+	format += "Timestatus:\t%v \n"
+	format += "Solstatus:\t%v \n"
+	format += "Postype:\t%v \n"
+	format += "Veltype:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

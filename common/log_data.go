@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -50,18 +49,17 @@ type LogData struct {
 }
 
 func (m *LogData) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("Ofs:\t%v \n")
-	builder.WriteString("ID:\t%v \n")
-	builder.WriteString("Count:\t%v [bytes]\n")
-	builder.WriteString("Data:\t%v \n")
-	format := builder.String()
+	format += "Ofs:\t%v \n"
+	format += "ID:\t%v \n"
+	format += "Count:\t%v [bytes]\n"
+	format += "Data:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

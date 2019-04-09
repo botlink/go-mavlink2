@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -66,26 +65,25 @@ type OpticalFlowRad struct {
 }
 
 func (m *OpticalFlowRad) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("TimeUsec:\t%v [us]\n")
-	builder.WriteString("IntegrationTimeUs:\t%v [us]\n")
-	builder.WriteString("IntegratedX:\t%v [rad]\n")
-	builder.WriteString("IntegratedY:\t%v [rad]\n")
-	builder.WriteString("IntegratedXgyro:\t%v [rad]\n")
-	builder.WriteString("IntegratedYgyro:\t%v [rad]\n")
-	builder.WriteString("IntegratedZgyro:\t%v [rad]\n")
-	builder.WriteString("TimeDeltaDistanceUs:\t%v [us]\n")
-	builder.WriteString("Distance:\t%v [m]\n")
-	builder.WriteString("Temperature:\t%v [cdegC]\n")
-	builder.WriteString("SensorID:\t%v \n")
-	builder.WriteString("Quality:\t%v \n")
-	format := builder.String()
+	format += "TimeUsec:\t%v [us]\n"
+	format += "IntegrationTimeUs:\t%v [us]\n"
+	format += "IntegratedX:\t%v [rad]\n"
+	format += "IntegratedY:\t%v [rad]\n"
+	format += "IntegratedXgyro:\t%v [rad]\n"
+	format += "IntegratedYgyro:\t%v [rad]\n"
+	format += "IntegratedZgyro:\t%v [rad]\n"
+	format += "TimeDeltaDistanceUs:\t%v [us]\n"
+	format += "Distance:\t%v [m]\n"
+	format += "Temperature:\t%v [cdegC]\n"
+	format += "SensorID:\t%v \n"
+	format += "Quality:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

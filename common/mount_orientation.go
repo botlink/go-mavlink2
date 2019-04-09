@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -52,21 +51,20 @@ type MountOrientation struct {
 }
 
 func (m *MountOrientation) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("TimeBootMs:\t%v [ms]\n")
-	builder.WriteString("Roll:\t%v [deg]\n")
-	builder.WriteString("Pitch:\t%v [deg]\n")
-	builder.WriteString("Yaw:\t%v [deg]\n")
+	format += "TimeBootMs:\t%v [ms]\n"
+	format += "Roll:\t%v [deg]\n"
+	format += "Pitch:\t%v [deg]\n"
+	format += "Yaw:\t%v [deg]\n"
 	if m.HasExtensionFieldValues {
-		builder.WriteString("YawAbsolute:\t%v\n")
+		format += "YawAbsolute:\t%v\n"
 	}
-	format := builder.String()
 
 	if m.HasExtensionFieldValues {
 		fmt.Fprintf(

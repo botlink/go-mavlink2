@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -60,23 +59,22 @@ type MagCalProgress struct {
 }
 
 func (m *MagCalProgress) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("DirectionX:\t%v \n")
-	builder.WriteString("DirectionY:\t%v \n")
-	builder.WriteString("DirectionZ:\t%v \n")
-	builder.WriteString("CompassID:\t%v \n")
-	builder.WriteString("CalMask:\t%v \n")
-	builder.WriteString("CalStatus:\t%v \n")
-	builder.WriteString("Attempt:\t%v \n")
-	builder.WriteString("CompletionPct:\t%v \n")
-	builder.WriteString("CompletionMask:\t%v \n")
-	format := builder.String()
+	format += "DirectionX:\t%v \n"
+	format += "DirectionY:\t%v \n"
+	format += "DirectionZ:\t%v \n"
+	format += "CompassID:\t%v \n"
+	format += "CalMask:\t%v \n"
+	format += "CalStatus:\t%v \n"
+	format += "Attempt:\t%v \n"
+	format += "CompletionPct:\t%v \n"
+	format += "CompletionMask:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

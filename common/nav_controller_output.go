@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -58,22 +57,21 @@ type NAVControllerOutput struct {
 }
 
 func (m *NAVControllerOutput) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("NAVRoll:\t%v [deg]\n")
-	builder.WriteString("NAVPitch:\t%v [deg]\n")
-	builder.WriteString("AltError:\t%v [m]\n")
-	builder.WriteString("AspdError:\t%v [m/s]\n")
-	builder.WriteString("XtrackError:\t%v [m]\n")
-	builder.WriteString("NAVBearing:\t%v [deg]\n")
-	builder.WriteString("TargetBearing:\t%v [deg]\n")
-	builder.WriteString("WpDist:\t%v [m]\n")
-	format := builder.String()
+	format += "NAVRoll:\t%v [deg]\n"
+	format += "NAVPitch:\t%v [deg]\n"
+	format += "AltError:\t%v [m]\n"
+	format += "AspdError:\t%v [m/s]\n"
+	format += "XtrackError:\t%v [m]\n"
+	format += "NAVBearing:\t%v [deg]\n"
+	format += "TargetBearing:\t%v [deg]\n"
+	format += "WpDist:\t%v [m]\n"
 
 	fmt.Fprintf(
 		writer,

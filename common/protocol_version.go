@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -52,19 +51,18 @@ type ProtocolVersion struct {
 }
 
 func (m *ProtocolVersion) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("Version:\t%v \n")
-	builder.WriteString("MinVersion:\t%v \n")
-	builder.WriteString("MaxVersion:\t%v \n")
-	builder.WriteString("SpecVersionHash:\t%v \n")
-	builder.WriteString("LibraryVersionHash:\t%v \n")
-	format := builder.String()
+	format += "Version:\t%v \n"
+	format += "MinVersion:\t%v \n"
+	format += "MaxVersion:\t%v \n"
+	format += "SpecVersionHash:\t%v \n"
+	format += "LibraryVersionHash:\t%v \n"
 
 	fmt.Fprintf(
 		writer,

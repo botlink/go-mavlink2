@@ -28,7 +28,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"strings"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -64,25 +63,24 @@ type CommandLong struct {
 }
 
 func (m *CommandLong) String() string {
-	var builder strings.Builder
+	format := ""
 	var buffer bytes.Buffer
 
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
-	builder.WriteString("Name:\t%v/%v\n")
+	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	builder.WriteString("Param1:\t%v \n")
-	builder.WriteString("Param2:\t%v \n")
-	builder.WriteString("Param3:\t%v \n")
-	builder.WriteString("Param4:\t%v \n")
-	builder.WriteString("Param5:\t%v \n")
-	builder.WriteString("Param6:\t%v \n")
-	builder.WriteString("Param7:\t%v \n")
-	builder.WriteString("Command:\t%v \n")
-	builder.WriteString("TargetSystem:\t%v \n")
-	builder.WriteString("TargetComponent:\t%v \n")
-	builder.WriteString("Confirmation:\t%v \n")
-	format := builder.String()
+	format += "Param1:\t%v \n"
+	format += "Param2:\t%v \n"
+	format += "Param3:\t%v \n"
+	format += "Param4:\t%v \n"
+	format += "Param5:\t%v \n"
+	format += "Param6:\t%v \n"
+	format += "Param7:\t%v \n"
+	format += "Command:\t%v \n"
+	format += "TargetSystem:\t%v \n"
+	format += "TargetComponent:\t%v \n"
+	format += "Confirmation:\t%v \n"
 
 	fmt.Fprintf(
 		writer,
