@@ -42,14 +42,14 @@ type Frame interface {
 	GetMessageID() uint32
 	GetChecksum() uint16
 	GetChecksumInput() []byte
-	GetBytes() []byte
+	Bytes() []byte
 }
 
 // FrameV1 represents a MAVLink V1 Frame
 type FrameV1 []byte
 
 // GetBytes returns the Frame as a byte array
-func (frame FrameV1) GetBytes() []byte {
+func (frame FrameV1) Bytes() []byte {
 	return frame
 }
 
@@ -120,7 +120,7 @@ func (frame FrameV1) String() string {
 type FrameV2 []byte
 
 // GetBytes returns the Frame as a byte array
-func (frame FrameV2) GetBytes() []byte {
+func (frame FrameV2) Bytes() []byte {
 	return frame
 }
 
