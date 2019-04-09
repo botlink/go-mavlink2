@@ -26,7 +26,7 @@ IN THE GENERATED SOFTWARE.
 
 import (
 	"bufio"
-	"fmt"
+	"encoding/binary"
 	"io"
 )
 
@@ -39,24 +39,28 @@ const V1StartByte = 0xfe
 // CompatibilityFlagSignature is the flag indicating that a V2 Frame is signed
 const CompatibilityFlagSignature = 0x01
 
-// MAVLinkStream represents a stream of MAVLink Frames
-type MAVLinkStream struct {
-	Version  int
-	Dialects Dialects
-	Frames   chan Frame
-	Messages chan Message
+// FrameParser represents a function that takes a Frame as input and returns a Message
+type FrameParser func(Frame) (Message, error)
+
+// MAVLinkFrameStream represents a stream of MAVLink Frames
+type MAVLinkFrameStream struct {
+	Frames chan Frame
+	Errors chan error
 }
 
 // Run consumes the MAVLink stream from the underlying Reader
-func (s *MAVLinkStream) Run(stream io.Reader) {
-	// Read Frames & Messages
+func (s *MAVLinkFrameStream) Run(readStream io.Reader, writeStream *io.Writer) {
+	// Read Frames
 	go func() {
-		reader := bufio.NewReader(stream)
+		reader := bufio.NewReader(readStream)
 		for {
 			frame, err := readFrame(reader)
 
 			if err != nil {
-				fmt.Println(err)
+				select {
+				case s.Errors <- err:
+				default:
+				}
 				continue
 			}
 
@@ -64,27 +68,29 @@ func (s *MAVLinkStream) Run(stream io.Reader) {
 			case s.Frames <- frame:
 			default:
 			}
-
-			err = s.Dialects.Validate(frame)
-
-			if err != nil && err != ErrUnknownMessage {
-				fmt.Println(err)
-				continue
-			}
-
-			message, err := s.Dialects.GetMessage(frame)
-
-			if err != nil && err != ErrUnknownMessage {
-				fmt.Println(err)
-				continue
-			}
-
-			select {
-			case s.Messages <- message:
-			default:
-			}
 		}
 	}()
+
+	if writeStream != nil {
+		// Write Frames
+		go func() {
+			writer := *writeStream
+
+			for {
+				select {
+				case frame := <-s.Frames:
+					_, err := writer.Write(frame.Bytes())
+					if err != nil {
+						select {
+						case s.Errors <- err:
+						default:
+						}
+					}
+				default:
+				}
+			}
+		}()
+	}
 }
 
 func peekHeader(reader *bufio.Reader) (frameLength uint16, err error) {
@@ -141,5 +147,81 @@ func readFrame(reader *bufio.Reader) (frame Frame, err error) {
 	return
 }
 
-// FrameParser represents a function that takes a Frame as input and returns a Message
-type FrameParser func(Frame) (Message, error)
+func packFrame(version int, senderSystemID, senderComponentID, messageSequence uint8, message Message, meta MessageMeta) (frame Frame, err error) {
+	// Make sure the version matches correctly
+	if version != 1 && version != 2 {
+		err = ErrUnsupportedVersion
+		return
+	}
+
+	var frameBytes []byte
+	var messageBytes []byte
+
+	messageBytes, err = message.Write(version)
+
+	if err != nil {
+		return
+	}
+
+	x25 := X25CRC{}
+	x25.Reset()
+
+	if version == 1 {
+		frameBytes = make([]byte, len(messageBytes)+8)
+		frameBytes[0] = V1StartByte
+		frameBytes[1] = uint8(len(messageBytes))
+		frameBytes[2] = senderSystemID
+		frameBytes[3] = senderComponentID
+		frameBytes[4] = messageSequence
+
+		idBytes := make([]byte, 4)
+		binary.LittleEndian.PutUint32(idBytes, message.GetID())
+
+		frameBytes[5] = idBytes[0]
+		copy(frameBytes[6:], messageBytes)
+
+		_, err = x25.Write(frameBytes[1:])
+
+		if err != nil {
+			return
+		}
+
+		crc := x25.Sum(nil)
+
+		frameBytes = append(frameBytes, crc...)
+
+		frame = FrameV1(frameBytes)
+	}
+
+	if version == 2 {
+		frameBytes = make([]byte, len(messageBytes)+12)
+		frameBytes[0] = V2StartByte
+		frameBytes[1] = uint8(len(messageBytes))
+		// Compatibility and incompatibility flags (bytes 2 & 3) not currently supported
+		frameBytes[4] = senderSystemID
+		frameBytes[5] = senderComponentID
+		frameBytes[6] = messageSequence
+
+		idBytes := make([]byte, 4)
+		binary.LittleEndian.PutUint32(idBytes, message.GetID())
+
+		copy(frameBytes[7:10], idBytes[:3])
+		copy(frameBytes[10:], messageBytes)
+
+		x25.Write(frameBytes[1:])
+
+		_, err = x25.Write(frameBytes[1:])
+
+		if err != nil {
+			return
+		}
+
+		crc := x25.Sum(nil)
+
+		frameBytes = append(frameBytes, crc...)
+
+		frame = FrameV2(frameBytes)
+	}
+
+	return
+}
