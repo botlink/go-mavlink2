@@ -55,7 +55,7 @@ type ServoOutputRaw struct {
 	Servo7Raw uint16
 	/*Servo8Raw Servo output 8 value */
 	Servo8Raw uint16
-	/*Port Servo output port (set of 8 outputs = 1 port). Most MAVs will just use one, but this allows to encode more than 8 servos. */
+	/*Port Servo output port (set of 8 outputs = 1 port). Flight stacks running on Pixhawk should use: 0 = MAIN, 1 = AUX. */
 	Port uint8
 	/*Servo9Raw Servo output 9 value */
 	Servo9Raw uint16

@@ -55,9 +55,9 @@ type RCChannelsRaw struct {
 	Chan7Raw uint16
 	/*Chan8Raw RC channel 8 value. */
 	Chan8Raw uint16
-	/*Port Servo output port (set of 8 outputs = 1 port). Most MAVs will just use one, but this allows for more than 8 servos. */
+	/*Port Servo output port (set of 8 outputs = 1 port). Flight stacks running on Pixhawk should use: 0 = MAIN, 1 = AUX. */
 	Port uint8
-	/*RSSI Receive signal strength indicator. Values: [0-100], 255: invalid/unknown. */
+	/*RSSI Receive signal strength indicator in device-dependent units/scale. Values: [0-254], 255: invalid/unknown. */
 	RSSI uint8
 	/*HasExtensionFieldValues indicates if this message has any extensions and  */
 	HasExtensionFieldValues bool

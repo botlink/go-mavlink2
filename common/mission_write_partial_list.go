@@ -37,7 +37,7 @@ import (
 
 /*MissionWritePartialList This message is sent to the MAV to write a partial list. If start index == end index, only one item will be transmitted / updated. If the start index is NOT 0 and above the current list size, this request should be REJECTED! */
 type MissionWritePartialList struct {
-	/*StartIndex Start index, 0 by default and smaller / equal to the largest index of the current onboard list. */
+	/*StartIndex Start index. Must be smaller / equal to the largest index of the current onboard list. */
 	StartIndex int16
 	/*EndIndex End index, equal or greater than start index. */
 	EndIndex int16

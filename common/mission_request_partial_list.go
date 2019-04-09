@@ -35,9 +35,9 @@ import (
 	"github.com/queue-b/go-mavlink2/util"
 )
 
-/*MissionRequestPartialList Request a partial list of mission items from the system/component. https://mavlink.io/en/protocol/mission.html. If start and end index are the same, just send one waypoint. */
+/*MissionRequestPartialList Request a partial list of mission items from the system/component. https://mavlink.io/en/services/mission.html. If start and end index are the same, just send one waypoint. */
 type MissionRequestPartialList struct {
-	/*StartIndex Start index, 0 by default */
+	/*StartIndex Start index */
 	StartIndex int16
 	/*EndIndex End index, -1 by default (-1: send list to end). Else a valid index of the list */
 	EndIndex int16

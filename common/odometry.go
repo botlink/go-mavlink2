@@ -59,14 +59,16 @@ type Odometry struct {
 	Pitchspeed float32
 	/*Yawspeed Yaw angular speed */
 	Yawspeed float32
-	/*PoseCovariance Pose (states: x, y, z, roll, pitch, yaw) covariance matrix upper right triangle (first six entries are the first ROW, next five entries are the second ROW, etc.) */
+	/*PoseCovariance Row-major representation of a 6x6 pose cross-covariance matrix upper right triangle (states: x, y, z, roll, pitch, yaw; first six entries are the first ROW, next five entries are the second ROW, etc.). If unknown, assign NaN value to first element in the array. */
 	PoseCovariance [21]float32
-	/*TwistCovariance Twist (states: vx, vy, vz, rollspeed, pitchspeed, yawspeed) covariance matrix upper right triangle (first six entries are the first ROW, next five entries are the second ROW, etc.) */
-	TwistCovariance [21]float32
+	/*VelocityCovariance Row-major representation of a 6x6 velocity cross-covariance matrix upper right triangle (states: vx, vy, vz, rollspeed, pitchspeed, yawspeed; first six entries are the first ROW, next five entries are the second ROW, etc.). If unknown, assign NaN value to first element in the array. */
+	VelocityCovariance [21]float32
 	/*FrameID Coordinate frame of reference for the pose data. */
 	FrameID uint8
 	/*ChildFrameID Coordinate frame of reference for the velocity in free space (twist) data. */
 	ChildFrameID uint8
+	/*ResetCounter Estimate reset counter. This should be incremented when the estimate resets in any of the dimensions (position, velocity, attitude, angular speed). This is designed to be used when e.g an external SLAM system detects a loop-closure and the estimate jumps. */
+	ResetCounter uint8
 	/*HasExtensionFieldValues indicates if this message has any extensions and  */
 	HasExtensionFieldValues bool
 }
@@ -91,10 +93,41 @@ func (m *Odometry) String() string {
 	builder.WriteString("Pitchspeed:\t%v [rad/s]\n")
 	builder.WriteString("Yawspeed:\t%v [rad/s]\n")
 	builder.WriteString("PoseCovariance:\t%v \n")
-	builder.WriteString("TwistCovariance:\t%v \n")
+	builder.WriteString("VelocityCovariance:\t%v \n")
 	builder.WriteString("FrameID:\t%v \n")
 	builder.WriteString("ChildFrameID:\t%v \n")
+	if m.HasExtensionFieldValues {
+		builder.WriteString("ResetCounter:\t%v\n")
+	}
 	format := builder.String()
+
+	if m.HasExtensionFieldValues {
+		fmt.Fprintf(
+			writer,
+			format,
+			m.GetDialect(),
+			m.GetMessageName(),
+			m.TimeUsec,
+			m.X,
+			m.Y,
+			m.Z,
+			m.Q,
+			m.Vx,
+			m.Vy,
+			m.Vz,
+			m.Rollspeed,
+			m.Pitchspeed,
+			m.Yawspeed,
+			m.PoseCovariance,
+			m.VelocityCovariance,
+			m.FrameID,
+			m.ChildFrameID,
+			m.ResetCounter,
+		)
+
+		writer.Flush()
+		return string(buffer.Bytes())
+	}
 
 	fmt.Fprintf(
 		writer,
@@ -113,7 +146,7 @@ func (m *Odometry) String() string {
 		m.Pitchspeed,
 		m.Yawspeed,
 		m.PoseCovariance,
-		m.TwistCovariance,
+		m.VelocityCovariance,
 		m.FrameID,
 		m.ChildFrameID,
 	)
@@ -148,7 +181,7 @@ func (m *Odometry) GetID() uint32 {
 
 // HasExtensionFields returns true if the message definition contained extensions; false otherwise
 func (m *Odometry) HasExtensionFields() bool {
-	return false
+	return true
 }
 
 func (m *Odometry) getV1Length() int {
@@ -156,7 +189,7 @@ func (m *Odometry) getV1Length() int {
 }
 
 func (m *Odometry) getIOSlice() []byte {
-	return make([]byte, 230+1)
+	return make([]byte, 231+1)
 }
 
 // Read sets the field values of the message from the raw message payload

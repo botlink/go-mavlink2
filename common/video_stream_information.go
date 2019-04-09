@@ -38,22 +38,30 @@ import (
 
 /*VIDeoStreamInformation Information about video stream */
 type VIDeoStreamInformation struct {
-	/*Framerate Frame rate */
+	/*Framerate Frame rate. */
 	Framerate float32
-	/*Bitrate Bit rate in bits per second */
+	/*Bitrate Bit rate. */
 	Bitrate uint32
-	/*ResolutionH Horizontal resolution */
+	/*Flags Bitmap of stream status flags. */
+	Flags uint16
+	/*ResolutionH Horizontal resolution. */
 	ResolutionH uint16
-	/*ResolutionV Vertical resolution */
+	/*ResolutionV Vertical resolution. */
 	ResolutionV uint16
-	/*Rotation Video image rotation clockwise */
+	/*Rotation Video image rotation clockwise. */
 	Rotation uint16
-	/*CameraID Camera ID (1 for first, 2 for second, etc.) */
-	CameraID uint8
-	/*Status Current status of video streaming (0: not running, 1: in progress) */
-	Status uint8
-	/*URI Video stream URI */
-	URI [230]byte
+	/*Hfov Horizontal Field of view. */
+	Hfov uint16
+	/*StreamID Video Stream ID (1 for first, 2 for second, etc.) */
+	StreamID uint8
+	/*Count Number of streams available. */
+	Count uint8
+	/*Type Type of stream. */
+	Type uint8
+	/*Name Stream name. */
+	Name [32]byte
+	/*URI Video stream URI (TCP or RTSP URI ground station should connect to) or port number (UDP port ground station should listen to). */
+	URI [160]byte
 	/*HasExtensionFieldValues indicates if this message has any extensions and  */
 	HasExtensionFieldValues bool
 }
@@ -68,11 +76,15 @@ func (m *VIDeoStreamInformation) String() string {
 	// Output field values based on the decoded message type
 	builder.WriteString("Framerate:\t%v [Hz]\n")
 	builder.WriteString("Bitrate:\t%v [bits/s]\n")
+	builder.WriteString("Flags:\t%v \n")
 	builder.WriteString("ResolutionH:\t%v [pix]\n")
 	builder.WriteString("ResolutionV:\t%v [pix]\n")
 	builder.WriteString("Rotation:\t%v [deg]\n")
-	builder.WriteString("CameraID:\t%v \n")
-	builder.WriteString("Status:\t%v \n")
+	builder.WriteString("Hfov:\t%v [deg]\n")
+	builder.WriteString("StreamID:\t%v \n")
+	builder.WriteString("Count:\t%v \n")
+	builder.WriteString("Type:\t%v \n")
+	builder.WriteString("Name:\t%v \n")
 	builder.WriteString("URI:\t%v \n")
 	format := builder.String()
 
@@ -83,11 +95,15 @@ func (m *VIDeoStreamInformation) String() string {
 		m.GetMessageName(),
 		m.Framerate,
 		m.Bitrate,
+		m.Flags,
 		m.ResolutionH,
 		m.ResolutionV,
 		m.Rotation,
-		m.CameraID,
-		m.Status,
+		m.Hfov,
+		m.StreamID,
+		m.Count,
+		m.Type,
+		m.Name,
 		m.URI,
 	)
 
@@ -95,12 +111,31 @@ func (m *VIDeoStreamInformation) String() string {
 	return string(buffer.Bytes())
 }
 
+// SetName encodes the input string to the Name array
+func (m *VIDeoStreamInformation) SetName(input string) (err error) {
+	clen := int(math.Min(float64(len(input)), float64(32)))
+	copy(m.Name[:], []byte(input)[:clen])
+
+	if len(input) > 32 {
+		err = mavlink2.ErrStringTooLong
+	}
+
+	return
+}
+
+// GetName decodes the null-terminated string in the Name
+func (m *VIDeoStreamInformation) GetName() string {
+	clen := util.CStrLen(m.Name[:])
+
+	return string(m.Name[:clen])
+}
+
 // SetURI encodes the input string to the URI array
 func (m *VIDeoStreamInformation) SetURI(input string) (err error) {
-	clen := int(math.Min(float64(len(input)), float64(230)))
+	clen := int(math.Min(float64(len(input)), float64(160)))
 	copy(m.URI[:], []byte(input)[:clen])
 
-	if len(input) > 230 {
+	if len(input) > 160 {
 		err = mavlink2.ErrStringTooLong
 	}
 
@@ -144,11 +179,11 @@ func (m *VIDeoStreamInformation) HasExtensionFields() bool {
 }
 
 func (m *VIDeoStreamInformation) getV1Length() int {
-	return 246
+	return 213
 }
 
 func (m *VIDeoStreamInformation) getIOSlice() []byte {
-	return make([]byte, 246+1)
+	return make([]byte, 213+1)
 }
 
 // Read sets the field values of the message from the raw message payload

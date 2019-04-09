@@ -53,7 +53,7 @@ type GlobalPositionIntCov struct {
 	Vy float32
 	/*Vz Ground Z Speed (Altitude) */
 	Vz float32
-	/*Covariance Covariance matrix (first six entries are the first ROW, next six entries are the second row, etc.) */
+	/*Covariance Row-major representation of a 6x6 position and velocity 6x6 cross-covariance matrix (states: lat, lon, alt, vx, vy, vz; first six entries are the first ROW, next six entries are the second row, etc.). If unknown, assign NaN value to first element in the array. */
 	Covariance [36]float32
 	/*EstimatorType Class id of the estimator this estimate originated from. */
 	EstimatorType uint8

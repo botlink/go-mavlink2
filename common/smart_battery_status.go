@@ -68,7 +68,7 @@ func (m *SmartBatteryStatus) String() string {
 	builder.WriteString("FaultBitmask:\t%v \n")
 	builder.WriteString("TimeRemaining:\t%v [s]\n")
 	builder.WriteString("ID:\t%v \n")
-	builder.WriteString("CapacityRemaining:\t%v [%]\n")
+	builder.WriteString("CapacityRemaining:\t%v \n")
 	builder.WriteString("Current:\t%v [cA]\n")
 	builder.WriteString("Temperature:\t%v [cdegC]\n")
 	builder.WriteString("CellOffset:\t%v \n")

@@ -35,7 +35,7 @@ import (
 	"github.com/queue-b/go-mavlink2/util"
 )
 
-/*BatteryStatus Battery information */
+/*BatteryStatus Battery information. Updates GCS with flight controller battery status. Use SMART_BATTERY_* messages instead for smart batteries. */
 type BatteryStatus struct {
 	/*CurrentConsumed Consumed charge, -1: autopilot does not provide consumption estimate */
 	CurrentConsumed int32

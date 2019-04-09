@@ -35,19 +35,19 @@ import (
 	"github.com/queue-b/go-mavlink2/util"
 )
 
-/*VFRHUD Metrics typically displayed on a HUD for fixed wing aircraft */
+/*VFRHUD Metrics typically displayed on a HUD for fixed wing aircraft. */
 type VFRHUD struct {
-	/*Airspeed Current airspeed */
+	/*Airspeed Current indicated airspeed (IAS). */
 	Airspeed float32
-	/*Groundspeed Current ground speed */
+	/*Groundspeed Current ground speed. */
 	Groundspeed float32
-	/*Alt Current altitude (MSL) */
+	/*Alt Current altitude (MSL). */
 	Alt float32
-	/*Climb Current climb rate */
+	/*Climb Current climb rate. */
 	Climb float32
-	/*Heading Current heading in degrees, in compass units (0..360, 0=north) */
+	/*Heading Current heading in compass units (0-360, 0=north). */
 	Heading int16
-	/*Throttle Current throttle setting in integer percent, 0 to 100 */
+	/*Throttle Current throttle setting (0 to 100). */
 	Throttle uint16
 	/*HasExtensionFieldValues indicates if this message has any extensions and  */
 	HasExtensionFieldValues bool

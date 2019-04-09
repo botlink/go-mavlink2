@@ -77,7 +77,7 @@ type RCChannels struct {
 	Chan18Raw uint16
 	/*Chancount Total number of RC channels being received. This can be larger than 18, indicating that more channels are available but not given in this message. This value should be 0 when no RC channels are available. */
 	Chancount uint8
-	/*RSSI Receive signal strength indicator. Values: [0-100], 255: invalid/unknown. */
+	/*RSSI Receive signal strength indicator in device-dependent units/scale. Values: [0-254], 255: invalid/unknown. */
 	RSSI uint8
 	/*HasExtensionFieldValues indicates if this message has any extensions and  */
 	HasExtensionFieldValues bool

@@ -63,7 +63,7 @@ type HilRCInputsRaw struct {
 	Chan11Raw uint16
 	/*Chan12Raw RC channel 12 value */
 	Chan12Raw uint16
-	/*RSSI Receive signal strength indicator. Values: [0-100], 255: invalid/unknown. */
+	/*RSSI Receive signal strength indicator in device-dependent units/scale. Values: [0-254], 255: invalid/unknown. */
 	RSSI uint8
 	/*HasExtensionFieldValues indicates if this message has any extensions and  */
 	HasExtensionFieldValues bool

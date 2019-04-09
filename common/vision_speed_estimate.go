@@ -45,8 +45,10 @@ type VisionSpeedEstimate struct {
 	Y float32
 	/*Z Global Z speed */
 	Z float32
-	/*Covariance Linear velocity covariance matrix (1st three entries - 1st row, etc.) */
+	/*Covariance Row-major representation of 3x3 linear velocity covariance matrix (states: vx, vy, vz; 1st three entries - 1st row, etc.). If unknown, assign NaN value to first element in the array. */
 	Covariance [9]float32
+	/*ResetCounter Estimate reset counter. This should be incremented when the estimate resets in any of the dimensions (position, velocity, attitude, angular speed). This is designed to be used when e.g an external SLAM system detects a loop-closure and the estimate jumps. */
+	ResetCounter uint8
 	/*HasExtensionFieldValues indicates if this message has any extensions and  */
 	HasExtensionFieldValues bool
 }
@@ -65,6 +67,7 @@ func (m *VisionSpeedEstimate) String() string {
 	builder.WriteString("Z:\t%v [m/s]\n")
 	if m.HasExtensionFieldValues {
 		builder.WriteString("Covariance:\t%v\n")
+		builder.WriteString("ResetCounter:\t%v\n")
 	}
 	format := builder.String()
 
@@ -79,6 +82,7 @@ func (m *VisionSpeedEstimate) String() string {
 			m.Y,
 			m.Z,
 			m.Covariance,
+			m.ResetCounter,
 		)
 
 		writer.Flush()
@@ -134,7 +138,7 @@ func (m *VisionSpeedEstimate) getV1Length() int {
 }
 
 func (m *VisionSpeedEstimate) getIOSlice() []byte {
-	return make([]byte, 56+1)
+	return make([]byte, 57+1)
 }
 
 // Read sets the field values of the message from the raw message payload

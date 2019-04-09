@@ -48,12 +48,12 @@ type SmartBatteryInfo struct {
 	CycleCount uint16
 	/*Weight Battery weight. 0: field not provided. */
 	Weight uint16
-	/*DischargeMinimumVoltage Minimum per-cell voltage when discharging. If not supplied set to UINT16_MAX value. */
-	DischargeMinimumVoltage uint16
-	/*ChargingMinimumVoltage Minimum per-cell voltage when charging. If not supplied set to UINT16_MAX value. */
-	ChargingMinimumVoltage uint16
-	/*RestingMinimumVoltage Minimum per-cell voltage when resting. If not supplied set to UINT16_MAX value. */
-	RestingMinimumVoltage uint16
+	/*DischargeMinIMUmVoltage Minimum per-cell voltage when discharging. If not supplied set to UINT16_MAX value. */
+	DischargeMinIMUmVoltage uint16
+	/*ChargingMinIMUmVoltage Minimum per-cell voltage when charging. If not supplied set to UINT16_MAX value. */
+	ChargingMinIMUmVoltage uint16
+	/*RestingMinIMUmVoltage Minimum per-cell voltage when resting. If not supplied set to UINT16_MAX value. */
+	RestingMinIMUmVoltage uint16
 	/*ID Battery ID */
 	ID uint8
 	/*DeviceName Static device name. Encode as manufacturer and product names separated using an underscore. */
@@ -75,9 +75,9 @@ func (m *SmartBatteryInfo) String() string {
 	builder.WriteString("SerialNumber:\t%v \n")
 	builder.WriteString("CycleCount:\t%v \n")
 	builder.WriteString("Weight:\t%v [g]\n")
-	builder.WriteString("DischargeMinimumVoltage:\t%v [mV]\n")
-	builder.WriteString("ChargingMinimumVoltage:\t%v [mV]\n")
-	builder.WriteString("RestingMinimumVoltage:\t%v [mV]\n")
+	builder.WriteString("DischargeMinIMUmVoltage:\t%v [mV]\n")
+	builder.WriteString("ChargingMinIMUmVoltage:\t%v [mV]\n")
+	builder.WriteString("RestingMinIMUmVoltage:\t%v [mV]\n")
 	builder.WriteString("ID:\t%v \n")
 	builder.WriteString("DeviceName:\t%v \n")
 	format := builder.String()
@@ -92,9 +92,9 @@ func (m *SmartBatteryInfo) String() string {
 		m.SerialNumber,
 		m.CycleCount,
 		m.Weight,
-		m.DischargeMinimumVoltage,
-		m.ChargingMinimumVoltage,
-		m.RestingMinimumVoltage,
+		m.DischargeMinIMUmVoltage,
+		m.ChargingMinIMUmVoltage,
+		m.RestingMinIMUmVoltage,
 		m.ID,
 		m.DeviceName,
 	)

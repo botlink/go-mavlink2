@@ -41,6 +41,10 @@ type CameraSettings struct {
 	TimeBootMs uint32
 	/*ModeID Camera mode */
 	ModeID uint8
+	/*Zoomlevel Current zoom level (0.0 to 100.0, NaN if not known) */
+	Zoomlevel float32
+	/*Focuslevel Current focus level (0.0 to 100.0, NaN if not known) */
+	Focuslevel float32
 	/*HasExtensionFieldValues indicates if this message has any extensions and  */
 	HasExtensionFieldValues bool
 }
@@ -55,7 +59,27 @@ func (m *CameraSettings) String() string {
 	// Output field values based on the decoded message type
 	builder.WriteString("TimeBootMs:\t%v [ms]\n")
 	builder.WriteString("ModeID:\t%v \n")
+	if m.HasExtensionFieldValues {
+		builder.WriteString("Zoomlevel:\t%v\n")
+		builder.WriteString("Focuslevel:\t%v\n")
+	}
 	format := builder.String()
+
+	if m.HasExtensionFieldValues {
+		fmt.Fprintf(
+			writer,
+			format,
+			m.GetDialect(),
+			m.GetMessageName(),
+			m.TimeBootMs,
+			m.ModeID,
+			m.Zoomlevel,
+			m.Focuslevel,
+		)
+
+		writer.Flush()
+		return string(buffer.Bytes())
+	}
 
 	fmt.Fprintf(
 		writer,
@@ -96,7 +120,7 @@ func (m *CameraSettings) GetID() uint32 {
 
 // HasExtensionFields returns true if the message definition contained extensions; false otherwise
 func (m *CameraSettings) HasExtensionFields() bool {
-	return false
+	return true
 }
 
 func (m *CameraSettings) getV1Length() int {
@@ -104,7 +128,7 @@ func (m *CameraSettings) getV1Length() int {
 }
 
 func (m *CameraSettings) getIOSlice() []byte {
-	return make([]byte, 5+1)
+	return make([]byte, 13+1)
 }
 
 // Read sets the field values of the message from the raw message payload

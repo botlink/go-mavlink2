@@ -51,8 +51,10 @@ type GlobalVisionPositionEstimate struct {
 	Pitch float32
 	/*Yaw Yaw angle */
 	Yaw float32
-	/*Covariance Pose covariance matrix upper right triangular (first six entries are the first ROW, next five entries are the second ROW, etc.) */
+	/*Covariance Row-major representation of pose 6x6 cross-covariance matrix upper right triangle (states: x_global, y_global, z_global, roll, pitch, yaw; first six entries are the first ROW, next five entries are the second ROW, etc.). If unknown, assign NaN value to first element in the array. */
 	Covariance [21]float32
+	/*ResetCounter Estimate reset counter. This should be incremented when the estimate resets in any of the dimensions (position, velocity, attitude, angular speed). This is designed to be used when e.g an external SLAM system detects a loop-closure and the estimate jumps. */
+	ResetCounter uint8
 	/*HasExtensionFieldValues indicates if this message has any extensions and  */
 	HasExtensionFieldValues bool
 }
@@ -74,6 +76,7 @@ func (m *GlobalVisionPositionEstimate) String() string {
 	builder.WriteString("Yaw:\t%v [rad]\n")
 	if m.HasExtensionFieldValues {
 		builder.WriteString("Covariance:\t%v\n")
+		builder.WriteString("ResetCounter:\t%v\n")
 	}
 	format := builder.String()
 
@@ -91,6 +94,7 @@ func (m *GlobalVisionPositionEstimate) String() string {
 			m.Pitch,
 			m.Yaw,
 			m.Covariance,
+			m.ResetCounter,
 		)
 
 		writer.Flush()
@@ -149,7 +153,7 @@ func (m *GlobalVisionPositionEstimate) getV1Length() int {
 }
 
 func (m *GlobalVisionPositionEstimate) getIOSlice() []byte {
-	return make([]byte, 116+1)
+	return make([]byte, 117+1)
 }
 
 // Read sets the field values of the message from the raw message payload
