@@ -48,7 +48,7 @@ type Frame interface {
 // FrameV1 represents a MAVLink V1 Frame
 type FrameV1 []byte
 
-// GetBytes returns the Frame as a byte array
+// Bytes returns the Frame as a byte array
 func (frame FrameV1) Bytes() []byte {
 	return frame
 }
