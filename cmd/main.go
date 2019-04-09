@@ -7,7 +7,6 @@ import (
 	"sync"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
-	"github.com/queue-b/go-mavlink2/common"
 )
 
 func main() {
@@ -22,18 +21,17 @@ func main() {
 
 	var wg sync.WaitGroup
 
-	dialects := mavlink2.Dialects([]mavlink2.Dialect{common.DialectCommon{}})
+	// dialects := mavlink2.Dialects{common.DialectCommon{}}
 
-	stream := mavlink2.MAVLinkStream{}
+	stream := mavlink2.MAVLinkFrameStream{}
 
-	messages := make(chan mavlink2.Message)
+	errors := make(chan error)
 	frames := make(chan mavlink2.Frame)
 
-	stream.Dialects = dialects
-	stream.Messages = messages
+	stream.Errors = errors
 	stream.Frames = frames
 
-	stream.Run(readPipe)
+	stream.Run(readPipe, nil)
 
 	wg.Add(2)
 	go func() {
