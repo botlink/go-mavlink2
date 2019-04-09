@@ -55,6 +55,26 @@ func (d Dialects) GetMessage(frame Frame) (message Message, err error) {
 	return
 }
 
+// GetFrame builds a MAVLink frame containing the Message
+func (d Dialects) GetFrame(version int, senderSystemID, senderComponentID, messageSequence uint8, message Message) (frame Frame, err error) {
+	var meta MessageMeta
+
+	for _, dialect := range d {
+		meta, err = dialect.GetMeta(message.GetID())
+
+		if err != nil && err != ErrUnknownMessage {
+			return
+		}
+	}
+
+	if err != nil {
+		return
+	}
+
+	frame, err = packFrame(version, senderSystemID, senderComponentID, messageSequence, message, meta)
+	return
+}
+
 // Validate checks the frame to see if there are any obvious errors
 func (d Dialects) Validate(frame Frame) error {
 	checksum := new(X25CRC)
