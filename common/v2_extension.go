@@ -132,11 +132,12 @@ func (m *V2Extension) SetPayloadSlice(payload []byte) error {
 	if len(payload) > len(m.Payload) {
 		copy(m.Payload[:], payload[:len(m.Payload)])
 		m.PayloadLength = uint8(len(m.Payload))
-		return ErrValueTooLong
+		return mavlink2.ErrValueTooLong
 	}
 
 	copy(m.Payload[:], payload)
 	m.PayloadLength = uint8(len(payload))
+	return nil
 }
 
 // Read sets the field values of the message from the raw message payload
