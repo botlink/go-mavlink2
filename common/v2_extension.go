@@ -28,6 +28,7 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
+	"math"
 	"text/tabwriter"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
@@ -45,9 +46,11 @@ type V2Extension struct {
 	/*TargetComponent Component ID (0 for broadcast) */
 	TargetComponent uint8
 	/*Payload Variable length payload. The length is defined by the remaining message length when subtracting the header and other fields.  The entire content of this block is opaque unless you understand any the encoding message_type.  The particular encoding used can be extension specific and might not always be documented as part of the mavlink specification. */
-	Payload [249]uint8
+	Payload [249]byte
 	/*HasExtensionFieldValues indicates if this message has any extensions and  */
 	HasExtensionFieldValues bool
+	/*PayloadLength Length of the variable length Payload*/
+	PayloadLength uint8
 }
 
 func (m *V2Extension) String() string {
@@ -57,12 +60,12 @@ func (m *V2Extension) String() string {
 	writer := tabwriter.NewWriter(&buffer, 0, 0, 2, ' ', 0)
 
 	format += "Name:\t%v/%v\n"
-	// Output field values based on the decoded message type
-	format += "MessageType:\t%v \n"
-	format += "TargetNetwork:\t%v \n"
-	format += "TargetSystem:\t%v \n"
-	format += "TargetComponent:\t%v \n"
-	format += "Payload:\t%v \n"
+	format += "MessageType:\t%v\n"
+	format += "TargetNetwork:	%v\n"
+	format += "TargetSystem:\t%v\n"
+	format += "TargetComponent:\t%v\n"
+	format += "Payload:\t%v\n"
+	format += "PayloadLength:\t%v\n"
 
 	fmt.Fprintf(
 		writer,
@@ -74,6 +77,7 @@ func (m *V2Extension) String() string {
 		m.TargetSystem,
 		m.TargetComponent,
 		m.Payload,
+		m.PayloadLength,
 	)
 
 	writer.Flush()
@@ -110,11 +114,29 @@ func (m *V2Extension) HasExtensionFields() bool {
 }
 
 func (m *V2Extension) getV1Length() int {
-	return 254
+	return 5
 }
 
 func (m *V2Extension) getIOSlice() []byte {
-	return make([]byte, 254+1)
+	// 249 payload + 5 description + bool + uint8
+	return make([]byte, 256)
+}
+
+// GetPayloadSlice gets the valid Payload bytes as a slice
+func (m *V2Extension) GetPayload() []byte {
+	return m.Payload[0:m.PayloadLength]
+}
+
+// SetPayloadSlice sets the Payload from the slice value provided
+func (m *V2Extension) SetPayloadSlice(payload []byte) error {
+	if len(payload) > len(m.Payload) {
+		copy(m.Payload[:], payload[:len(m.Payload)])
+		m.PayloadLength = uint8(len(m.Payload))
+		return ErrValueTooLong
+	}
+
+	copy(m.Payload[:], payload)
+	m.PayloadLength = uint8(len(payload))
 }
 
 // Read sets the field values of the message from the raw message payload
@@ -127,12 +149,6 @@ func (m *V2Extension) Read(frame mavlink2.Frame) (err error) {
 		return
 	}
 
-	// Don't attempt to Read V2 messages from V1 frames
-	if m.GetID() > 255 && version < 2 {
-		err = mavlink2.ErrDecodeV2MessageV1Frame
-		return
-	}
-
 	// binary.Read can panic; swallow the panic and return a sane error
 	defer func() {
 		if r := recover(); r != nil {
@@ -140,22 +156,21 @@ func (m *V2Extension) Read(frame mavlink2.Frame) (err error) {
 		}
 	}()
 
-	// Get a slice of bytes long enough for the all the V2Extension fields
-	// binary.Read requires enough bytes in the reader to read all fields, even if
-	// the fields are just zero values. This also simplifies handling MAVLink2
-	// extensions and trailing zero truncation.
-	ioSlice := m.getIOSlice()
+	// Get a slice with enough capacity for a full read
+	ioBytes := m.getIOSlice()
 
-	copy(ioSlice, frame.GetMessageBytes())
+	copy(ioBytes, frame.GetMessageBytes())
 
-	// Indicate if
-	if version == 2 && m.HasExtensionFields() {
-		ioSlice[len(ioSlice)-1] = 1
+	// Add the length of the payload to the end of the array so that it is read in as PayloadLength
+	ioBytes[len(ioBytes)-1] = uint8(math.Max(0, float64(frame.GetMessageLength()-5)))
+
+	buffer := bytes.NewBuffer(ioBytes)
+
+	err = binary.Read(buffer, binary.LittleEndian, m)
+
+	if err != nil {
+		return
 	}
-
-	reader := bytes.NewReader(ioSlice)
-
-	err = binary.Read(reader, binary.LittleEndian, m)
 
 	return
 }
@@ -170,30 +185,20 @@ func (m *V2Extension) Write(version int) (output []byte, err error) {
 		return
 	}
 
-	// Don't attempt to Write V2 messages to V1 bodies
-	if m.GetID() > 255 && version < 2 {
-		err = mavlink2.ErrEncodeV2MessageV1Frame
-		return
-	}
-
-	err = binary.Write(&buffer, binary.LittleEndian, *m)
+	err = binary.Write(&buffer, binary.LittleEndian, m)
 	if err != nil {
 		return
 	}
 
-	// V1 uses fixed message lengths and does not include any extension fields
-	// Truncate the byte slice to the correct length
-	if version == 1 {
-		output = buffer.Bytes()[:m.getV1Length()]
-	}
+	output = buffer.Bytes()
+	// V2Extension packets are always variable length,
+	// regardless of whether they are in a V1 or V2 stream
+	// Cut off the trailing bytes past the end of the payload
+	output = output[:5+m.PayloadLength]
 
-	// V2 uses variable message lengths and includes extension fields
-	// The variable length is caused by truncating any trailing zeroes from
-	// the end of the message before it is added to a frame
 	if version == 2 {
-		output = util.TruncateV2(buffer.Bytes())
+		output = util.TruncateV2(output)
 	}
 
 	return
-
 }

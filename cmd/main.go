@@ -7,6 +7,8 @@ import (
 	"sync"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
+	"github.com/queue-b/go-mavlink2/ardupilotmega"
+	"github.com/queue-b/go-mavlink2/common"
 )
 
 func main() {
@@ -18,6 +20,8 @@ func main() {
 	}
 
 	readPipe, writePipe := io.Pipe()
+
+	dialects := mavlink2.Dialects{common.Dialect{}, ardupilotmega.Dialect{}}
 
 	var wg sync.WaitGroup
 
@@ -55,7 +59,14 @@ func main() {
 		for {
 			select {
 			case frame := <-frames:
-				fmt.Println(frame)
+				message, err := dialects.GetMessage(frame)
+
+				if err != nil {
+					fmt.Println(err)
+					continue
+				}
+
+				fmt.Println(message)
 			}
 		}
 	}()

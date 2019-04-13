@@ -75,7 +75,7 @@ func (m *Statustext) SetText(input string) (err error) {
 	copy(m.Text[:], []byte(input)[:clen])
 
 	if len(input) > 50 {
-		err = mavlink2.ErrStringTooLong
+		err = mavlink2.ErrValueTooLong
 	}
 
 	return
@@ -189,16 +189,21 @@ func (m *Statustext) Write(version int) (output []byte, err error) {
 		return
 	}
 
+	output = buffer.Bytes()
+
 	// V1 uses fixed message lengths and does not include any extension fields
 	// Truncate the byte slice to the correct length
+	// This also removes the trailing extra byte written for HasExtensionFieldValues
 	if version == 1 {
-		output = buffer.Bytes()[:m.getV1Length()]
+		output = output[:m.getV1Length()]
 	}
 
 	// V2 uses variable message lengths and includes extension fields
 	// The variable length is caused by truncating any trailing zeroes from
 	// the end of the message before it is added to a frame
 	if version == 2 {
+		// Set HasExtensionFieldValues to zero so that it doesn't interfere with V2 truncation
+		output[len(output)-1] = 0
 		output = util.TruncateV2(buffer.Bytes())
 	}
 
