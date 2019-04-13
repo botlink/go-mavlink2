@@ -255,9 +255,9 @@ var ErrDecodeV2MessageV1Frame = fmt.Errorf("Unable to decode a V2 message from a
 // ErrEncodeV2MessageV1Frame indicates that a request was made to encode a V2 Message for use with a V1 Frame
 var ErrEncodeV2MessageV1Frame = fmt.Errorf("Unable to encode a V2 message to a V1 Frame")
 
-// ErrStringTooLong indicates that a Message field is unable to hold the requested string
+// ErrValueTooLong indicates that a Message field is unable to hold the requested string
 // and that the string was truncated to fit
-var ErrStringTooLong = fmt.Errorf("The input string was too long and was truncated")
+var ErrValueTooLong = fmt.Errorf("The input string was too long and was truncated")
 
 // FrameFromBytes returns a Frame containing the input bytes,
 // or an error if the first byte is not a valid frame start
