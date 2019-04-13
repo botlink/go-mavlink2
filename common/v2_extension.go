@@ -61,7 +61,7 @@ func (m *V2Extension) String() string {
 
 	format += "Name:\t%v/%v\n"
 	format += "MessageType:\t%v\n"
-	format += "TargetNetwork:	%v\n"
+	format += "TargetNetwork:\t%v\n"
 	format += "TargetSystem:\t%v\n"
 	format += "TargetComponent:\t%v\n"
 	format += "Payload:\t%v\n"
