@@ -26,6 +26,7 @@ IN THE GENERATED SOFTWARE.
 
 import (
 	"bufio"
+	"context"
 	"encoding/binary"
 	"io"
 )
@@ -44,29 +45,40 @@ type FrameParser func(Frame) (Message, error)
 
 // MAVLinkFrameStream represents a stream of MAVLink Frames
 type MAVLinkFrameStream struct {
-	Frames chan Frame
-	Errors chan error
+	InputFrames  chan Frame
+	OutputFrames chan Frame
+	Errors       chan error
 }
 
-// Run consumes the MAVLink stream from the underlying Reader
-func (s *MAVLinkFrameStream) Run(readStream io.Reader, writeStream *io.Writer) {
+// RunForever consumes the MAVLink stream from the underlying Reaader
+func (s *MAVLinkFrameStream) RunForever(readStream io.Reader, writeStream *io.Writer) {
+	s.Run(context.Background(), readStream, writeStream)
+}
+
+// Run consumes the MAVLink stream from the underlying Reader until the context is cancelled
+func (s *MAVLinkFrameStream) Run(ctx context.Context, readStream io.Reader, writeStream *io.Writer) {
 	// Read Frames
 	go func() {
 		reader := bufio.NewReader(readStream)
 		for {
-			frame, err := readFrame(reader)
+			select {
+			case <-ctx.Done():
+				return
+			default:
+				frame, err := readFrame(reader)
 
-			if err != nil {
+				if err != nil {
+					select {
+					case s.Errors <- err:
+					default:
+					}
+					continue
+				}
+
 				select {
-				case s.Errors <- err:
+				case s.OutputFrames <- frame:
 				default:
 				}
-				continue
-			}
-
-			select {
-			case s.Frames <- frame:
-			default:
 			}
 		}
 	}()
@@ -78,7 +90,10 @@ func (s *MAVLinkFrameStream) Run(readStream io.Reader, writeStream *io.Writer) {
 
 			for {
 				select {
-				case frame := <-s.Frames:
+				case <-ctx.Done():
+					return
+				default:
+					frame := <-s.InputFrames
 					_, err := writer.Write(frame.Bytes())
 					if err != nil {
 						select {
@@ -86,7 +101,6 @@ func (s *MAVLinkFrameStream) Run(readStream io.Reader, writeStream *io.Writer) {
 						default:
 						}
 					}
-				default:
 				}
 			}
 		}()
@@ -167,7 +181,7 @@ func packFrame(version int, senderSystemID, senderComponentID, messageSequence u
 	x25.Reset()
 
 	if version == 1 {
-		frameBytes = make([]byte, len(messageBytes)+8)
+		frameBytes = make([]byte, len(messageBytes)+6)
 		frameBytes[0] = V1StartByte
 		frameBytes[1] = uint8(len(messageBytes))
 		frameBytes[2] = senderSystemID
@@ -180,27 +194,25 @@ func packFrame(version int, senderSystemID, senderComponentID, messageSequence u
 		frameBytes[5] = idBytes[0]
 		copy(frameBytes[6:], messageBytes)
 
-		_, err = x25.Write(frameBytes[1:])
+		_, err = x25.Write(append(frameBytes[1:], meta.CRCExtra))
 
 		if err != nil {
 			return
 		}
 
-		crc := x25.Sum(nil)
-
-		frameBytes = append(frameBytes, crc...)
+		frameBytes := x25.Sum(frameBytes)
 
 		frame = FrameV1(frameBytes)
 	}
 
 	if version == 2 {
-		frameBytes = make([]byte, len(messageBytes)+12)
+		frameBytes = make([]byte, len(messageBytes)+10)
 		frameBytes[0] = V2StartByte
 		frameBytes[1] = uint8(len(messageBytes))
 		// Compatibility and incompatibility flags (bytes 2 & 3) not currently supported
-		frameBytes[4] = senderSystemID
-		frameBytes[5] = senderComponentID
-		frameBytes[6] = messageSequence
+		frameBytes[4] = messageSequence
+		frameBytes[5] = senderSystemID
+		frameBytes[6] = senderComponentID
 
 		idBytes := make([]byte, 4)
 		binary.LittleEndian.PutUint32(idBytes, message.GetID())
@@ -208,18 +220,13 @@ func packFrame(version int, senderSystemID, senderComponentID, messageSequence u
 		copy(frameBytes[7:10], idBytes[:3])
 		copy(frameBytes[10:], messageBytes)
 
-		x25.Write(frameBytes[1:])
-
-		_, err = x25.Write(frameBytes[1:])
+		_, err = x25.Write(append(frameBytes[1:], meta.CRCExtra))
 
 		if err != nil {
 			return
 		}
 
-		crc := x25.Sum(nil)
-
-		frameBytes = append(frameBytes, crc...)
-
+		frameBytes = x25.Sum(frameBytes)
 		frame = FrameV2(frameBytes)
 	}
 
