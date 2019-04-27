@@ -43,20 +43,20 @@ const CompatibilityFlagSignature = 0x01
 // FrameParser represents a function that takes a Frame as input and returns a Message
 type FrameParser func(Frame) (Message, error)
 
-// MAVLinkFrameStream represents a stream of MAVLink Frames
-type MAVLinkFrameStream struct {
+// FrameStream represents a stream of MAVLink Frames
+type FrameStream struct {
 	InputFrames  chan Frame
 	OutputFrames chan Frame
 	Errors       chan error
 }
 
 // RunForever consumes the MAVLink stream from the underlying Reaader
-func (s *MAVLinkFrameStream) RunForever(readStream io.Reader, writeStream *io.Writer) {
+func (s *FrameStream) RunForever(readStream io.Reader, writeStream *io.Writer) {
 	s.Run(context.Background(), readStream, writeStream)
 }
 
 // Run consumes the MAVLink stream from the underlying Reader until the context is cancelled
-func (s *MAVLinkFrameStream) Run(ctx context.Context, readStream io.Reader, writeStream *io.Writer) {
+func (s *FrameStream) Run(ctx context.Context, readStream io.Reader, writeStream *io.Writer) {
 	// Read Frames
 	go func() {
 		reader := bufio.NewReader(readStream)

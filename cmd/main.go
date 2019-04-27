@@ -25,15 +25,15 @@ func main() {
 
 	var wg sync.WaitGroup
 
-	stream := mavlink2.MAVLinkFrameStream{}
+	stream := mavlink2.FrameStream{}
 
 	errors := make(chan error)
 	frames := make(chan mavlink2.Frame)
 
 	stream.Errors = errors
-	stream.Frames = frames
+	stream.OutputFrames = frames
 
-	stream.Run(readPipe, nil)
+	stream.RunForever(readPipe, nil)
 
 	wg.Add(2)
 	go func() {
