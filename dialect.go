@@ -65,6 +65,10 @@ func (d Dialects) GetFrame(version int, senderSystemID, senderComponentID, messa
 		if err != nil && err != ErrUnknownMessage {
 			return
 		}
+
+		if err == nil {
+			break
+		}
 	}
 
 	if err != nil {
