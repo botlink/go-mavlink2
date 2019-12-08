@@ -1,75 +1,59 @@
 package main
 
 import (
-	"fmt"
-	"io"
-	"net"
+	"context"
+	"log"
 	"sync"
 
 	mavlink2 "github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/ardupilotmega"
 	"github.com/queue-b/go-mavlink2/common"
+	"github.com/queue-b/go-mavlink2/util"
 )
 
 func main() {
-	udp, err := net.ListenPacket("udp4", "0.0.0.0:14551")
+	rwc, err := util.NewUDPReadWriteCloser("0.0.0.0", 14551)
 
 	if err != nil {
-		fmt.Println(err)
-		return
+		log.Fatal(err)
 	}
 
-	readPipe, writePipe := io.Pipe()
+	input := make(chan mavlink2.Frame)
+
+	stream := mavlink2.NewFrameStream(rwc, input)
 
 	dialects := mavlink2.Dialects{common.Dialect{}, ardupilotmega.Dialect{}}
 
 	var wg sync.WaitGroup
 
-	stream := mavlink2.FrameStream{}
+	ctx, cancel := context.WithCancel(context.Background())
 
-	errors := make(chan error)
-	frames := make(chan mavlink2.Frame)
+	go stream.ReadContext(ctx)
+	go stream.WriteContext(ctx)
 
-	stream.Errors = errors
-	stream.OutputFrames = frames
-
-	stream.RunForever(readPipe, nil)
-
-	wg.Add(2)
-	go func() {
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
-
-		for {
-			packet := make([]byte, 1024)
-			length, _, err := udp.ReadFrom(packet)
-
-			if err != nil {
-				fmt.Println(err)
-				break
-			}
-
-			writePipe.Write(packet[:length])
-		}
-	}()
-
+	wg.Add(1)
 	go func() {
 		for {
 			select {
-			case frame := <-frames:
-				message, err := dialects.GetMessage(frame)
-
-				if err != nil {
-					fmt.Println(err)
-					continue
+			case <-ctx.Done():
+				wg.Done()
+				return
+			case frame, ok := <-stream.Read():
+				if !ok {
+					log.Fatal("Bad frame read")
 				}
 
-				fmt.Println(message)
+				msg, err := dialects.GetMessage(frame)
+
+				if err != nil {
+					log.Fatal(err)
+				}
+
+				log.Println(msg)
 			}
 		}
 	}()
 
 	wg.Wait()
+	cancel()
 }
