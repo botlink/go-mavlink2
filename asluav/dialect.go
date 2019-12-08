@@ -47,7 +47,7 @@ func (d Dialect) GetMeta(messageID uint32) (meta mavlink2.MessageMeta, err error
 
 // GetMessage extracts and parses the message contained in the Frame
 func (d Dialect) GetMessage(frame mavlink2.Frame) (message mavlink2.Message, err error) {
-	if parser, ok := asluavParsers[frame.GetMessageID()]; ok {
+	if parser, ok := ASLUAVParsers[frame.GetMessageID()]; ok {
 		message, err = parser(frame)
 		return
 	}
