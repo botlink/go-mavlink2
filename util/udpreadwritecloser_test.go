@@ -22,24 +22,34 @@ IN THE SOFTWARE.
 
 package util
 
-func TruncateV2(input []byte) []byte {
-	var i int
-	// Loop through the array in reverse until the first non-zero byte is found
-	for i = len(input); i > 0; i-- {
-		if input[i-1] != 0 {
-			return input[:i]
-		}
-	}
+import (
+	"fmt"
+	"net"
+	"testing"
+)
 
-	return input
-}
+func TestNewUDPReadWriteCloser(t *testing.T) {
+	t.Run("WithBasicParameters", func(t *testing.T) {
+		rwc, err := NewUDPReadWriteCloser("0.0.0.0", 5000)
 
-// CStrLen returns the length of the null-terminated C string contained in the input buffer
-func CStrLen(input []byte) int {
-	for i := 0; i < len(input); i++ {
-		if input[i] == 0 {
-			return i
+		if err != nil {
+			t.Fatalf("Error creating UDPReadWriteCloser - %v\n", err)
 		}
-	}
-	return len(input)
+
+		defer rwc.Close()
+	})
+
+	t.Run("ReturnsErrorFromNetListenPacket", func(t *testing.T) {
+		_, err := net.ListenPacket("udp", fmt.Sprintf("%v:%v", "0.0.0.0", 5000))
+
+		if err != nil {
+			t.Fatal("Error listening UDP", err)
+		}
+
+		_, err = NewUDPReadWriteCloser("0.0.0.0", 5000)
+
+		if err == nil {
+			t.Fatal("NewUDPReadWriteCloser did not return underlying error")
+		}
+	})
 }
