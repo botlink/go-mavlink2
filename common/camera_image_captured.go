@@ -31,7 +31,7 @@ import (
 	"math"
 	"text/tabwriter"
 
-	mavlink2 "github.com/queue-b/go-mavlink2"
+	"github.com/queue-b/go-mavlink2"
 	"github.com/queue-b/go-mavlink2/util"
 )
 
