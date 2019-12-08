@@ -28,7 +28,9 @@ import (
 	"bufio"
 	"context"
 	"encoding/binary"
+	"errors"
 	"io"
+	"sync"
 )
 
 // V2StartByte is the magic frame start indicator for a V2 MAVLink Frame
@@ -43,67 +45,105 @@ const CompatibilityFlagSignature = 0x01
 // FrameParser represents a function that takes a Frame as input and returns a Message
 type FrameParser func(Frame) (Message, error)
 
+var ErrUserClosed = errors.New("User closed")
+var ErrWriteChannelClosed = errors.New("Write channel closed")
+
 // FrameStream represents a stream of MAVLink Frames
 type FrameStream struct {
-	InputFrames  chan Frame
-	OutputFrames chan Frame
-	Errors       chan error
+	sync.RWMutex
+	inputFrames  chan Frame
+	outputFrames chan Frame
+	rwc          io.ReadWriteCloser
+	reader       *bufio.Reader
+	writer       io.Writer
+	closeErr     error
+	closeOnce    sync.Once
+	closed       chan struct{}
 }
 
-// RunForever consumes the MAVLink stream from the underlying Reaader
-func (s *FrameStream) RunForever(readStream io.Reader, writeStream *io.Writer) {
-	s.Run(context.Background(), readStream, writeStream)
+func NewFrameStream(rwc io.ReadWriteCloser, inputFrames chan Frame) *FrameStream {
+	f := &FrameStream{
+		inputFrames:  inputFrames,
+		outputFrames: make(chan Frame),
+		reader:       bufio.NewReader(rwc),
+		writer:       rwc,
+		rwc:          rwc,
+		closeOnce:    sync.Once{},
+		closed:       make(chan struct{}),
+	}
+
+	return f
 }
 
-// Run consumes the MAVLink stream from the underlying Reader until the context is cancelled
-func (s *FrameStream) Run(ctx context.Context, readStream io.Reader, writeStream *io.Writer) {
-	// Read Frames
-	go func() {
-		reader := bufio.NewReader(readStream)
-		for {
-			select {
-			case <-ctx.Done():
+// Write returns a
+func (s *FrameStream) Write() chan<- Frame {
+	return s.inputFrames
+}
+
+func (s *FrameStream) Read() <-chan Frame {
+	return s.outputFrames
+}
+
+// Close closes the FrameStream
+func (s *FrameStream) Close() {
+	s.close(ErrUserClosed)
+}
+
+// Closed returns a channel that is closed when the FrameStream is closed
+func (s *FrameStream) Closed() <-chan struct{} {
+	return s.closed
+}
+
+func (s *FrameStream) close(err error) {
+	s.closeOnce.Do(func() {
+		s.Lock()
+		defer s.Unlock()
+
+		s.closeErr = err
+
+		s.rwc.Close()
+		close(s.outputFrames)
+		close(s.closed)
+	})
+}
+
+func (s *FrameStream) WriteContext(ctx context.Context) {
+	for {
+		select {
+		case <-ctx.Done():
+			s.close(ctx.Err())
+			return
+		case frame, ok := <-s.inputFrames:
+			if !ok {
+				s.close(ErrWriteChannelClosed)
 				return
-			default:
-				frame, err := readFrame(reader)
+			}
 
-				if err != nil {
-					select {
-					case s.Errors <- err:
-					default:
-					}
-					continue
-				}
-
-				select {
-				case s.OutputFrames <- frame:
-				default:
-				}
+			_, err := s.writer.Write(frame.Bytes())
+			if err != nil {
+				s.close(err)
+				return
 			}
 		}
-	}()
+	}
+}
 
-	if writeStream != nil {
-		// Write Frames
-		go func() {
-			writer := *writeStream
+func (s *FrameStream) ReadContext(ctx context.Context) {
+	for {
+		select {
+		case <-ctx.Done():
+			s.close(ctx.Err())
+			return
+		default:
+			frame, err := readFrame(s.reader)
 
-			for {
-				select {
-				case <-ctx.Done():
-					return
-				default:
-					frame := <-s.InputFrames
-					_, err := writer.Write(frame.Bytes())
-					if err != nil {
-						select {
-						case s.Errors <- err:
-						default:
-						}
-					}
-				}
+			if err != nil {
+				s.close(err)
+				return
 			}
-		}()
+
+			s.outputFrames <- frame
+		}
 	}
 }
 
