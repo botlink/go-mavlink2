@@ -3,7 +3,7 @@ package common
 /*
 Generated using mavgen - https://github.com/ArduPilot/pymavlink/
 
-Copyright 2019 queue-b <https://github.com/queue-b>
+Copyright 2020 queue-b <https://github.com/queue-b>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of the generated software (the "Generated Software"), to deal
@@ -35,7 +35,7 @@ import (
 	"github.com/queue-b/go-mavlink2/util"
 )
 
-/*ParamSet Set a parameter value (write new value to permanent storage). IMPORTANT: The receiving component should acknowledge the new parameter value by sending a PARAM_VALUE message to all communication partners. This will also ensure that multiple GCS all have an up-to-date list of all parameters. If the sending GCS did not receive a PARAM_VALUE message within its timeout time, it should re-send the PARAM_SET message. */
+/*ParamSet Set a parameter value (write new value to permanent storage). IMPORTANT: The receiving component should acknowledge the new parameter value by sending a PARAM_VALUE message to all communication partners. This will also ensure that multiple GCS all have an up-to-date list of all parameters. If the sending GCS did not receive a PARAM_VALUE message within its timeout time, it should re-send the PARAM_SET message. The parameter microservice is documented at https://mavlink.io/en/services/parameter.html */
 type ParamSet struct {
 	/*ParamValue Onboard parameter value */
 	ParamValue float32

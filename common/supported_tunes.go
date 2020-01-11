@@ -1,4 +1,4 @@
-package ardupilotmega
+package common
 
 /*
 Generated using mavgen - https://github.com/ArduPilot/pymavlink/
@@ -34,25 +34,19 @@ import (
 	"github.com/queue-b/go-mavlink2/util"
 )
 
-/*AHRS2 Status of secondary AHRS filter if available. */
-type AHRS2 struct {
-	/*Roll Roll angle. */
-	Roll float32
-	/*Pitch Pitch angle. */
-	Pitch float32
-	/*Yaw Yaw angle. */
-	Yaw float32
-	/*Altitude Altitude (MSL). */
-	Altitude float32
-	/*Lat Latitude. */
-	Lat int32
-	/*Lng Longitude. */
-	Lng int32
+/*SupportedTunes Tune formats supported by vehicle. This should be emitted as response to MAV_CMD_REQUEST_MESSAGE. */
+type SupportedTunes struct {
+	/*Format Bitfield of supported tune formats. */
+	Format uint32
+	/*TargetSystem System ID */
+	TargetSystem uint8
+	/*TargetComponent Component ID */
+	TargetComponent uint8
 	/*HasExtensionFieldValues indicates if this message has any extensions and  */
 	HasExtensionFieldValues bool
 }
 
-func (m *AHRS2) String() string {
+func (m *SupportedTunes) String() string {
 	format := ""
 	var buffer bytes.Buffer
 
@@ -60,24 +54,18 @@ func (m *AHRS2) String() string {
 
 	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	format += "Roll:\t%v [rad]\n"
-	format += "Pitch:\t%v [rad]\n"
-	format += "Yaw:\t%v [rad]\n"
-	format += "Altitude:\t%v [m]\n"
-	format += "Lat:\t%v [degE7]\n"
-	format += "Lng:\t%v [degE7]\n"
+	format += "Format:\t%v \n"
+	format += "TargetSystem:\t%v \n"
+	format += "TargetComponent:\t%v \n"
 
 	fmt.Fprintf(
 		writer,
 		format,
 		m.GetDialect(),
 		m.GetMessageName(),
-		m.Roll,
-		m.Pitch,
-		m.Yaw,
-		m.Altitude,
-		m.Lat,
-		m.Lng,
+		m.Format,
+		m.TargetSystem,
+		m.TargetComponent,
 	)
 
 	writer.Flush()
@@ -85,7 +73,7 @@ func (m *AHRS2) String() string {
 }
 
 // GetVersion gets the MAVLink version of the Message contents
-func (m *AHRS2) GetVersion() int {
+func (m *SupportedTunes) GetVersion() int {
 	if m.HasExtensionFieldValues {
 		return 2
 	}
@@ -94,35 +82,35 @@ func (m *AHRS2) GetVersion() int {
 }
 
 // GetDialect gets the name of the dialect that defines the Message
-func (m *AHRS2) GetDialect() string {
-	return "ardupilotmega"
+func (m *SupportedTunes) GetDialect() string {
+	return "common"
 }
 
 // GetMessageName gets the name of the Message
-func (m *AHRS2) GetMessageName() string {
-	return "AHRS2"
+func (m *SupportedTunes) GetMessageName() string {
+	return "SupportedTunes"
 }
 
 // GetID gets the ID of the Message
-func (m *AHRS2) GetID() uint32 {
-	return 178
+func (m *SupportedTunes) GetID() uint32 {
+	return 401
 }
 
 // HasExtensionFields returns true if the message definition contained extensions; false otherwise
-func (m *AHRS2) HasExtensionFields() bool {
+func (m *SupportedTunes) HasExtensionFields() bool {
 	return false
 }
 
-func (m *AHRS2) getV1Length() int {
-	return 24
+func (m *SupportedTunes) getV1Length() int {
+	return 6
 }
 
-func (m *AHRS2) getIOSlice() []byte {
-	return make([]byte, 24+1)
+func (m *SupportedTunes) getIOSlice() []byte {
+	return make([]byte, 6+1)
 }
 
 // Read sets the field values of the message from the raw message payload
-func (m *AHRS2) Read(frame mavlink2.Frame) (err error) {
+func (m *SupportedTunes) Read(frame mavlink2.Frame) (err error) {
 	version := frame.GetVersion()
 
 	// Ensure only Version 1 or Version 2 were specified
@@ -144,7 +132,7 @@ func (m *AHRS2) Read(frame mavlink2.Frame) (err error) {
 		}
 	}()
 
-	// Get a slice of bytes long enough for the all the AHRS2 fields
+	// Get a slice of bytes long enough for the all the SupportedTunes fields
 	// binary.Read requires enough bytes in the reader to read all fields, even if
 	// the fields are just zero values. This also simplifies handling MAVLink2
 	// extensions and trailing zero truncation.
@@ -165,7 +153,7 @@ func (m *AHRS2) Read(frame mavlink2.Frame) (err error) {
 }
 
 // Write encodes the field values of the message to a byte array
-func (m *AHRS2) Write(version int) (output []byte, err error) {
+func (m *SupportedTunes) Write(version int) (output []byte, err error) {
 	var buffer bytes.Buffer
 
 	// Ensure only Version 1 or Version 2 were specified

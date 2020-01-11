@@ -3,7 +3,7 @@ package common
 /*
 Generated using mavgen - https://github.com/ArduPilot/pymavlink/
 
-Copyright 2019 queue-b <https://github.com/queue-b>
+Copyright 2020 queue-b <https://github.com/queue-b>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of the generated software (the "Generated Software"), to deal
@@ -56,7 +56,7 @@ type HighLatency2 struct {
 	FailureFlags uint16
 	/*Type Type of the MAV (quadrotor, helicopter, etc.) */
 	Type uint8
-	/*Autopilot Autopilot type / class. */
+	/*Autopilot Autopilot type / class. Use MAV_AUTOPILOT_INVALID for components that are not flight controllers. */
 	Autopilot uint8
 	/*Heading Heading */
 	Heading uint8
@@ -82,7 +82,7 @@ type HighLatency2 struct {
 	TemperatureAir int8
 	/*ClimbRate Maximum climb rate magnitude since last message */
 	ClimbRate int8
-	/*Battery Battery (percentage, -1 for DNU) */
+	/*Battery Battery level (-1 if field not provided). */
 	Battery int8
 	/*Custom0 Field for custom payload. */
 	Custom0 int8

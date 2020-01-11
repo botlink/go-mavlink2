@@ -3,7 +3,7 @@ package common
 /*
 Generated using mavgen - https://github.com/ArduPilot/pymavlink/
 
-Copyright 2019 queue-b <https://github.com/queue-b>
+Copyright 2020 queue-b <https://github.com/queue-b>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of the generated software (the "Generated Software"), to deal
@@ -52,6 +52,8 @@ type AttitudeQuaternion struct {
 	Pitchspeed float32
 	/*Yawspeed Yaw angular speed */
 	Yawspeed float32
+	/*ReprOffsetQ Rotation offset by which the attitude quaternion and angular speed vector should be rotated for user display (quaternion with [w, x, y, z] order, zero-rotation is [1, 0, 0, 0], send [0, 0, 0, 0] if field not supported). This field is intended for systems in which the reference attitude may change during flight. For example, tailsitters VTOLs rotate their reference attitude by 90 degrees between hover mode and fixed wing mode, thus repr_offset_q is equal to [1, 0, 0, 0] in hover mode and equal to [0.7071, 0, 0.7071, 0] in fixed wing mode. */
+	ReprOffsetQ [4]float32
 	/*HasExtensionFieldValues indicates if this message has any extensions and  */
 	HasExtensionFieldValues bool
 }
@@ -72,6 +74,30 @@ func (m *AttitudeQuaternion) String() string {
 	format += "Rollspeed:\t%v [rad/s]\n"
 	format += "Pitchspeed:\t%v [rad/s]\n"
 	format += "Yawspeed:\t%v [rad/s]\n"
+	if m.HasExtensionFieldValues {
+		format += "ReprOffsetQ:\t%v\n"
+	}
+
+	if m.HasExtensionFieldValues {
+		fmt.Fprintf(
+			writer,
+			format,
+			m.GetDialect(),
+			m.GetMessageName(),
+			m.TimeBootMs,
+			m.Q1,
+			m.Q2,
+			m.Q3,
+			m.Q4,
+			m.Rollspeed,
+			m.Pitchspeed,
+			m.Yawspeed,
+			m.ReprOffsetQ,
+		)
+
+		writer.Flush()
+		return string(buffer.Bytes())
+	}
 
 	fmt.Fprintf(
 		writer,
@@ -118,7 +144,7 @@ func (m *AttitudeQuaternion) GetID() uint32 {
 
 // HasExtensionFields returns true if the message definition contained extensions; false otherwise
 func (m *AttitudeQuaternion) HasExtensionFields() bool {
-	return false
+	return true
 }
 
 func (m *AttitudeQuaternion) getV1Length() int {
@@ -126,7 +152,7 @@ func (m *AttitudeQuaternion) getV1Length() int {
 }
 
 func (m *AttitudeQuaternion) getIOSlice() []byte {
-	return make([]byte, 32+1)
+	return make([]byte, 48+1)
 }
 
 // Read sets the field values of the message from the raw message payload

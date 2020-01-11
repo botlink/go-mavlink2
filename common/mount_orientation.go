@@ -3,7 +3,7 @@ package common
 /*
 Generated using mavgen - https://github.com/ArduPilot/pymavlink/
 
-Copyright 2019 queue-b <https://github.com/queue-b>
+Copyright 2020 queue-b <https://github.com/queue-b>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of the generated software (the "Generated Software"), to deal
@@ -42,9 +42,9 @@ type MountOrientation struct {
 	Roll float32
 	/*Pitch Pitch in global frame (set to NaN for invalid). */
 	Pitch float32
-	/*Yaw Yaw relative to vehicle(set to NaN for invalid). */
+	/*Yaw Yaw relative to vehicle (set to NaN for invalid). */
 	Yaw float32
-	/*YawAbsolute Yaw in absolute frame, North is 0 (set to NaN for invalid). */
+	/*YawAbsolute Yaw in absolute frame relative to Earth's North, north is 0 (set to NaN for invalid). */
 	YawAbsolute float32
 	/*HasExtensionFieldValues indicates if this message has any extensions and  */
 	HasExtensionFieldValues bool

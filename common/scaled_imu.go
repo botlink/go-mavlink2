@@ -3,7 +3,7 @@ package common
 /*
 Generated using mavgen - https://github.com/ArduPilot/pymavlink/
 
-Copyright 2019 queue-b <https://github.com/queue-b>
+Copyright 2020 queue-b <https://github.com/queue-b>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of the generated software (the "Generated Software"), to deal
@@ -56,6 +56,8 @@ type ScaledIMU struct {
 	Ymag int16
 	/*Zmag Z Magnetic field */
 	Zmag int16
+	/*Temperature Temperature, 0: IMU does not provide temperature values. If the IMU is at 0C it must send 1 (0.01C). */
+	Temperature int16
 	/*HasExtensionFieldValues indicates if this message has any extensions and  */
 	HasExtensionFieldValues bool
 }
@@ -75,9 +77,35 @@ func (m *ScaledIMU) String() string {
 	format += "Xgyro:\t%v [mrad/s]\n"
 	format += "Ygyro:\t%v [mrad/s]\n"
 	format += "Zgyro:\t%v [mrad/s]\n"
-	format += "Xmag:\t%v [mT]\n"
-	format += "Ymag:\t%v [mT]\n"
-	format += "Zmag:\t%v [mT]\n"
+	format += "Xmag:\t%v [mgauss]\n"
+	format += "Ymag:\t%v [mgauss]\n"
+	format += "Zmag:\t%v [mgauss]\n"
+	if m.HasExtensionFieldValues {
+		format += "Temperature:\t%v\n"
+	}
+
+	if m.HasExtensionFieldValues {
+		fmt.Fprintf(
+			writer,
+			format,
+			m.GetDialect(),
+			m.GetMessageName(),
+			m.TimeBootMs,
+			m.Xacc,
+			m.Yacc,
+			m.Zacc,
+			m.Xgyro,
+			m.Ygyro,
+			m.Zgyro,
+			m.Xmag,
+			m.Ymag,
+			m.Zmag,
+			m.Temperature,
+		)
+
+		writer.Flush()
+		return string(buffer.Bytes())
+	}
 
 	fmt.Fprintf(
 		writer,
@@ -126,7 +154,7 @@ func (m *ScaledIMU) GetID() uint32 {
 
 // HasExtensionFields returns true if the message definition contained extensions; false otherwise
 func (m *ScaledIMU) HasExtensionFields() bool {
-	return false
+	return true
 }
 
 func (m *ScaledIMU) getV1Length() int {
@@ -134,7 +162,7 @@ func (m *ScaledIMU) getV1Length() int {
 }
 
 func (m *ScaledIMU) getIOSlice() []byte {
-	return make([]byte, 22+1)
+	return make([]byte, 24+1)
 }
 
 // Read sets the field values of the message from the raw message payload

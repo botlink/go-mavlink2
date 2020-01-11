@@ -3,7 +3,7 @@ package common
 /*
 Generated using mavgen - https://github.com/ArduPilot/pymavlink/
 
-Copyright 2019 queue-b <https://github.com/queue-b>
+Copyright 2020 queue-b <https://github.com/queue-b>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of the generated software (the "Generated Software"), to deal
@@ -34,7 +34,7 @@ import (
 	"github.com/queue-b/go-mavlink2/util"
 )
 
-/*CommandInt Message encoding a command with parameters as scaled integers. Scaling depends on the actual command value. */
+/*CommandInt Message encoding a command with parameters as scaled integers. Scaling depends on the actual command value. The command microservice is documented at https://mavlink.io/en/services/command.html */
 type CommandInt struct {
 	/*Param1 PARAM1, see MAV_CMD enum */
 	Param1 float32

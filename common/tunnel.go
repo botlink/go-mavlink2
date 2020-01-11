@@ -1,4 +1,4 @@
-package ardupilotmega
+package common
 
 /*
 Generated using mavgen - https://github.com/ArduPilot/pymavlink/
@@ -34,25 +34,23 @@ import (
 	"github.com/queue-b/go-mavlink2/util"
 )
 
-/*AHRS2 Status of secondary AHRS filter if available. */
-type AHRS2 struct {
-	/*Roll Roll angle. */
-	Roll float32
-	/*Pitch Pitch angle. */
-	Pitch float32
-	/*Yaw Yaw angle. */
-	Yaw float32
-	/*Altitude Altitude (MSL). */
-	Altitude float32
-	/*Lat Latitude. */
-	Lat int32
-	/*Lng Longitude. */
-	Lng int32
+/*Tunnel Message for transporting "arbitrary" variable-length data from one component to another (broadcast is not forbidden, but discouraged). The encoding of the data is usually extension specific, i.e. determined by the source, and is usually not documented as part of the MAVLink specification. */
+type Tunnel struct {
+	/*PayloadType A code that identifies the content of the payload (0 for unknown, which is the default). If this code is less than 32768, it is a 'registered' payload type and the corresponding code should be added to the MAV_TUNNEL_PAYLOAD_TYPE enum. Software creators can register blocks of types as needed. Codes greater than 32767 are considered local experiments and should not be checked in to any widely distributed codebase. */
+	PayloadType uint16
+	/*TargetSystem System ID (can be 0 for broadcast, but this is discouraged) */
+	TargetSystem uint8
+	/*TargetComponent Component ID (can be 0 for broadcast, but this is discouraged) */
+	TargetComponent uint8
+	/*PayloadLength Length of the data transported in payload */
+	PayloadLength uint8
+	/*Payload Variable length payload. The payload length is defined by payload_length. The entire content of this block is opaque unless you understand the encoding specified by payload_type. */
+	Payload [128]uint8
 	/*HasExtensionFieldValues indicates if this message has any extensions and  */
 	HasExtensionFieldValues bool
 }
 
-func (m *AHRS2) String() string {
+func (m *Tunnel) String() string {
 	format := ""
 	var buffer bytes.Buffer
 
@@ -60,24 +58,22 @@ func (m *AHRS2) String() string {
 
 	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	format += "Roll:\t%v [rad]\n"
-	format += "Pitch:\t%v [rad]\n"
-	format += "Yaw:\t%v [rad]\n"
-	format += "Altitude:\t%v [m]\n"
-	format += "Lat:\t%v [degE7]\n"
-	format += "Lng:\t%v [degE7]\n"
+	format += "PayloadType:\t%v \n"
+	format += "TargetSystem:\t%v \n"
+	format += "TargetComponent:\t%v \n"
+	format += "PayloadLength:\t%v \n"
+	format += "Payload:\t%v \n"
 
 	fmt.Fprintf(
 		writer,
 		format,
 		m.GetDialect(),
 		m.GetMessageName(),
-		m.Roll,
-		m.Pitch,
-		m.Yaw,
-		m.Altitude,
-		m.Lat,
-		m.Lng,
+		m.PayloadType,
+		m.TargetSystem,
+		m.TargetComponent,
+		m.PayloadLength,
+		m.Payload,
 	)
 
 	writer.Flush()
@@ -85,7 +81,7 @@ func (m *AHRS2) String() string {
 }
 
 // GetVersion gets the MAVLink version of the Message contents
-func (m *AHRS2) GetVersion() int {
+func (m *Tunnel) GetVersion() int {
 	if m.HasExtensionFieldValues {
 		return 2
 	}
@@ -94,35 +90,35 @@ func (m *AHRS2) GetVersion() int {
 }
 
 // GetDialect gets the name of the dialect that defines the Message
-func (m *AHRS2) GetDialect() string {
-	return "ardupilotmega"
+func (m *Tunnel) GetDialect() string {
+	return "common"
 }
 
 // GetMessageName gets the name of the Message
-func (m *AHRS2) GetMessageName() string {
-	return "AHRS2"
+func (m *Tunnel) GetMessageName() string {
+	return "Tunnel"
 }
 
 // GetID gets the ID of the Message
-func (m *AHRS2) GetID() uint32 {
-	return 178
+func (m *Tunnel) GetID() uint32 {
+	return 385
 }
 
 // HasExtensionFields returns true if the message definition contained extensions; false otherwise
-func (m *AHRS2) HasExtensionFields() bool {
+func (m *Tunnel) HasExtensionFields() bool {
 	return false
 }
 
-func (m *AHRS2) getV1Length() int {
-	return 24
+func (m *Tunnel) getV1Length() int {
+	return 133
 }
 
-func (m *AHRS2) getIOSlice() []byte {
-	return make([]byte, 24+1)
+func (m *Tunnel) getIOSlice() []byte {
+	return make([]byte, 133+1)
 }
 
 // Read sets the field values of the message from the raw message payload
-func (m *AHRS2) Read(frame mavlink2.Frame) (err error) {
+func (m *Tunnel) Read(frame mavlink2.Frame) (err error) {
 	version := frame.GetVersion()
 
 	// Ensure only Version 1 or Version 2 were specified
@@ -144,7 +140,7 @@ func (m *AHRS2) Read(frame mavlink2.Frame) (err error) {
 		}
 	}()
 
-	// Get a slice of bytes long enough for the all the AHRS2 fields
+	// Get a slice of bytes long enough for the all the Tunnel fields
 	// binary.Read requires enough bytes in the reader to read all fields, even if
 	// the fields are just zero values. This also simplifies handling MAVLink2
 	// extensions and trailing zero truncation.
@@ -165,7 +161,7 @@ func (m *AHRS2) Read(frame mavlink2.Frame) (err error) {
 }
 
 // Write encodes the field values of the message to a byte array
-func (m *AHRS2) Write(version int) (output []byte, err error) {
+func (m *Tunnel) Write(version int) (output []byte, err error) {
 	var buffer bytes.Buffer
 
 	// Ensure only Version 1 or Version 2 were specified

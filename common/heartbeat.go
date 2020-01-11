@@ -3,7 +3,7 @@ package common
 /*
 Generated using mavgen - https://github.com/ArduPilot/pymavlink/
 
-Copyright 2019 queue-b <https://github.com/queue-b>
+Copyright 2020 queue-b <https://github.com/queue-b>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of the generated software (the "Generated Software"), to deal
@@ -34,13 +34,13 @@ import (
 	"github.com/queue-b/go-mavlink2/util"
 )
 
-/*Heartbeat The heartbeat message shows that a system or component is present and responding. The type and autopilot fields (along with the message component id), allow the receiving system to treat further messages from this system appropriately (e.g. by laying out the user interface based on the autopilot). */
+/*Heartbeat The heartbeat message shows that a system or component is present and responding. The type and autopilot fields (along with the message component id), allow the receiving system to treat further messages from this system appropriately (e.g. by laying out the user interface based on the autopilot). This microservice is documented at https://mavlink.io/en/services/heartbeat.html */
 type Heartbeat struct {
 	/*CustomMode A bitfield for use for autopilot-specific flags */
 	CustomMode uint32
-	/*Type Type of the system (quadrotor, helicopter, etc.). Components use the same type as their associated system. */
+	/*Type Vehicle or component type. For a flight controller component the vehicle type (quadrotor, helicopter, etc.). For other components the component type (e.g. camera, gimbal, etc.). This should be used in preference to component id for identifying the component type. */
 	Type uint8
-	/*Autopilot Autopilot type / class. */
+	/*Autopilot Autopilot type / class. Use MAV_AUTOPILOT_INVALID for components that are not flight controllers. */
 	Autopilot uint8
 	/*BaseMode System mode bitmap. */
 	BaseMode uint8

@@ -3,7 +3,7 @@ package common
 /*
 Generated using mavgen - https://github.com/ArduPilot/pymavlink/
 
-Copyright 2019 queue-b <https://github.com/queue-b>
+Copyright 2020 queue-b <https://github.com/queue-b>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of the generated software (the "Generated Software"), to deal
@@ -40,13 +40,13 @@ type SysStatus struct {
 	OnboardControlSensorsPresent uint32
 	/*OnboardControlSensorsEnabled Bitmap showing which onboard controllers and sensors are enabled:  Value of 0: not enabled. Value of 1: enabled. */
 	OnboardControlSensorsEnabled uint32
-	/*OnboardControlSensorsHealth Bitmap showing which onboard controllers and sensors are operational or have an error:  Value of 0: not enabled. Value of 1: enabled. */
+	/*OnboardControlSensorsHealth Bitmap showing which onboard controllers and sensors have an error (or are operational). Value of 0: error. Value of 1: healthy. */
 	OnboardControlSensorsHealth uint32
 	/*Load Maximum usage in percent of the mainloop time. Values: [0-1000] - should always be below 1000 */
 	Load uint16
-	/*VoltageBattery Battery voltage */
+	/*VoltageBattery Battery voltage, UINT16_MAX: Voltage not sent by autopilot */
 	VoltageBattery uint16
-	/*CurrentBattery Battery current, -1: autopilot does not measure the current */
+	/*CurrentBattery Battery current, -1: Current not sent by autopilot */
 	CurrentBattery int16
 	/*DropRateComm Communication drop rate, (UART, I2C, SPI, CAN), dropped packets on all links (packets that were corrupted on reception on the MAV) */
 	DropRateComm uint16
@@ -60,7 +60,7 @@ type SysStatus struct {
 	ErrorsCount3 uint16
 	/*ErrorsCount4 Autopilot-specific errors */
 	ErrorsCount4 uint16
-	/*BatteryRemaining Remaining battery energy, -1: autopilot estimate the remaining battery */
+	/*BatteryRemaining Battery energy remaining, -1: Battery remaining energy not sent by autopilot */
 	BatteryRemaining int8
 	/*HasExtensionFieldValues indicates if this message has any extensions and  */
 	HasExtensionFieldValues bool

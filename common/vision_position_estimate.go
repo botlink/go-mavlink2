@@ -3,7 +3,7 @@ package common
 /*
 Generated using mavgen - https://github.com/ArduPilot/pymavlink/
 
-Copyright 2019 queue-b <https://github.com/queue-b>
+Copyright 2020 queue-b <https://github.com/queue-b>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of the generated software (the "Generated Software"), to deal
@@ -34,15 +34,15 @@ import (
 	"github.com/queue-b/go-mavlink2/util"
 )
 
-/*VisionPositionEstimate Global position/attitude estimate from a vision source. */
+/*VisionPositionEstimate Local position/attitude estimate from a vision source. */
 type VisionPositionEstimate struct {
 	/*Usec Timestamp (UNIX time or time since system boot) */
 	Usec uint64
-	/*X Global X position */
+	/*X Local X position */
 	X float32
-	/*Y Global Y position */
+	/*Y Local Y position */
 	Y float32
-	/*Z Global Z position */
+	/*Z Local Z position */
 	Z float32
 	/*Roll Roll angle */
 	Roll float32

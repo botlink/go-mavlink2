@@ -3,7 +3,7 @@ package common
 /*
 Generated using mavgen - https://github.com/ArduPilot/pymavlink/
 
-Copyright 2019 queue-b <https://github.com/queue-b>
+Copyright 2020 queue-b <https://github.com/queue-b>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of the generated software (the "Generated Software"), to deal
@@ -68,6 +68,8 @@ type Odometry struct {
 	ChildFrameID uint8
 	/*ResetCounter Estimate reset counter. This should be incremented when the estimate resets in any of the dimensions (position, velocity, attitude, angular speed). This is designed to be used when e.g an external SLAM system detects a loop-closure and the estimate jumps. */
 	ResetCounter uint8
+	/*EstimatorType Type of estimator that is providing the odometry. */
+	EstimatorType uint8
 	/*HasExtensionFieldValues indicates if this message has any extensions and  */
 	HasExtensionFieldValues bool
 }
@@ -97,6 +99,7 @@ func (m *Odometry) String() string {
 	format += "ChildFrameID:\t%v \n"
 	if m.HasExtensionFieldValues {
 		format += "ResetCounter:\t%v\n"
+		format += "EstimatorType:\t%v\n"
 	}
 
 	if m.HasExtensionFieldValues {
@@ -121,6 +124,7 @@ func (m *Odometry) String() string {
 			m.FrameID,
 			m.ChildFrameID,
 			m.ResetCounter,
+			m.EstimatorType,
 		)
 
 		writer.Flush()
@@ -187,7 +191,7 @@ func (m *Odometry) getV1Length() int {
 }
 
 func (m *Odometry) getIOSlice() []byte {
-	return make([]byte, 231+1)
+	return make([]byte, 232+1)
 }
 
 // Read sets the field values of the message from the raw message payload

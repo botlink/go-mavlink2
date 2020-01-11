@@ -1,4 +1,4 @@
-package ardupilotmega
+package common
 
 /*
 Generated using mavgen - https://github.com/ArduPilot/pymavlink/
@@ -34,25 +34,23 @@ import (
 	"github.com/queue-b/go-mavlink2/util"
 )
 
-/*AHRS2 Status of secondary AHRS filter if available. */
-type AHRS2 struct {
-	/*Roll Roll angle. */
-	Roll float32
-	/*Pitch Pitch angle. */
-	Pitch float32
-	/*Yaw Yaw angle. */
-	Yaw float32
-	/*Altitude Altitude (MSL). */
-	Altitude float32
-	/*Lat Latitude. */
-	Lat int32
-	/*Lng Longitude. */
-	Lng int32
+/*FenceStatus Status of geo-fencing. Sent in extended status stream when fencing enabled. */
+type FenceStatus struct {
+	/*BreachTime Time (since boot) of last breach. */
+	BreachTime uint32
+	/*BreachCount Number of fence breaches. */
+	BreachCount uint16
+	/*BreachStatus Breach status (0 if currently inside fence, 1 if outside). */
+	BreachStatus uint8
+	/*BreachType Last breach type. */
+	BreachType uint8
+	/*BreachMitigation Active action to prevent fence breach */
+	BreachMitigation uint8
 	/*HasExtensionFieldValues indicates if this message has any extensions and  */
 	HasExtensionFieldValues bool
 }
 
-func (m *AHRS2) String() string {
+func (m *FenceStatus) String() string {
 	format := ""
 	var buffer bytes.Buffer
 
@@ -60,24 +58,40 @@ func (m *AHRS2) String() string {
 
 	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
-	format += "Roll:\t%v [rad]\n"
-	format += "Pitch:\t%v [rad]\n"
-	format += "Yaw:\t%v [rad]\n"
-	format += "Altitude:\t%v [m]\n"
-	format += "Lat:\t%v [degE7]\n"
-	format += "Lng:\t%v [degE7]\n"
+	format += "BreachTime:\t%v [ms]\n"
+	format += "BreachCount:\t%v \n"
+	format += "BreachStatus:\t%v \n"
+	format += "BreachType:\t%v \n"
+	if m.HasExtensionFieldValues {
+		format += "BreachMitigation:\t%v\n"
+	}
+
+	if m.HasExtensionFieldValues {
+		fmt.Fprintf(
+			writer,
+			format,
+			m.GetDialect(),
+			m.GetMessageName(),
+			m.BreachTime,
+			m.BreachCount,
+			m.BreachStatus,
+			m.BreachType,
+			m.BreachMitigation,
+		)
+
+		writer.Flush()
+		return string(buffer.Bytes())
+	}
 
 	fmt.Fprintf(
 		writer,
 		format,
 		m.GetDialect(),
 		m.GetMessageName(),
-		m.Roll,
-		m.Pitch,
-		m.Yaw,
-		m.Altitude,
-		m.Lat,
-		m.Lng,
+		m.BreachTime,
+		m.BreachCount,
+		m.BreachStatus,
+		m.BreachType,
 	)
 
 	writer.Flush()
@@ -85,7 +99,7 @@ func (m *AHRS2) String() string {
 }
 
 // GetVersion gets the MAVLink version of the Message contents
-func (m *AHRS2) GetVersion() int {
+func (m *FenceStatus) GetVersion() int {
 	if m.HasExtensionFieldValues {
 		return 2
 	}
@@ -94,35 +108,35 @@ func (m *AHRS2) GetVersion() int {
 }
 
 // GetDialect gets the name of the dialect that defines the Message
-func (m *AHRS2) GetDialect() string {
-	return "ardupilotmega"
+func (m *FenceStatus) GetDialect() string {
+	return "common"
 }
 
 // GetMessageName gets the name of the Message
-func (m *AHRS2) GetMessageName() string {
-	return "AHRS2"
+func (m *FenceStatus) GetMessageName() string {
+	return "FenceStatus"
 }
 
 // GetID gets the ID of the Message
-func (m *AHRS2) GetID() uint32 {
-	return 178
+func (m *FenceStatus) GetID() uint32 {
+	return 162
 }
 
 // HasExtensionFields returns true if the message definition contained extensions; false otherwise
-func (m *AHRS2) HasExtensionFields() bool {
-	return false
+func (m *FenceStatus) HasExtensionFields() bool {
+	return true
 }
 
-func (m *AHRS2) getV1Length() int {
-	return 24
+func (m *FenceStatus) getV1Length() int {
+	return 8
 }
 
-func (m *AHRS2) getIOSlice() []byte {
-	return make([]byte, 24+1)
+func (m *FenceStatus) getIOSlice() []byte {
+	return make([]byte, 9+1)
 }
 
 // Read sets the field values of the message from the raw message payload
-func (m *AHRS2) Read(frame mavlink2.Frame) (err error) {
+func (m *FenceStatus) Read(frame mavlink2.Frame) (err error) {
 	version := frame.GetVersion()
 
 	// Ensure only Version 1 or Version 2 were specified
@@ -144,7 +158,7 @@ func (m *AHRS2) Read(frame mavlink2.Frame) (err error) {
 		}
 	}()
 
-	// Get a slice of bytes long enough for the all the AHRS2 fields
+	// Get a slice of bytes long enough for the all the FenceStatus fields
 	// binary.Read requires enough bytes in the reader to read all fields, even if
 	// the fields are just zero values. This also simplifies handling MAVLink2
 	// extensions and trailing zero truncation.
@@ -165,7 +179,7 @@ func (m *AHRS2) Read(frame mavlink2.Frame) (err error) {
 }
 
 // Write encodes the field values of the message to a byte array
-func (m *AHRS2) Write(version int) (output []byte, err error) {
+func (m *FenceStatus) Write(version int) (output []byte, err error) {
 	var buffer bytes.Buffer
 
 	// Ensure only Version 1 or Version 2 were specified

@@ -3,7 +3,7 @@ package common
 /*
 Generated using mavgen - https://github.com/ArduPilot/pymavlink/
 
-Copyright 2019 queue-b <https://github.com/queue-b>
+Copyright 2020 queue-b <https://github.com/queue-b>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of the generated software (the "Generated Software"), to deal
@@ -69,8 +69,8 @@ func (m *OpticalFlow) String() string {
 	format += "Name:\t%v/%v\n"
 	// Output field values based on the decoded message type
 	format += "TimeUsec:\t%v [us]\n"
-	format += "FlowCompMX:\t%v [m]\n"
-	format += "FlowCompMY:\t%v [m]\n"
+	format += "FlowCompMX:\t%v [m/s]\n"
+	format += "FlowCompMY:\t%v [m/s]\n"
 	format += "GroundDistance:\t%v [m]\n"
 	format += "FlowX:\t%v [dpix]\n"
 	format += "FlowY:\t%v [dpix]\n"
