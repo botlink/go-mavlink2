@@ -5,7 +5,7 @@ import "github.com/queue-b/go-mavlink2"
 /*
 Generated using mavgen - https://github.com/ArduPilot/pymavlink/
 
-Copyright 2019 queue-b <https://github.com/queue-b>
+Copyright 2020 queue-b <https://github.com/queue-b>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of the generated software (the "Generated Software"), to deal
@@ -47,7 +47,7 @@ func (d Dialect) GetMeta(messageID uint32) (meta mavlink2.MessageMeta, err error
 
 // GetMessage extracts and parses the message contained in the Frame
 func (d Dialect) GetMessage(frame mavlink2.Frame) (message mavlink2.Message, err error) {
-	if parser, ok := uAvionixParsers[frame.GetMessageID()]; ok {
+	if parser, ok := uavionixParsers[frame.GetMessageID()]; ok {
 		message, err = parser(frame)
 		return
 	}
