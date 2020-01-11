@@ -3,7 +3,7 @@ package common
 /*
 Generated using mavgen - https://github.com/ArduPilot/pymavlink/
 
-Copyright 2019 queue-b <https://github.com/queue-b>
+Copyright 2020 queue-b <https://github.com/queue-b>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of the generated software (the "Generated Software"), to deal
@@ -70,9 +70,9 @@ const (
 	MavAutopilotEnumEnd = 20
 )
 
-/*MAV_TYPE - MAVLINK system type. All components in a system should report this type in their HEARTBEAT. */
+/*MAV_TYPE - MAVLINK component type reported in HEARTBEAT message. Flight controllers must report the type of the vehicle on which they are mounted (e.g. MAV_TYPE_OCTOROTOR). All other components must report a value appropriate for their type (e.g. a camera must use MAV_TYPE_CAMERA). */
 const (
-	/*MavTypeGeneric - Generic micro air vehicle. */
+	/*MavTypeGeneric - Generic micro air vehicle */
 	MavTypeGeneric = 0
 	/*MavTypeFixedWing - Fixed wing aircraft. */
 	MavTypeFixedWing = 1
@@ -124,22 +124,24 @@ const (
 	MavTypeVtolReserved4 = 24
 	/*MavTypeVtolReserved5 - VTOL reserved 5 */
 	MavTypeVtolReserved5 = 25
-	/*MavTypeGimbal - Gimbal (standalone) */
+	/*MavTypeGimbal - Gimbal */
 	MavTypeGimbal = 26
-	/*MavTypeAdsb - ADSB system (standalone) */
+	/*MavTypeAdsb - ADSB system */
 	MavTypeAdsb = 27
 	/*MavTypeParafoil - Steerable, nonrigid airfoil */
 	MavTypeParafoil = 28
 	/*MavTypeDodecarotor - Dodecarotor */
 	MavTypeDodecarotor = 29
-	/*MavTypeCamera - Camera (standalone) */
+	/*MavTypeCamera - Camera */
 	MavTypeCamera = 30
 	/*MavTypeChargingStation - Charging station */
 	MavTypeChargingStation = 31
-	/*MavTypeFlarm - FLARM collision avoidance system (standalone) */
+	/*MavTypeFlarm - FLARM collision avoidance system */
 	MavTypeFlarm = 32
+	/*MavTypeServo - Servo */
+	MavTypeServo = 33
 	/*MavTypeEnumEnd -  */
-	MavTypeEnumEnd = 33
+	MavTypeEnumEnd = 34
 )
 
 /*FIRMWARE_VERSION_TYPE - These values define the type of firmware release.  These values indicate the first version or release of this type.  For example the first alpha release would be 64, the second would be 65. */
@@ -220,7 +222,7 @@ const (
 	MavModeFlagDecodePositionCustomMode = 1
 	/*MavModeFlagDecodePositionTest - Seventh bit: 00000010 */
 	MavModeFlagDecodePositionTest = 2
-	/*MavModeFlagDecodePositionAuto - Sixt bit:   00000100 */
+	/*MavModeFlagDecodePositionAuto - Sixth bit:   00000100 */
 	MavModeFlagDecodePositionAuto = 4
 	/*MavModeFlagDecodePositionGUIDed - Fifth bit:  00001000 */
 	MavModeFlagDecodePositionGUIDed = 8
@@ -307,10 +309,160 @@ const (
   Components must use the appropriate ID in their source address when sending messages. Components can also use IDs to determine if they are the intended recipient of an incoming message. The MAV_COMP_ID_ALL value is used to indicate messages that must be processed by all components.
   When creating new entries, components that can have multiple instances (e.g. cameras, servos etc.) should be allocated sequential values. An appropriate number of values should be left free after these components to allow the number of instances to be expanded. */
 const (
-	/*MavCompIDAll - Used to broadcast messages to all components of the receiving system. Components should attempt to process messages with this component ID and forward to components on any other interfaces. */
+	/*MavCompIDAll - Target id (target_component) used to broadcast messages to all components of the receiving system. Components should attempt to process messages with this component ID and forward to components on any other interfaces. Note: This is not a valid *source* component id for a message. */
 	MavCompIDAll = 0
 	/*MavCompIDAutopilot1 - System flight controller component ("autopilot"). Only one autopilot is expected in a particular system. */
 	MavCompIDAutopilot1 = 1
+	/*MavCompIDUser1 - Id for a component on privately managed MAVLink network. Can be used for any purpose but may not be published by components outside of the private network. */
+	MavCompIDUser1 = 25
+	/*MavCompIDUser2 - Id for a component on privately managed MAVLink network. Can be used for any purpose but may not be published by components outside of the private network. */
+	MavCompIDUser2 = 26
+	/*MavCompIDUser3 - Id for a component on privately managed MAVLink network. Can be used for any purpose but may not be published by components outside of the private network. */
+	MavCompIDUser3 = 27
+	/*MavCompIDUser4 - Id for a component on privately managed MAVLink network. Can be used for any purpose but may not be published by components outside of the private network. */
+	MavCompIDUser4 = 28
+	/*MavCompIDUser5 - Id for a component on privately managed MAVLink network. Can be used for any purpose but may not be published by components outside of the private network. */
+	MavCompIDUser5 = 29
+	/*MavCompIDUser6 - Id for a component on privately managed MAVLink network. Can be used for any purpose but may not be published by components outside of the private network. */
+	MavCompIDUser6 = 30
+	/*MavCompIDUser7 - Id for a component on privately managed MAVLink network. Can be used for any purpose but may not be published by components outside of the private network. */
+	MavCompIDUser7 = 31
+	/*MavCompIDUser8 - Id for a component on privately managed MAVLink network. Can be used for any purpose but may not be published by components outside of the private network. */
+	MavCompIDUser8 = 32
+	/*MavCompIDUser9 - Id for a component on privately managed MAVLink network. Can be used for any purpose but may not be published by components outside of the private network. */
+	MavCompIDUser9 = 33
+	/*MavCompIDUser10 - Id for a component on privately managed MAVLink network. Can be used for any purpose but may not be published by components outside of the private network. */
+	MavCompIDUser10 = 34
+	/*MavCompIDUser11 - Id for a component on privately managed MAVLink network. Can be used for any purpose but may not be published by components outside of the private network. */
+	MavCompIDUser11 = 35
+	/*MavCompIDUser12 - Id for a component on privately managed MAVLink network. Can be used for any purpose but may not be published by components outside of the private network. */
+	MavCompIDUser12 = 36
+	/*MavCompIDUser13 - Id for a component on privately managed MAVLink network. Can be used for any purpose but may not be published by components outside of the private network. */
+	MavCompIDUser13 = 37
+	/*MavCompIDUser14 - Id for a component on privately managed MAVLink network. Can be used for any purpose but may not be published by components outside of the private network. */
+	MavCompIDUser14 = 38
+	/*MavCompIDUser15 - Id for a component on privately managed MAVLink network. Can be used for any purpose but may not be published by components outside of the private network. */
+	MavCompIDUser15 = 39
+	/*MavCompIDUse16 - Id for a component on privately managed MAVLink network. Can be used for any purpose but may not be published by components outside of the private network. */
+	MavCompIDUse16 = 40
+	/*MavCompIDUser17 - Id for a component on privately managed MAVLink network. Can be used for any purpose but may not be published by components outside of the private network. */
+	MavCompIDUser17 = 41
+	/*MavCompIDUser18 - Id for a component on privately managed MAVLink network. Can be used for any purpose but may not be published by components outside of the private network. */
+	MavCompIDUser18 = 42
+	/*MavCompIDUser19 - Id for a component on privately managed MAVLink network. Can be used for any purpose but may not be published by components outside of the private network. */
+	MavCompIDUser19 = 43
+	/*MavCompIDUser20 - Id for a component on privately managed MAVLink network. Can be used for any purpose but may not be published by components outside of the private network. */
+	MavCompIDUser20 = 44
+	/*MavCompIDUser21 - Id for a component on privately managed MAVLink network. Can be used for any purpose but may not be published by components outside of the private network. */
+	MavCompIDUser21 = 45
+	/*MavCompIDUser22 - Id for a component on privately managed MAVLink network. Can be used for any purpose but may not be published by components outside of the private network. */
+	MavCompIDUser22 = 46
+	/*MavCompIDUser23 - Id for a component on privately managed MAVLink network. Can be used for any purpose but may not be published by components outside of the private network. */
+	MavCompIDUser23 = 47
+	/*MavCompIDUser24 - Id for a component on privately managed MAVLink network. Can be used for any purpose but may not be published by components outside of the private network. */
+	MavCompIDUser24 = 48
+	/*MavCompIDUser25 - Id for a component on privately managed MAVLink network. Can be used for any purpose but may not be published by components outside of the private network. */
+	MavCompIDUser25 = 49
+	/*MavCompIDUser26 - Id for a component on privately managed MAVLink network. Can be used for any purpose but may not be published by components outside of the private network. */
+	MavCompIDUser26 = 50
+	/*MavCompIDUser27 - Id for a component on privately managed MAVLink network. Can be used for any purpose but may not be published by components outside of the private network. */
+	MavCompIDUser27 = 51
+	/*MavCompIDUser28 - Id for a component on privately managed MAVLink network. Can be used for any purpose but may not be published by components outside of the private network. */
+	MavCompIDUser28 = 52
+	/*MavCompIDUser29 - Id for a component on privately managed MAVLink network. Can be used for any purpose but may not be published by components outside of the private network. */
+	MavCompIDUser29 = 53
+	/*MavCompIDUser30 - Id for a component on privately managed MAVLink network. Can be used for any purpose but may not be published by components outside of the private network. */
+	MavCompIDUser30 = 54
+	/*MavCompIDUser31 - Id for a component on privately managed MAVLink network. Can be used for any purpose but may not be published by components outside of the private network. */
+	MavCompIDUser31 = 55
+	/*MavCompIDUser32 - Id for a component on privately managed MAVLink network. Can be used for any purpose but may not be published by components outside of the private network. */
+	MavCompIDUser32 = 56
+	/*MavCompIDUser33 - Id for a component on privately managed MAVLink network. Can be used for any purpose but may not be published by components outside of the private network. */
+	MavCompIDUser33 = 57
+	/*MavCompIDUser34 - Id for a component on privately managed MAVLink network. Can be used for any purpose but may not be published by components outside of the private network. */
+	MavCompIDUser34 = 58
+	/*MavCompIDUser35 - Id for a component on privately managed MAVLink network. Can be used for any purpose but may not be published by components outside of the private network. */
+	MavCompIDUser35 = 59
+	/*MavCompIDUser36 - Id for a component on privately managed MAVLink network. Can be used for any purpose but may not be published by components outside of the private network. */
+	MavCompIDUser36 = 60
+	/*MavCompIDUser37 - Id for a component on privately managed MAVLink network. Can be used for any purpose but may not be published by components outside of the private network. */
+	MavCompIDUser37 = 61
+	/*MavCompIDUser38 - Id for a component on privately managed MAVLink network. Can be used for any purpose but may not be published by components outside of the private network. */
+	MavCompIDUser38 = 62
+	/*MavCompIDUser39 - Id for a component on privately managed MAVLink network. Can be used for any purpose but may not be published by components outside of the private network. */
+	MavCompIDUser39 = 63
+	/*MavCompIDUser40 - Id for a component on privately managed MAVLink network. Can be used for any purpose but may not be published by components outside of the private network. */
+	MavCompIDUser40 = 64
+	/*MavCompIDUser41 - Id for a component on privately managed MAVLink network. Can be used for any purpose but may not be published by components outside of the private network. */
+	MavCompIDUser41 = 65
+	/*MavCompIDUser42 - Id for a component on privately managed MAVLink network. Can be used for any purpose but may not be published by components outside of the private network. */
+	MavCompIDUser42 = 66
+	/*MavCompIDUser43 - Id for a component on privately managed MAVLink network. Can be used for any purpose but may not be published by components outside of the private network. */
+	MavCompIDUser43 = 67
+	/*MavCompIDUser44 - Id for a component on privately managed MAVLink network. Can be used for any purpose but may not be published by components outside of the private network. */
+	MavCompIDUser44 = 68
+	/*MavCompIDUser45 - Id for a component on privately managed MAVLink network. Can be used for any purpose but may not be published by components outside of the private network. */
+	MavCompIDUser45 = 69
+	/*MavCompIDUser46 - Id for a component on privately managed MAVLink network. Can be used for any purpose but may not be published by components outside of the private network. */
+	MavCompIDUser46 = 70
+	/*MavCompIDUser47 - Id for a component on privately managed MAVLink network. Can be used for any purpose but may not be published by components outside of the private network. */
+	MavCompIDUser47 = 71
+	/*MavCompIDUser48 - Id for a component on privately managed MAVLink network. Can be used for any purpose but may not be published by components outside of the private network. */
+	MavCompIDUser48 = 72
+	/*MavCompIDUser49 - Id for a component on privately managed MAVLink network. Can be used for any purpose but may not be published by components outside of the private network. */
+	MavCompIDUser49 = 73
+	/*MavCompIDUser50 - Id for a component on privately managed MAVLink network. Can be used for any purpose but may not be published by components outside of the private network. */
+	MavCompIDUser50 = 74
+	/*MavCompIDUser51 - Id for a component on privately managed MAVLink network. Can be used for any purpose but may not be published by components outside of the private network. */
+	MavCompIDUser51 = 75
+	/*MavCompIDUser52 - Id for a component on privately managed MAVLink network. Can be used for any purpose but may not be published by components outside of the private network. */
+	MavCompIDUser52 = 76
+	/*MavCompIDUser53 - Id for a component on privately managed MAVLink network. Can be used for any purpose but may not be published by components outside of the private network. */
+	MavCompIDUser53 = 77
+	/*MavCompIDUser54 - Id for a component on privately managed MAVLink network. Can be used for any purpose but may not be published by components outside of the private network. */
+	MavCompIDUser54 = 78
+	/*MavCompIDUser55 - Id for a component on privately managed MAVLink network. Can be used for any purpose but may not be published by components outside of the private network. */
+	MavCompIDUser55 = 79
+	/*MavCompIDUser56 - Id for a component on privately managed MAVLink network. Can be used for any purpose but may not be published by components outside of the private network. */
+	MavCompIDUser56 = 80
+	/*MavCompIDUser57 - Id for a component on privately managed MAVLink network. Can be used for any purpose but may not be published by components outside of the private network. */
+	MavCompIDUser57 = 81
+	/*MavCompIDUser58 - Id for a component on privately managed MAVLink network. Can be used for any purpose but may not be published by components outside of the private network. */
+	MavCompIDUser58 = 82
+	/*MavCompIDUser59 - Id for a component on privately managed MAVLink network. Can be used for any purpose but may not be published by components outside of the private network. */
+	MavCompIDUser59 = 83
+	/*MavCompIDUser60 - Id for a component on privately managed MAVLink network. Can be used for any purpose but may not be published by components outside of the private network. */
+	MavCompIDUser60 = 84
+	/*MavCompIDUser61 - Id for a component on privately managed MAVLink network. Can be used for any purpose but may not be published by components outside of the private network. */
+	MavCompIDUser61 = 85
+	/*MavCompIDUser62 - Id for a component on privately managed MAVLink network. Can be used for any purpose but may not be published by components outside of the private network. */
+	MavCompIDUser62 = 86
+	/*MavCompIDUser63 - Id for a component on privately managed MAVLink network. Can be used for any purpose but may not be published by components outside of the private network. */
+	MavCompIDUser63 = 87
+	/*MavCompIDUser64 - Id for a component on privately managed MAVLink network. Can be used for any purpose but may not be published by components outside of the private network. */
+	MavCompIDUser64 = 88
+	/*MavCompIDUser65 - Id for a component on privately managed MAVLink network. Can be used for any purpose but may not be published by components outside of the private network. */
+	MavCompIDUser65 = 89
+	/*MavCompIDUser66 - Id for a component on privately managed MAVLink network. Can be used for any purpose but may not be published by components outside of the private network. */
+	MavCompIDUser66 = 90
+	/*MavCompIDUser67 - Id for a component on privately managed MAVLink network. Can be used for any purpose but may not be published by components outside of the private network. */
+	MavCompIDUser67 = 91
+	/*MavCompIDUser68 - Id for a component on privately managed MAVLink network. Can be used for any purpose but may not be published by components outside of the private network. */
+	MavCompIDUser68 = 92
+	/*MavCompIDUser69 - Id for a component on privately managed MAVLink network. Can be used for any purpose but may not be published by components outside of the private network. */
+	MavCompIDUser69 = 93
+	/*MavCompIDUser70 - Id for a component on privately managed MAVLink network. Can be used for any purpose but may not be published by components outside of the private network. */
+	MavCompIDUser70 = 94
+	/*MavCompIDUser71 - Id for a component on privately managed MAVLink network. Can be used for any purpose but may not be published by components outside of the private network. */
+	MavCompIDUser71 = 95
+	/*MavCompIDUser72 - Id for a component on privately managed MAVLink network. Can be used for any purpose but may not be published by components outside of the private network. */
+	MavCompIDUser72 = 96
+	/*MavCompIDUser73 - Id for a component on privately managed MAVLink network. Can be used for any purpose but may not be published by components outside of the private network. */
+	MavCompIDUser73 = 97
+	/*MavCompIDUser74 - Id for a component on privately managed MAVLink network. Can be used for any purpose but may not be published by components outside of the private network. */
+	MavCompIDUser74 = 98
+	/*MavCompIDUser75 - Id for a component on privately managed MAVLink network. Can be used for any purpose but may not be published by components outside of the private network. */
+	MavCompIDUser75 = 99
 	/*MavCompIDCamera - Camera #1. */
 	MavCompIDCamera = 100
 	/*MavCompIDCamera2 - Camera #2. */
@@ -351,7 +503,7 @@ const (
 	MavCompIDServo13 = 152
 	/*MavCompIDServo14 - Servo #14. */
 	MavCompIDServo14 = 153
-	/*MavCompIDGimbal - Gimbal component. */
+	/*MavCompIDGimbal - Gimbal #1. */
 	MavCompIDGimbal = 154
 	/*MavCompIDLog - Logging component. */
 	MavCompIDLog = 155
@@ -365,6 +517,16 @@ const (
 	MavCompIDQx1Gimbal = 159
 	/*MavCompIDFlarm - FLARM collision alert component. */
 	MavCompIDFlarm = 160
+	/*MavCompIDGimbal2 - Gimbal #2. */
+	MavCompIDGimbal2 = 171
+	/*MavCompIDGimbal3 - Gimbal #3. */
+	MavCompIDGimbal3 = 172
+	/*MavCompIDGimbal4 - Gimbal #4 */
+	MavCompIDGimbal4 = 173
+	/*MavCompIDGimbal5 - Gimbal #5. */
+	MavCompIDGimbal5 = 174
+	/*MavCompIDGimbal6 - Gimbal #6. */
+	MavCompIDGimbal6 = 175
 	/*MavCompIDMissionplanner - Component that can generate/supply a mission flight plan (e.g. GCS or developer API). */
 	MavCompIDMissionplanner = 190
 	/*MavCompIDPathplanner - Component that finds an optimal path between points based on a certain constraint (e.g. minimum snap, shortest path, cost, etc.). */
@@ -373,6 +535,8 @@ const (
 	MavCompIDObstacleAvoIDance = 196
 	/*MavCompIDVisualInertialOdometry - Component that provides position estimates using VIO techniques. */
 	MavCompIDVisualInertialOdometry = 197
+	/*MavCompIDPairingManager - Component that manages pairing of vehicle and GCS. */
+	MavCompIDPairingManager = 198
 	/*MavCompIDIMU - Inertial Measurement Unit (IMU) #1. */
 	MavCompIDIMU = 200
 	/*MavCompIDIMU2 - Inertial Measurement Unit (IMU) #2. */
@@ -387,6 +551,8 @@ const (
 	MavCompIDUDPBrIDge = 240
 	/*MavCompIDUartBrIDge - Component to bridge to UART (i.e. from UDP). */
 	MavCompIDUartBrIDge = 241
+	/*MavCompIDTunnelNode - Component handling TUNNEL messages (e.g. vendor specific GUI of a component). */
+	MavCompIDTunnelNode = 242
 	/*MavCompIDSystemControl - Component for handling system messages (e.g. to ARM, takeoff, etc.). */
 	MavCompIDSystemControl = 250
 	/*MavComponentEnumEnd -  */
@@ -497,8 +663,12 @@ const (
 	MavFrameEstimNed = 18
 	/*MavFrameEstimEnu - Odometry local coordinate frame of data given by an estimator running onboard the vehicle, Z-up (x: east, y: noth, z: up). */
 	MavFrameEstimEnu = 19
+	/*MavFrameLocalFrd - Forward, Right, Down coordinate frame. This is a local frame with Z-down and arbitrary F/R alignment (i.e. not aligned with NED/earth frame). */
+	MavFrameLocalFrd = 20
+	/*MavFrameLocalFlu - Forward, Left, Up coordinate frame. This is a local frame with Z-up and arbitrary F/L alignment (i.e. not aligned with ENU/earth frame). */
+	MavFrameLocalFlu = 21
 	/*MavFrameEnumEnd -  */
-	MavFrameEnumEnd = 20
+	MavFrameEnumEnd = 22
 )
 
 /*MAVLINK_DATA_STREAM_TYPE -  */
@@ -549,6 +719,18 @@ const (
 	FenceBreachEnumEnd = 4
 )
 
+/*FENCE_MITIGATE - Actions being taken to mitigate/prevent fence breach */
+const (
+	/*FenceMitigateUnknown - Unknown */
+	FenceMitigateUnknown = 0
+	/*FenceMitigateNone - No actions being taken */
+	FenceMitigateNone = 1
+	/*FenceMitigateVelLimit - Velocity limiting active to prevent breach */
+	FenceMitigateVelLimit = 2
+	/*FenceMitigateEnumEnd -  */
+	FenceMitigateEnumEnd = 3
+)
+
 /*MAV_MOUNT_MODE - Enumeration of possible mount operation modes */
 const (
 	/*MavMountModeRetract - Load and keep safe position (Roll,Pitch,Yaw) from permant memory and stop stabilization */
@@ -561,8 +743,10 @@ const (
 	MavMountModeRCTargeting = 3
 	/*MavMountModeGPSPoint - Load neutral position and start to point to Lat,Lon,Alt */
 	MavMountModeGPSPoint = 4
+	/*MavMountModeSysIDTarget - Gimbal tracks system with specified system ID */
+	MavMountModeSysIDTarget = 5
 	/*MavMountModeEnumEnd -  */
-	MavMountModeEnumEnd = 5
+	MavMountModeEnumEnd = 6
 )
 
 /*UAVCAN_NODE_HEALTH - Generalized UAVCAN node health */
@@ -595,7 +779,37 @@ const (
 	UavcanNodeModeEnumEnd = 8
 )
 
-/*MAV_CMD - Commands to be executed by the MAV. They can be executed on user request, or as part of a mission script. If the action is used in a mission, the parameter mapping to the waypoint/mission message is as follows: Param 1, Param 2, Param 3, Param 4, X: Param 5, Y:Param 6, Z:Param 7. This command list is similar what ARINC 424 is for commercial aircraft: A data format how to interpret waypoint/mission data. */
+/*STORAGE_STATUS - Flags to indicate the status of camera storage. */
+const (
+	/*StorageStatusEmpty - Storage is missing (no microSD card loaded for example.) */
+	StorageStatusEmpty = 0
+	/*StorageStatusUnformatted - Storage present but unformatted. */
+	StorageStatusUnformatted = 1
+	/*StorageStatusReady - Storage present and ready. */
+	StorageStatusReady = 2
+	/*StorageStatusNotSupported - Camera does not supply storage status information. Capacity information in STORAGE_INFORMATION fields will be ignored. */
+	StorageStatusNotSupported = 3
+	/*StorageStatusEnumEnd -  */
+	StorageStatusEnumEnd = 4
+)
+
+/*ORBIT_YAW_BEHAVIOUR - Yaw behaviour during orbit flight. */
+const (
+	/*OrbitYawBehaviourHoldFrontToCiRCleCenter - Vehicle front points to the center (default). */
+	OrbitYawBehaviourHoldFrontToCiRCleCenter = 0
+	/*OrbitYawBehaviourHoldInitialHeading - Vehicle front holds heading when message received. */
+	OrbitYawBehaviourHoldInitialHeading = 1
+	/*OrbitYawBehaviourUncontrolled - Yaw uncontrolled. */
+	OrbitYawBehaviourUncontrolled = 2
+	/*OrbitYawBehaviourHoldFrontTangentToCiRCle - Vehicle front follows flight path (tangential to circle). */
+	OrbitYawBehaviourHoldFrontTangentToCiRCle = 3
+	/*OrbitYawBehaviourRCControlled - Yaw controlled by RC input. */
+	OrbitYawBehaviourRCControlled = 4
+	/*OrbitYawBehaviourEnumEnd -  */
+	OrbitYawBehaviourEnumEnd = 5
+)
+
+/*MAV_CMD - Commands to be executed by the MAV. They can be executed on user request, or as part of a mission script. If the action is used in a mission, the parameter mapping to the waypoint/mission message is as follows: Param 1, Param 2, Param 3, Param 4, X: Param 5, Y:Param 6, Z:Param 7. This command list is similar what ARINC 424 is for commercial aircraft: A data format how to interpret waypoint/mission data. See https://mavlink.io/en/guide/xml_schema.html#MAV_CMD for information about the structure of the MAV_CMD entries */
 const (
 	/*MavCmdNAVWaypoint - Navigate to waypoint. */
 	MavCmdNAVWaypoint = 16
@@ -621,7 +835,7 @@ const (
 	MavCmdNAVContinueAndChangeAlt = 30
 	/*MavCmdNAVLoiterToAlt - Begin loiter at the specified Latitude and Longitude.  If Lat=Lon=0, then loiter at the current position.  Don't consider the navigation command complete (don't leave loiter) until the altitude has been reached.  Additionally, if the Heading Required parameter is non-zero the  aircraft will not leave the loiter until heading toward the next waypoint. */
 	MavCmdNAVLoiterToAlt = 31
-	/*MavCmdDoFollow - Being following a target */
+	/*MavCmdDoFollow - Begin following a target */
 	MavCmdDoFollow = 32
 	/*MavCmdDoFollowReposition - Reposition the MAV after a follow target command has been sent */
 	MavCmdDoFollowReposition = 33
@@ -695,6 +909,8 @@ const (
 	MavCmdDoSetRoiWpnextOffset = 196
 	/*MavCmdDoSetRoiNone - Cancels any previous ROI command returning the vehicle/sensors to default flight characteristics. This can then be used by the vehicles control system to control the vehicle attitude and the attitude of various sensors such as cameras. */
 	MavCmdDoSetRoiNone = 197
+	/*MavCmdDoSetRoiSysID - Mount tracks system with specified system ID. Determination of target vehicle position may be done with GLOBAL_POSITION_INT or any other means. */
+	MavCmdDoSetRoiSysID = 198
 	/*MavCmdDoControlVIDeo - Control onboard camera system. */
 	MavCmdDoControlVIDeo = 200
 	/*MavCmdDoSetRoi - Sets the region of interest (ROI) for a sensor set or the vehicle itself. This can then be used by the vehicles control system to control the vehicle attitude and the attitude of various sensors such as cameras. */
@@ -749,19 +965,21 @@ const (
 	MavCmdMissionStart = 300
 	/*MavCmdComponentArmDisarm - Arms / Disarms a component */
 	MavCmdComponentArmDisarm = 400
+	/*MavCmdIlluminatorOnOff - Turns illuminators ON/OFF. An illuminator is a light source that is used for lighting up dark areas external to the sytstem: e.g. a torch or searchlight (as opposed to a light source for illuminating the system itself, e.g. an indicator light). */
+	MavCmdIlluminatorOnOff = 405
 	/*MavCmdGetHomePosition - Request the home position from the vehicle. */
 	MavCmdGetHomePosition = 410
 	/*MavCmdStartRxPair - Starts receiver pairing. */
 	MavCmdStartRxPair = 500
-	/*MavCmdGetMessageInterval - Request the interval between messages for a particular MAVLink message ID */
+	/*MavCmdGetMessageInterval - Request the interval between messages for a particular MAVLink message ID. The receiver should ACK the command and then emit its response in a MESSAGE_INTERVAL message. */
 	MavCmdGetMessageInterval = 510
-	/*MavCmdSetMessageInterval - Set the interval between messages for a particular MAVLink message ID. This interface replaces REQUEST_DATA_STREAM */
+	/*MavCmdSetMessageInterval - Set the interval between messages for a particular MAVLink message ID. This interface replaces REQUEST_DATA_STREAM. */
 	MavCmdSetMessageInterval = 511
 	/*MavCmdRequestMessage - Request the target system(s) emit a single instance of a specified message (i.e. a "one-shot" version of MAV_CMD_SET_MESSAGE_INTERVAL). */
 	MavCmdRequestMessage = 512
 	/*MavCmdRequestProtocolVersion - Request MAVLink protocol version compatibility */
 	MavCmdRequestProtocolVersion = 519
-	/*MavCmdRequestAutopilotCapabilities - Request autopilot capabilities */
+	/*MavCmdRequestAutopilotCapabilities - Request autopilot capabilities. The receiver should ACK the command and then emit its capabilities in an AUTOPILOT_VERSION message */
 	MavCmdRequestAutopilotCapabilities = 520
 	/*MavCmdRequestCameraInformation - Request camera information (CAMERA_INFORMATION). */
 	MavCmdRequestCameraInformation = 521
@@ -1010,19 +1228,19 @@ const (
 	MavParamExtTypeEnumEnd = 12
 )
 
-/*MAV_RESULT - result from a mavlink command */
+/*MAV_RESULT - Result from a MAVLink command (MAV_CMD) */
 const (
-	/*MavResultAccepted - Command ACCEPTED and EXECUTED */
+	/*MavResultAccepted - Command is valid (is supported and has valid parameters), and was executed. */
 	MavResultAccepted = 0
-	/*MavResultTemporarilyRejected - Command TEMPORARY REJECTED/DENIED */
+	/*MavResultTemporarilyRejected - Command is valid, but cannot be executed at this time. This is used to indicate a problem that should be fixed just by waiting (e.g. a state machine is busy, can't arm because have not got GPS lock, etc.). Retrying later should work. */
 	MavResultTemporarilyRejected = 1
-	/*MavResultDenied - Command PERMANENTLY DENIED */
+	/*MavResultDenied - Command is invalid (is supported but has invalid parameters). Retrying same command and parameters will not work. */
 	MavResultDenied = 2
-	/*MavResultUnsupported - Command UNKNOWN/UNSUPPORTED */
+	/*MavResultUnsupported - Command is not supported (unknown). */
 	MavResultUnsupported = 3
-	/*MavResultFailed - Command executed, but failed */
+	/*MavResultFailed - Command is valid, but execution has failed. This is used to indicate any non-temporary or unexpected problem, i.e. any problem that must be fixed before the command can succeed/be retried. For example, attempting to write a file when out of memory, attempting to arm when sensors are not calibrated, etc. */
 	MavResultFailed = 4
-	/*MavResultInProgress - WIP: Command being executed */
+	/*MavResultInProgress - Command is valid and is being executed. This will be followed by further progress updates, i.e. the component may send further COMMAND_ACK messages with result MAV_RESULT_IN_PROGRESS (at a rate decided by the implementation), and must terminate by sending a COMMAND_ACK message with final result of the operation. The COMMAND_ACK.progress field can be used to indicate the progress of the operation. There is no need for the sender to retry the command, but if done during execution, the component will return MAV_RESULT_IN_PROGRESS with an updated progress. */
 	MavResultInProgress = 5
 	/*MavResultEnumEnd -  */
 	MavResultEnumEnd = 6
@@ -1118,8 +1336,28 @@ const (
 	SerialControlDevGPS2 = 3
 	/*SerialControlDevShell - system shell */
 	SerialControlDevShell = 10
+	/*SerialControlSerial0 - SERIAL0 */
+	SerialControlSerial0 = 100
+	/*SerialControlSerial1 - SERIAL1 */
+	SerialControlSerial1 = 101
+	/*SerialControlSerial2 - SERIAL2 */
+	SerialControlSerial2 = 102
+	/*SerialControlSerial3 - SERIAL3 */
+	SerialControlSerial3 = 103
+	/*SerialControlSerial4 - SERIAL4 */
+	SerialControlSerial4 = 104
+	/*SerialControlSerial5 - SERIAL5 */
+	SerialControlSerial5 = 105
+	/*SerialControlSerial6 - SERIAL6 */
+	SerialControlSerial6 = 106
+	/*SerialControlSerial7 - SERIAL7 */
+	SerialControlSerial7 = 107
+	/*SerialControlSerial8 - SERIAL8 */
+	SerialControlSerial8 = 108
+	/*SerialControlSerial9 - SERIAL9 */
+	SerialControlSerial9 = 109
 	/*SerialControlDevEnumEnd -  */
-	SerialControlDevEnumEnd = 11
+	SerialControlDevEnumEnd = 110
 )
 
 /*SERIAL_CONTROL_FLAG - SERIAL_CONTROL flags (bitmask) */
@@ -1300,6 +1538,8 @@ const (
 
 /*MAV_ESTIMATOR_TYPE - Enumeration of estimator types */
 const (
+	/*MavEstimatorTypeUnknown - Unknown type of the estimator. */
+	MavEstimatorTypeUnknown = 0
 	/*MavEstimatorTypeNaive - This is a naive estimator without any real covariance feedback. */
 	MavEstimatorTypeNaive = 1
 	/*MavEstimatorTypeVision - Computer vision based estimate. Might be up to scale. */
@@ -1310,8 +1550,14 @@ const (
 	MavEstimatorTypeGPS = 4
 	/*MavEstimatorTypeGPSIns - Estimator integrating GPS and inertial sensing. */
 	MavEstimatorTypeGPSIns = 5
+	/*MavEstimatorTypeMocap - Estimate from external motion capturing system. */
+	MavEstimatorTypeMocap = 6
+	/*MavEstimatorTypeLIDar - Estimator based on lidar sensor input. */
+	MavEstimatorTypeLIDar = 7
+	/*MavEstimatorTypeAutopilot - Estimator on autopilot. */
+	MavEstimatorTypeAutopilot = 8
 	/*MavEstimatorTypeEnumEnd -  */
-	MavEstimatorTypeEnumEnd = 6
+	MavEstimatorTypeEnumEnd = 9
 )
 
 /*MAV_BATTERY_TYPE - Enumeration of battery types */
@@ -1490,8 +1736,14 @@ const (
 	AdsbFlagsValIDSquawk = 32
 	/*AdsbFlagsSIMUlated -  */
 	AdsbFlagsSIMUlated = 64
+	/*AdsbFlagsVerticalVelocityValID -  */
+	AdsbFlagsVerticalVelocityValID = 128
+	/*AdsbFlagsBaroValID -  */
+	AdsbFlagsBaroValID = 256
+	/*AdsbFlagsSouRCeUat -  */
+	AdsbFlagsSouRCeUat = 32768
 	/*AdsbFlagsEnumEnd -  */
-	AdsbFlagsEnumEnd = 65
+	AdsbFlagsEnumEnd = 32769
 )
 
 /*MAV_DO_REPOSITION_FLAGS - Bitmap of options for the MAV_CMD_DO_REPOSITION */
@@ -1650,7 +1902,7 @@ const (
 const (
 	/*RtkBaselineCoordinateSystemEcef - Earth-centered, Earth-fixed */
 	RtkBaselineCoordinateSystemEcef = 0
-	/*RtkBaselineCoordinateSystemNed - North, East, Down */
+	/*RtkBaselineCoordinateSystemNed - RTK basestation centered, north, east, down */
 	RtkBaselineCoordinateSystemNed = 1
 	/*RtkBaselineCoordinateSystemEnumEnd -  */
 	RtkBaselineCoordinateSystemEnumEnd = 2
@@ -1742,8 +1994,10 @@ const (
 	ZoomTypeContinuous = 1
 	/*ZoomTypeRange - Zoom value as proportion of full camera range (a value between 0.0 and 100.0) */
 	ZoomTypeRange = 2
+	/*ZoomTypeFocalLength - Zoom value/variable focal length in milimetres. Note that there is no message to get the valid zoom range of the camera, so this can type can only be used for cameras where the zoom range is known (implying that this cannot reliably be used in a GCS for an arbitrary camera) */
+	ZoomTypeFocalLength = 3
 	/*CameraZoomTypeEnumEnd -  */
-	CameraZoomTypeEnumEnd = 3
+	CameraZoomTypeEnumEnd = 4
 )
 
 /*SET_FOCUS_TYPE - Focus types for MAV_CMD_SET_CAMERA_FOCUS */
@@ -1752,10 +2006,12 @@ const (
 	FocusTypeStep = 0
 	/*FocusTypeContinuous - Continuous focus up/down until stopped (-1 for focusing in, 1 for focusing out towards infinity, 0 to stop focusing) */
 	FocusTypeContinuous = 1
-	/*FocusTypeRange - Zoom value as proportion of full camera range (a value between 0.0 and 100.0) */
+	/*FocusTypeRange - Focus value as proportion of full camera focus range (a value between 0.0 and 100.0) */
 	FocusTypeRange = 2
+	/*FocusTypeMeters - Focus value in metres. Note that there is no message to get the valid focus range of the camera, so this can type can only be used for cameras where the range is known (implying that this cannot reliably be used in a GCS for an arbitrary camera). */
+	FocusTypeMeters = 3
 	/*SetFocusTypeEnumEnd -  */
-	SetFocusTypeEnumEnd = 3
+	SetFocusTypeEnumEnd = 4
 )
 
 /*PARAM_ACK - Result from a PARAM_EXT_SET message. */
@@ -1926,4 +2182,552 @@ const (
 	ParachuteRelease = 2
 	/*ParachuteActionEnumEnd -  */
 	ParachuteActionEnumEnd = 3
+)
+
+/*MAV_TUNNEL_PAYLOAD_TYPE -  */
+const (
+	/*MavTunnelPayloadTypeUnknown - Encoding of payload unknown. */
+	MavTunnelPayloadTypeUnknown = 0
+	/*MavTunnelPayloadTypeStorm32Reserved0 - Registered for STorM32 gimbal controller. */
+	MavTunnelPayloadTypeStorm32Reserved0 = 200
+	/*MavTunnelPayloadTypeStorm32Reserved1 - Registered for STorM32 gimbal controller. */
+	MavTunnelPayloadTypeStorm32Reserved1 = 201
+	/*MavTunnelPayloadTypeStorm32Reserved2 - Registered for STorM32 gimbal controller. */
+	MavTunnelPayloadTypeStorm32Reserved2 = 202
+	/*MavTunnelPayloadTypeStorm32Reserved3 - Registered for STorM32 gimbal controller. */
+	MavTunnelPayloadTypeStorm32Reserved3 = 203
+	/*MavTunnelPayloadTypeStorm32Reserved4 - Registered for STorM32 gimbal controller. */
+	MavTunnelPayloadTypeStorm32Reserved4 = 204
+	/*MavTunnelPayloadTypeStorm32Reserved5 - Registered for STorM32 gimbal controller. */
+	MavTunnelPayloadTypeStorm32Reserved5 = 205
+	/*MavTunnelPayloadTypeStorm32Reserved6 - Registered for STorM32 gimbal controller. */
+	MavTunnelPayloadTypeStorm32Reserved6 = 206
+	/*MavTunnelPayloadTypeStorm32Reserved7 - Registered for STorM32 gimbal controller. */
+	MavTunnelPayloadTypeStorm32Reserved7 = 207
+	/*MavTunnelPayloadTypeStorm32Reserved8 - Registered for STorM32 gimbal controller. */
+	MavTunnelPayloadTypeStorm32Reserved8 = 208
+	/*MavTunnelPayloadTypeStorm32Reserved9 - Registered for STorM32 gimbal controller. */
+	MavTunnelPayloadTypeStorm32Reserved9 = 209
+	/*MavTunnelPayloadTypeEnumEnd -  */
+	MavTunnelPayloadTypeEnumEnd = 210
+)
+
+/*MAV_ODID_ID_TYPE -  */
+const (
+	/*MavOdIDIDTypeNone - No type defined. */
+	MavOdIDIDTypeNone = 0
+	/*MavOdIDIDTypeSerialNumber - Manufacturer Serial Number (ANSI/CTA-2063 format). */
+	MavOdIDIDTypeSerialNumber = 1
+	/*MavOdIDIDTypeCaaRegistrationID - CAA (Civil Aviation Authority) registered ID. Format: [ICAO Country Code].[CAA Assigned ID]. */
+	MavOdIDIDTypeCaaRegistrationID = 2
+	/*MavOdIDIDTypeUtmAssignedUUID - UTM (Unmanned Traffic Management) assigned UUID (RFC4122). */
+	MavOdIDIDTypeUtmAssignedUUID = 3
+	/*MavOdIDIDTypeEnumEnd -  */
+	MavOdIDIDTypeEnumEnd = 4
+)
+
+/*MAV_ODID_UA_TYPE -  */
+const (
+	/*MavOdIDUaTypeNone - No UA (Unmanned Aircraft) type defined. */
+	MavOdIDUaTypeNone = 0
+	/*MavOdIDUaTypeAeroplane - Aeroplane/Airplane. Fixed wing. */
+	MavOdIDUaTypeAeroplane = 1
+	/*MavOdIDUaTypeRotoRCraft - Rotorcraft (including Multirotor). */
+	MavOdIDUaTypeRotoRCraft = 2
+	/*MavOdIDUaTypeGyroplane - Gyroplane. */
+	MavOdIDUaTypeGyroplane = 3
+	/*MavOdIDUaTypeVtol - VTOL (Vertical Take-Off and Landing). Fixed wing aircraft that can take off vertically. */
+	MavOdIDUaTypeVtol = 4
+	/*MavOdIDUaTypeOrnithopter - Ornithopter. */
+	MavOdIDUaTypeOrnithopter = 5
+	/*MavOdIDUaTypeGlIDer - Glider. */
+	MavOdIDUaTypeGlIDer = 6
+	/*MavOdIDUaTypeKite - Kite. */
+	MavOdIDUaTypeKite = 7
+	/*MavOdIDUaTypeFreeBalloon - Free Balloon. */
+	MavOdIDUaTypeFreeBalloon = 8
+	/*MavOdIDUaTypeCaptiveBalloon - Captive Balloon. */
+	MavOdIDUaTypeCaptiveBalloon = 9
+	/*MavOdIDUaTypeAirship - Airship. E.g. a blimp. */
+	MavOdIDUaTypeAirship = 10
+	/*MavOdIDUaTypeFreeFallParachute - Free Fall/Parachute. */
+	MavOdIDUaTypeFreeFallParachute = 11
+	/*MavOdIDUaTypeRocket - Rocket. */
+	MavOdIDUaTypeRocket = 12
+	/*MavOdIDUaTypeTetheredPoweredAiRCraft - Tethered powered aircraft. */
+	MavOdIDUaTypeTetheredPoweredAiRCraft = 13
+	/*MavOdIDUaTypeGroundObstacle - Ground Obstacle. */
+	MavOdIDUaTypeGroundObstacle = 14
+	/*MavOdIDUaTypeOther - Other type of aircraft not listed earlier. */
+	MavOdIDUaTypeOther = 15
+	/*MavOdIDUaTypeEnumEnd -  */
+	MavOdIDUaTypeEnumEnd = 16
+)
+
+/*MAV_ODID_STATUS -  */
+const (
+	/*MavOdIDStatusUndeclared - The status of the (UA) Unmanned Aircraft is undefined. */
+	MavOdIDStatusUndeclared = 0
+	/*MavOdIDStatusGround - The UA is on the ground. */
+	MavOdIDStatusGround = 1
+	/*MavOdIDStatusAirborne - The UA is in the air. */
+	MavOdIDStatusAirborne = 2
+	/*MavOdIDStatusEnumEnd -  */
+	MavOdIDStatusEnumEnd = 3
+)
+
+/*MAV_ODID_HEIGHT_REF -  */
+const (
+	/*MavOdIDHeightRefOverTakeoff - The height field is relative to the take-off location. */
+	MavOdIDHeightRefOverTakeoff = 0
+	/*MavOdIDHeightRefOverGround - The height field is relative to ground. */
+	MavOdIDHeightRefOverGround = 1
+	/*MavOdIDHeightRefEnumEnd -  */
+	MavOdIDHeightRefEnumEnd = 2
+)
+
+/*MAV_ODID_HOR_ACC -  */
+const (
+	/*MavOdIDHorAccUnknown - The horizontal accuracy is unknown. */
+	MavOdIDHorAccUnknown = 0
+	/*MavOdIDHorAcc10Nm - The horizontal accuracy is smaller than 10 Nautical Miles. 18.52 km. */
+	MavOdIDHorAcc10Nm = 1
+	/*MavOdIDHorAcc4Nm - The horizontal accuracy is smaller than 4 Nautical Miles. 7.408 km. */
+	MavOdIDHorAcc4Nm = 2
+	/*MavOdIDHorAcc2Nm - The horizontal accuracy is smaller than 2 Nautical Miles. 3.704 km. */
+	MavOdIDHorAcc2Nm = 3
+	/*MavOdIDHorAcc1Nm - The horizontal accuracy is smaller than 1 Nautical Miles. 1.852 km. */
+	MavOdIDHorAcc1Nm = 4
+	/*MavOdIDHorAcc05Nm - The horizontal accuracy is smaller than 0.5 Nautical Miles. 926 m. */
+	MavOdIDHorAcc05Nm = 5
+	/*MavOdIDHorAcc03Nm - The horizontal accuracy is smaller than 0.3 Nautical Miles. 555.6 m. */
+	MavOdIDHorAcc03Nm = 6
+	/*MavOdIDHorAcc01Nm - The horizontal accuracy is smaller than 0.1 Nautical Miles. 185.2 m. */
+	MavOdIDHorAcc01Nm = 7
+	/*MavOdIDHorAcc005Nm - The horizontal accuracy is smaller than 0.05 Nautical Miles. 92.6 m. */
+	MavOdIDHorAcc005Nm = 8
+	/*MavOdIDHorAcc30Meter - The horizontal accuracy is smaller than 30 meter. */
+	MavOdIDHorAcc30Meter = 9
+	/*MavOdIDHorAcc10Meter - The horizontal accuracy is smaller than 10 meter. */
+	MavOdIDHorAcc10Meter = 10
+	/*MavOdIDHorAcc3Meter - The horizontal accuracy is smaller than 3 meter. */
+	MavOdIDHorAcc3Meter = 11
+	/*MavOdIDHorAcc1Meter - The horizontal accuracy is smaller than 1 meter. */
+	MavOdIDHorAcc1Meter = 12
+	/*MavOdIDHorAccEnumEnd -  */
+	MavOdIDHorAccEnumEnd = 13
+)
+
+/*MAV_ODID_VER_ACC -  */
+const (
+	/*MavOdIDVerAccUnknown - The vertical accuracy is unknown. */
+	MavOdIDVerAccUnknown = 0
+	/*MavOdIDVerAcc150Meter - The vertical accuracy is smaller than 150 meter. */
+	MavOdIDVerAcc150Meter = 1
+	/*MavOdIDVerAcc45Meter - The vertical accuracy is smaller than 45 meter. */
+	MavOdIDVerAcc45Meter = 2
+	/*MavOdIDVerAcc25Meter - The vertical accuracy is smaller than 25 meter. */
+	MavOdIDVerAcc25Meter = 3
+	/*MavOdIDVerAcc10Meter - The vertical accuracy is smaller than 10 meter. */
+	MavOdIDVerAcc10Meter = 4
+	/*MavOdIDVerAcc3Meter - The vertical accuracy is smaller than 3 meter. */
+	MavOdIDVerAcc3Meter = 5
+	/*MavOdIDVerAcc1Meter - The vertical accuracy is smaller than 1 meter. */
+	MavOdIDVerAcc1Meter = 6
+	/*MavOdIDVerAccEnumEnd -  */
+	MavOdIDVerAccEnumEnd = 7
+)
+
+/*MAV_ODID_SPEED_ACC -  */
+const (
+	/*MavOdIDSpeedAccUnknown - The speed accuracy is unknown. */
+	MavOdIDSpeedAccUnknown = 0
+	/*MavOdIDSpeedAcc10MetersPerSecond - The speed accuracy is smaller than 10 meters per second. */
+	MavOdIDSpeedAcc10MetersPerSecond = 1
+	/*MavOdIDSpeedAcc3MetersPerSecond - The speed accuracy is smaller than 3 meters per second. */
+	MavOdIDSpeedAcc3MetersPerSecond = 2
+	/*MavOdIDSpeedAcc1MetersPerSecond - The speed accuracy is smaller than 1 meters per second. */
+	MavOdIDSpeedAcc1MetersPerSecond = 3
+	/*MavOdIDSpeedAcc03MetersPerSecond - The speed accuracy is smaller than 0.3 meters per second. */
+	MavOdIDSpeedAcc03MetersPerSecond = 4
+	/*MavOdIDSpeedAccEnumEnd -  */
+	MavOdIDSpeedAccEnumEnd = 5
+)
+
+/*MAV_ODID_TIME_ACC -  */
+const (
+	/*MavOdIDTimeAccUnknown - The timestamp accuracy is unknown. */
+	MavOdIDTimeAccUnknown = 0
+	/*MavOdIDTimeAcc01Second - The timestamp accuracy is smaller than 0.1 second. */
+	MavOdIDTimeAcc01Second = 1
+	/*MavOdIDTimeAcc02Second - The timestamp accuracy is smaller than 0.2 second. */
+	MavOdIDTimeAcc02Second = 2
+	/*MavOdIDTimeAcc03Second - The timestamp accuracy is smaller than 0.3 second. */
+	MavOdIDTimeAcc03Second = 3
+	/*MavOdIDTimeAcc04Second - The timestamp accuracy is smaller than 0.4 second. */
+	MavOdIDTimeAcc04Second = 4
+	/*MavOdIDTimeAcc05Second - The timestamp accuracy is smaller than 0.5 second. */
+	MavOdIDTimeAcc05Second = 5
+	/*MavOdIDTimeAcc06Second - The timestamp accuracy is smaller than 0.6 second. */
+	MavOdIDTimeAcc06Second = 6
+	/*MavOdIDTimeAcc07Second - The timestamp accuracy is smaller than 0.7 second. */
+	MavOdIDTimeAcc07Second = 7
+	/*MavOdIDTimeAcc08Second - The timestamp accuracy is smaller than 0.8 second. */
+	MavOdIDTimeAcc08Second = 8
+	/*MavOdIDTimeAcc09Second - The timestamp accuracy is smaller than 0.9 second. */
+	MavOdIDTimeAcc09Second = 9
+	/*MavOdIDTimeAcc10Second - The timestamp accuracy is smaller than 1.0 second. */
+	MavOdIDTimeAcc10Second = 10
+	/*MavOdIDTimeAcc11Second - The timestamp accuracy is smaller than 1.1 second. */
+	MavOdIDTimeAcc11Second = 11
+	/*MavOdIDTimeAcc12Second - The timestamp accuracy is smaller than 1.2 second. */
+	MavOdIDTimeAcc12Second = 12
+	/*MavOdIDTimeAcc13Second - The timestamp accuracy is smaller than 1.3 second. */
+	MavOdIDTimeAcc13Second = 13
+	/*MavOdIDTimeAcc14Second - The timestamp accuracy is smaller than 1.4 second. */
+	MavOdIDTimeAcc14Second = 14
+	/*MavOdIDTimeAcc15Second - The timestamp accuracy is smaller than 1.5 second. */
+	MavOdIDTimeAcc15Second = 15
+	/*MavOdIDTimeAccEnumEnd -  */
+	MavOdIDTimeAccEnumEnd = 16
+)
+
+/*MAV_ODID_AUTH_TYPE -  */
+const (
+	/*MavOdIDAuthTypeNone - No authentication type is specified. */
+	MavOdIDAuthTypeNone = 0
+	/*MavOdIDAuthTypeUasIDSignature - Signature for the UAS (Unmanned Aircraft System) ID. */
+	MavOdIDAuthTypeUasIDSignature = 1
+	/*MavOdIDAuthTypeOperatorIDSignature - Signature for the Operator ID. */
+	MavOdIDAuthTypeOperatorIDSignature = 2
+	/*MavOdIDAuthTypeMessageSetSignature - Signature for the entire message set. */
+	MavOdIDAuthTypeMessageSetSignature = 3
+	/*MavOdIDAuthTypeNetworkRemoteID - Authentication is provided by Network Remote ID. */
+	MavOdIDAuthTypeNetworkRemoteID = 4
+	/*MavOdIDAuthTypeEnumEnd -  */
+	MavOdIDAuthTypeEnumEnd = 5
+)
+
+/*MAV_ODID_DESC_TYPE -  */
+const (
+	/*MavOdIDDescTypeText - Free-form text description of the purpose of the flight. */
+	MavOdIDDescTypeText = 0
+	/*MavOdIDDescTypeEnumEnd -  */
+	MavOdIDDescTypeEnumEnd = 1
+)
+
+/*MAV_ODID_LOCATION_SRC -  */
+const (
+	/*MavOdIDLocationSRCTakeoff - The location of the operator is the same as the take-off location. */
+	MavOdIDLocationSRCTakeoff = 0
+	/*MavOdIDLocationSRCLiveGnss - The location of the operator is based on live GNSS data. */
+	MavOdIDLocationSRCLiveGnss = 1
+	/*MavOdIDLocationSRCFixed - The location of the operator is a fixed location. */
+	MavOdIDLocationSRCFixed = 2
+	/*MavOdIDLocationSRCEnumEnd -  */
+	MavOdIDLocationSRCEnumEnd = 3
+)
+
+/*MAV_ODID_OPERATOR_ID_TYPE -  */
+const (
+	/*MavOdIDOperatorIDTypeCaa - CAA (Civil Aviation Authority) registered operator ID. */
+	MavOdIDOperatorIDTypeCaa = 0
+	/*MavOdIDOperatorIDTypeEnumEnd -  */
+	MavOdIDOperatorIDTypeEnumEnd = 1
+)
+
+/*TUNE_FORMAT - Tune formats (used for vehicle buzzer/tone generation). */
+const (
+	/*TuneFormatQbasic11 - Format is QBasic 1.1 Play: https://www.qbasic.net/en/reference/qb11/Statement/PLAY-006.htm. */
+	TuneFormatQbasic11 = 1
+	/*TuneFormatMmlModern - Format is Modern Music Markup Language (MML): https://en.wikipedia.org/wiki/Music_Macro_Language#Modern_MML. */
+	TuneFormatMmlModern = 2
+	/*TuneFormatEnumEnd -  */
+	TuneFormatEnumEnd = 3
+)
+
+/*COMPONENT_CAP_FLAGS - Component capability flags (Bitmap) */
+const (
+	/*ComponentCapFlagsParam - Component has parameters, and supports the parameter protocol (PARAM messages). */
+	ComponentCapFlagsParam = 1
+	/*ComponentCapFlagsParamExt - Component has parameters, and supports the extended parameter protocol (PARAM_EXT messages). */
+	ComponentCapFlagsParamExt = 2
+	/*ComponentCapFlagsEnumEnd -  */
+	ComponentCapFlagsEnumEnd = 3
+)
+
+/*AIS_TYPE - Type of AIS vessel, enum duplicated from AIS standard, https://gpsd.gitlab.io/gpsd/AIVDM.html */
+const (
+	/*AisTypeUnknown - Not available (default). */
+	AisTypeUnknown = 0
+	/*AisTypeReserved1 -  */
+	AisTypeReserved1 = 1
+	/*AisTypeReserved2 -  */
+	AisTypeReserved2 = 2
+	/*AisTypeReserved3 -  */
+	AisTypeReserved3 = 3
+	/*AisTypeReserved4 -  */
+	AisTypeReserved4 = 4
+	/*AisTypeReserved5 -  */
+	AisTypeReserved5 = 5
+	/*AisTypeReserved6 -  */
+	AisTypeReserved6 = 6
+	/*AisTypeReserved7 -  */
+	AisTypeReserved7 = 7
+	/*AisTypeReserved8 -  */
+	AisTypeReserved8 = 8
+	/*AisTypeReserved9 -  */
+	AisTypeReserved9 = 9
+	/*AisTypeReserved10 -  */
+	AisTypeReserved10 = 10
+	/*AisTypeReserved11 -  */
+	AisTypeReserved11 = 11
+	/*AisTypeReserved12 -  */
+	AisTypeReserved12 = 12
+	/*AisTypeReserved13 -  */
+	AisTypeReserved13 = 13
+	/*AisTypeReserved14 -  */
+	AisTypeReserved14 = 14
+	/*AisTypeReserved15 -  */
+	AisTypeReserved15 = 15
+	/*AisTypeReserved16 -  */
+	AisTypeReserved16 = 16
+	/*AisTypeReserved17 -  */
+	AisTypeReserved17 = 17
+	/*AisTypeReserved18 -  */
+	AisTypeReserved18 = 18
+	/*AisTypeReserved19 -  */
+	AisTypeReserved19 = 19
+	/*AisTypeWig - Wing In Ground effect. */
+	AisTypeWig = 20
+	/*AisTypeWigHazardousA -  */
+	AisTypeWigHazardousA = 21
+	/*AisTypeWigHazardousB -  */
+	AisTypeWigHazardousB = 22
+	/*AisTypeWigHazardousC -  */
+	AisTypeWigHazardousC = 23
+	/*AisTypeWigHazardousD -  */
+	AisTypeWigHazardousD = 24
+	/*AisTypeWigReserved1 -  */
+	AisTypeWigReserved1 = 25
+	/*AisTypeWigReserved2 -  */
+	AisTypeWigReserved2 = 26
+	/*AisTypeWigReserved3 -  */
+	AisTypeWigReserved3 = 27
+	/*AisTypeWigReserved4 -  */
+	AisTypeWigReserved4 = 28
+	/*AisTypeWigReserved5 -  */
+	AisTypeWigReserved5 = 29
+	/*AisTypeFishing -  */
+	AisTypeFishing = 30
+	/*AisTypeTowing -  */
+	AisTypeTowing = 31
+	/*AisTypeTowingLarge - Towing: length exceeds 200m or breadth exceeds 25m. */
+	AisTypeTowingLarge = 32
+	/*AisTypeDredging - Dredging or other underwater ops. */
+	AisTypeDredging = 33
+	/*AisTypeDiving -  */
+	AisTypeDiving = 34
+	/*AisTypeMilitary -  */
+	AisTypeMilitary = 35
+	/*AisTypeSailing -  */
+	AisTypeSailing = 36
+	/*AisTypePleasure -  */
+	AisTypePleasure = 37
+	/*AisTypeReserved20 -  */
+	AisTypeReserved20 = 38
+	/*AisTypeReserved21 -  */
+	AisTypeReserved21 = 39
+	/*AisTypeHsc - High Speed Craft. */
+	AisTypeHsc = 40
+	/*AisTypeHscHazardousA -  */
+	AisTypeHscHazardousA = 41
+	/*AisTypeHscHazardousB -  */
+	AisTypeHscHazardousB = 42
+	/*AisTypeHscHazardousC -  */
+	AisTypeHscHazardousC = 43
+	/*AisTypeHscHazardousD -  */
+	AisTypeHscHazardousD = 44
+	/*AisTypeHscReserved1 -  */
+	AisTypeHscReserved1 = 45
+	/*AisTypeHscReserved2 -  */
+	AisTypeHscReserved2 = 46
+	/*AisTypeHscReserved3 -  */
+	AisTypeHscReserved3 = 47
+	/*AisTypeHscReserved4 -  */
+	AisTypeHscReserved4 = 48
+	/*AisTypeHscUnknown -  */
+	AisTypeHscUnknown = 49
+	/*AisTypePilot -  */
+	AisTypePilot = 50
+	/*AisTypeSar - Search And Rescue vessel. */
+	AisTypeSar = 51
+	/*AisTypeTug -  */
+	AisTypeTug = 52
+	/*AisTypePortTender -  */
+	AisTypePortTender = 53
+	/*AisTypeAntiPollution - Anti-pollution equipment. */
+	AisTypeAntiPollution = 54
+	/*AisTypeLawEnfoRCement -  */
+	AisTypeLawEnfoRCement = 55
+	/*AisTypeSpareLocal1 -  */
+	AisTypeSpareLocal1 = 56
+	/*AisTypeSpareLocal2 -  */
+	AisTypeSpareLocal2 = 57
+	/*AisTypeMedicalTransport -  */
+	AisTypeMedicalTransport = 58
+	/*AisTypeNonecombatant - Noncombatant ship according to RR Resolution No. 18. */
+	AisTypeNonecombatant = 59
+	/*AisTypePassenger -  */
+	AisTypePassenger = 60
+	/*AisTypePassengerHazardousA -  */
+	AisTypePassengerHazardousA = 61
+	/*AisTypePassengerHazardousB -  */
+	AisTypePassengerHazardousB = 62
+	/*AisTypeAisTypePassengerHazardousC -  */
+	AisTypeAisTypePassengerHazardousC = 63
+	/*AisTypePassengerHazardousD -  */
+	AisTypePassengerHazardousD = 64
+	/*AisTypePassengerReserved1 -  */
+	AisTypePassengerReserved1 = 65
+	/*AisTypePassengerReserved2 -  */
+	AisTypePassengerReserved2 = 66
+	/*AisTypePassengerReserved3 -  */
+	AisTypePassengerReserved3 = 67
+	/*AisTypeAisTypePassengerReserved4 -  */
+	AisTypeAisTypePassengerReserved4 = 68
+	/*AisTypePassengerUnknown -  */
+	AisTypePassengerUnknown = 69
+	/*AisTypeCargo -  */
+	AisTypeCargo = 70
+	/*AisTypeCargoHazardousA -  */
+	AisTypeCargoHazardousA = 71
+	/*AisTypeCargoHazardousB -  */
+	AisTypeCargoHazardousB = 72
+	/*AisTypeCargoHazardousC -  */
+	AisTypeCargoHazardousC = 73
+	/*AisTypeCargoHazardousD -  */
+	AisTypeCargoHazardousD = 74
+	/*AisTypeCargoReserved1 -  */
+	AisTypeCargoReserved1 = 75
+	/*AisTypeCargoReserved2 -  */
+	AisTypeCargoReserved2 = 76
+	/*AisTypeCargoReserved3 -  */
+	AisTypeCargoReserved3 = 77
+	/*AisTypeCargoReserved4 -  */
+	AisTypeCargoReserved4 = 78
+	/*AisTypeCargoUnknown -  */
+	AisTypeCargoUnknown = 79
+	/*AisTypeTanker -  */
+	AisTypeTanker = 80
+	/*AisTypeTankerHazardousA -  */
+	AisTypeTankerHazardousA = 81
+	/*AisTypeTankerHazardousB -  */
+	AisTypeTankerHazardousB = 82
+	/*AisTypeTankerHazardousC -  */
+	AisTypeTankerHazardousC = 83
+	/*AisTypeTankerHazardousD -  */
+	AisTypeTankerHazardousD = 84
+	/*AisTypeTankerReserved1 -  */
+	AisTypeTankerReserved1 = 85
+	/*AisTypeTankerReserved2 -  */
+	AisTypeTankerReserved2 = 86
+	/*AisTypeTankerReserved3 -  */
+	AisTypeTankerReserved3 = 87
+	/*AisTypeTankerReserved4 -  */
+	AisTypeTankerReserved4 = 88
+	/*AisTypeTankerUnknown -  */
+	AisTypeTankerUnknown = 89
+	/*AisTypeOther -  */
+	AisTypeOther = 90
+	/*AisTypeOtherHazardousA -  */
+	AisTypeOtherHazardousA = 91
+	/*AisTypeOtherHazardousB -  */
+	AisTypeOtherHazardousB = 92
+	/*AisTypeOtherHazardousC -  */
+	AisTypeOtherHazardousC = 93
+	/*AisTypeOtherHazardousD -  */
+	AisTypeOtherHazardousD = 94
+	/*AisTypeOtherReserved1 -  */
+	AisTypeOtherReserved1 = 95
+	/*AisTypeOtherReserved2 -  */
+	AisTypeOtherReserved2 = 96
+	/*AisTypeOtherReserved3 -  */
+	AisTypeOtherReserved3 = 97
+	/*AisTypeOtherReserved4 -  */
+	AisTypeOtherReserved4 = 98
+	/*AisTypeOtherUnknown -  */
+	AisTypeOtherUnknown = 99
+	/*AisTypeEnumEnd -  */
+	AisTypeEnumEnd = 100
+)
+
+/*AIS_NAV_STATUS - Navigational status of AIS vessel, enum duplicated from AIS standard, https://gpsd.gitlab.io/gpsd/AIVDM.html */
+const (
+	/*UnderWay - Under way using engine. */
+	UnderWay = 0
+	/*AisNAVAnchored -  */
+	AisNAVAnchored = 1
+	/*AisNAVUnCommanded -  */
+	AisNAVUnCommanded = 2
+	/*AisNAVRestrictedManoeuverability -  */
+	AisNAVRestrictedManoeuverability = 3
+	/*AisNAVDraughtConstrained -  */
+	AisNAVDraughtConstrained = 4
+	/*AisNAVMoored -  */
+	AisNAVMoored = 5
+	/*AisNAVAground -  */
+	AisNAVAground = 6
+	/*AisNAVFishing -  */
+	AisNAVFishing = 7
+	/*AisNAVSailing -  */
+	AisNAVSailing = 8
+	/*AisNAVReservedHsc -  */
+	AisNAVReservedHsc = 9
+	/*AisNAVReservedWig -  */
+	AisNAVReservedWig = 10
+	/*AisNAVReserved1 -  */
+	AisNAVReserved1 = 11
+	/*AisNAVReserved2 -  */
+	AisNAVReserved2 = 12
+	/*AisNAVReserved3 -  */
+	AisNAVReserved3 = 13
+	/*AisNAVAisSart - Search And Rescue Transponder. */
+	AisNAVAisSart = 14
+	/*AisNAVUnknown - Not available (default). */
+	AisNAVUnknown = 15
+	/*AisNAVStatusEnumEnd -  */
+	AisNAVStatusEnumEnd = 16
+)
+
+/*AIS_FLAGS - These flags are used in the AIS_VESSEL.fields bitmask to indicate validity of data in the other message fields. When set, the data is valid. */
+const (
+	/*AisFlagsPositionAccuracy - 1 = Position accuracy less than 10m, 0 = position accuracy greater than 10m. */
+	AisFlagsPositionAccuracy = 1
+	/*AisFlagsValIDCog -  */
+	AisFlagsValIDCog = 2
+	/*AisFlagsValIDVelocity -  */
+	AisFlagsValIDVelocity = 4
+	/*AisFlagsHighVelocity - 1 = Velocity over 52.5765m/s (102.2 knots) */
+	AisFlagsHighVelocity = 8
+	/*AisFlagsValIDTurnRate -  */
+	AisFlagsValIDTurnRate = 16
+	/*AisFlagsTurnRateSignOnly - Only the sign of the returned turn rate value is valid, either greater than 5deg/30s or less than -5deg/30s */
+	AisFlagsTurnRateSignOnly = 32
+	/*AisFlagsValIDDimensions -  */
+	AisFlagsValIDDimensions = 64
+	/*AisFlagsLargeBowDimension - Distance to bow is larger than 511m */
+	AisFlagsLargeBowDimension = 128
+	/*AisFlagsLargeSternDimension - Distance to stern is larger than 511m */
+	AisFlagsLargeSternDimension = 256
+	/*AisFlagsLargePortDimension - Distance to port side is larger than 63m */
+	AisFlagsLargePortDimension = 512
+	/*AisFlagsLargeStarboardDimension - Distance to starboard side is larger than 63m */
+	AisFlagsLargeStarboardDimension = 1024
+	/*AisFlagsValIDCallsign -  */
+	AisFlagsValIDCallsign = 2048
+	/*AisFlagsValIDName -  */
+	AisFlagsValIDName = 4096
+	/*AisFlagsEnumEnd -  */
+	AisFlagsEnumEnd = 4097
 )

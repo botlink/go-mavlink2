@@ -3,7 +3,7 @@ package common
 /*
 Generated using mavgen - https://github.com/ArduPilot/pymavlink/
 
-Copyright 2019 queue-b <https://github.com/queue-b>
+Copyright 2020 queue-b <https://github.com/queue-b>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of the generated software (the "Generated Software"), to deal
@@ -34,7 +34,7 @@ import (
 	"github.com/queue-b/go-mavlink2/util"
 )
 
-/*GPSGlobalOrigin Once the MAV sets a new GPS-Local correspondence, this message announces the origin (0,0,0) position */
+/*GPSGlobalOrigin Publishes the GPS co-ordinates of the vehicle local origin (0,0,0) position. Emitted whenever a new GPS-Local position mapping is requested or set - e.g. following SET_GPS_GLOBAL_ORIGIN message. */
 type GPSGlobalOrigin struct {
 	/*Latitude Latitude (WGS84) */
 	Latitude int32

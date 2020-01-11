@@ -3,7 +3,7 @@ package common
 /*
 Generated using mavgen - https://github.com/ArduPilot/pymavlink/
 
-Copyright 2019 queue-b <https://github.com/queue-b>
+Copyright 2020 queue-b <https://github.com/queue-b>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of the generated software (the "Generated Software"), to deal
@@ -61,7 +61,7 @@ type CameraInformation struct {
 	ModelName [32]uint8
 	/*LensID Reserved for a lens ID */
 	LensID uint8
-	/*CamDefinitionURI Camera definition URI (if any, otherwise only basic functions will be available). */
+	/*CamDefinitionURI Camera definition URI (if any, otherwise only basic functions will be available). HTTP- (http://) and MAVLink FTP- (mavlinkftp://) formatted URIs are allowed (and both must be supported by any GCS that implements the Camera Protocol). */
 	CamDefinitionURI [140]byte
 	/*HasExtensionFieldValues indicates if this message has any extensions and  */
 	HasExtensionFieldValues bool

@@ -3,7 +3,7 @@ package common
 /*
 Generated using mavgen - https://github.com/ArduPilot/pymavlink/
 
-Copyright 2019 queue-b <https://github.com/queue-b>
+Copyright 2020 queue-b <https://github.com/queue-b>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of the generated software (the "Generated Software"), to deal
@@ -34,7 +34,7 @@ import (
 	"github.com/queue-b/go-mavlink2/util"
 )
 
-/*MessageInterval The interval between messages for a particular MAVLink message ID. This interface replaces DATA_STREAM */
+/*MessageInterval The interval between messages for a particular MAVLink message ID. This message is the response to the MAV_CMD_GET_MESSAGE_INTERVAL command. This interface replaces DATA_STREAM. */
 type MessageInterval struct {
 	/*IntervalUs The interval between two messages. A value of -1 indicates this stream is disabled, 0 indicates it is not available, > 0 indicates the interval at which it is sent. */
 	IntervalUs int32

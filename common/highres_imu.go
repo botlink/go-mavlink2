@@ -3,7 +3,7 @@ package common
 /*
 Generated using mavgen - https://github.com/ArduPilot/pymavlink/
 
-Copyright 2019 queue-b <https://github.com/queue-b>
+Copyright 2020 queue-b <https://github.com/queue-b>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of the generated software (the "Generated Software"), to deal
@@ -66,6 +66,8 @@ type HighresIMU struct {
 	Temperature float32
 	/*FieldsUpdated Bitmap for fields that have updated since last message, bit 0 = xacc, bit 12: temperature */
 	FieldsUpdated uint16
+	/*ID Id. Ids are numbered from 0 and map to IMUs numbered from 1 (e.g. IMU1 will have a message with id=0) */
+	ID uint8
 	/*HasExtensionFieldValues indicates if this message has any extensions and  */
 	HasExtensionFieldValues bool
 }
@@ -93,6 +95,37 @@ func (m *HighresIMU) String() string {
 	format += "PressureAlt:\t%v \n"
 	format += "Temperature:\t%v [degC]\n"
 	format += "FieldsUpdated:\t%v \n"
+	if m.HasExtensionFieldValues {
+		format += "ID:\t%v\n"
+	}
+
+	if m.HasExtensionFieldValues {
+		fmt.Fprintf(
+			writer,
+			format,
+			m.GetDialect(),
+			m.GetMessageName(),
+			m.TimeUsec,
+			m.Xacc,
+			m.Yacc,
+			m.Zacc,
+			m.Xgyro,
+			m.Ygyro,
+			m.Zgyro,
+			m.Xmag,
+			m.Ymag,
+			m.Zmag,
+			m.AbsPressure,
+			m.DiffPressure,
+			m.PressureAlt,
+			m.Temperature,
+			m.FieldsUpdated,
+			m.ID,
+		)
+
+		writer.Flush()
+		return string(buffer.Bytes())
+	}
 
 	fmt.Fprintf(
 		writer,
@@ -146,7 +179,7 @@ func (m *HighresIMU) GetID() uint32 {
 
 // HasExtensionFields returns true if the message definition contained extensions; false otherwise
 func (m *HighresIMU) HasExtensionFields() bool {
-	return false
+	return true
 }
 
 func (m *HighresIMU) getV1Length() int {
@@ -154,7 +187,7 @@ func (m *HighresIMU) getV1Length() int {
 }
 
 func (m *HighresIMU) getIOSlice() []byte {
-	return make([]byte, 62+1)
+	return make([]byte, 63+1)
 }
 
 // Read sets the field values of the message from the raw message payload

@@ -3,7 +3,7 @@ package common
 /*
 Generated using mavgen - https://github.com/ArduPilot/pymavlink/
 
-Copyright 2019 queue-b <https://github.com/queue-b>
+Copyright 2020 queue-b <https://github.com/queue-b>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of the generated software (the "Generated Software"), to deal
@@ -50,11 +50,11 @@ type GPSInput struct {
 	Hdop float32
 	/*Vdop GPS VDOP vertical dilution of position */
 	Vdop float32
-	/*Vn GPS velocity in NORTH direction in earth-fixed NED frame */
+	/*Vn GPS velocity in north direction in earth-fixed NED frame */
 	Vn float32
-	/*Ve GPS velocity in EAST direction in earth-fixed NED frame */
+	/*Ve GPS velocity in east direction in earth-fixed NED frame */
 	Ve float32
-	/*Vd GPS velocity in DOWN direction in earth-fixed NED frame */
+	/*Vd GPS velocity in down direction in earth-fixed NED frame */
 	Vd float32
 	/*SpeedAccuracy GPS speed accuracy */
 	SpeedAccuracy float32
@@ -72,6 +72,8 @@ type GPSInput struct {
 	FixType uint8
 	/*SatellitesVisible Number of satellites visible. */
 	SatellitesVisible uint8
+	/*Yaw Yaw of vehicle relative to Earth's North, zero means not available, use 36000 for north */
+	Yaw uint16
 	/*HasExtensionFieldValues indicates if this message has any extensions and  */
 	HasExtensionFieldValues bool
 }
@@ -102,6 +104,40 @@ func (m *GPSInput) String() string {
 	format += "GPSID:\t%v \n"
 	format += "FixType:\t%v \n"
 	format += "SatellitesVisible:\t%v \n"
+	if m.HasExtensionFieldValues {
+		format += "Yaw:\t%v\n"
+	}
+
+	if m.HasExtensionFieldValues {
+		fmt.Fprintf(
+			writer,
+			format,
+			m.GetDialect(),
+			m.GetMessageName(),
+			m.TimeUsec,
+			m.TimeWeekMs,
+			m.Lat,
+			m.Lon,
+			m.Alt,
+			m.Hdop,
+			m.Vdop,
+			m.Vn,
+			m.Ve,
+			m.Vd,
+			m.SpeedAccuracy,
+			m.HorizAccuracy,
+			m.VertAccuracy,
+			m.IgnoreFlags,
+			m.TimeWeek,
+			m.GPSID,
+			m.FixType,
+			m.SatellitesVisible,
+			m.Yaw,
+		)
+
+		writer.Flush()
+		return string(buffer.Bytes())
+	}
 
 	fmt.Fprintf(
 		writer,
@@ -158,7 +194,7 @@ func (m *GPSInput) GetID() uint32 {
 
 // HasExtensionFields returns true if the message definition contained extensions; false otherwise
 func (m *GPSInput) HasExtensionFields() bool {
-	return false
+	return true
 }
 
 func (m *GPSInput) getV1Length() int {
@@ -166,7 +202,7 @@ func (m *GPSInput) getV1Length() int {
 }
 
 func (m *GPSInput) getIOSlice() []byte {
-	return make([]byte, 63+1)
+	return make([]byte, 65+1)
 }
 
 // Read sets the field values of the message from the raw message payload

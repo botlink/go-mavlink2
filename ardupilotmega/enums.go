@@ -3,7 +3,7 @@ package ardupilotmega
 /*
 Generated using mavgen - https://github.com/ArduPilot/pymavlink/
 
-Copyright 2019 queue-b <https://github.com/queue-b>
+Copyright 2020 queue-b <https://github.com/queue-b>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of the generated software (the "Generated Software"), to deal
@@ -46,7 +46,7 @@ const (
 	AccelcalVehiclePosEnumEnd = 16777217
 )
 
-/*MAV_CMD - Commands to be executed by the MAV. They can be executed on user request, or as part of a mission script. If the action is used in a mission, the parameter mapping to the waypoint/mission message is as follows: Param 1, Param 2, Param 3, Param 4, X: Param 5, Y:Param 6, Z:Param 7. This command list is similar what ARINC 424 is for commercial aircraft: A data format how to interpret waypoint/mission data. */
+/*MAV_CMD - Commands to be executed by the MAV. They can be executed on user request, or as part of a mission script. If the action is used in a mission, the parameter mapping to the waypoint/mission message is as follows: Param 1, Param 2, Param 3, Param 4, X: Param 5, Y:Param 6, Z:Param 7. This command list is similar what ARINC 424 is for commercial aircraft: A data format how to interpret waypoint/mission data. See https://mavlink.io/en/guide/xml_schema.html#MAV_CMD for information about the structure of the MAV_CMD entries */
 const (
 	/*MavCmdNAVWaypoint - Navigate to waypoint. */
 	MavCmdNAVWaypoint = 16
@@ -72,7 +72,7 @@ const (
 	MavCmdNAVContinueAndChangeAlt = 30
 	/*MavCmdNAVLoiterToAlt - Begin loiter at the specified Latitude and Longitude.  If Lat=Lon=0, then loiter at the current position.  Don't consider the navigation command complete (don't leave loiter) until the altitude has been reached.  Additionally, if the Heading Required parameter is non-zero the  aircraft will not leave the loiter until heading toward the next waypoint. */
 	MavCmdNAVLoiterToAlt = 31
-	/*MavCmdDoFollow - Being following a target */
+	/*MavCmdDoFollow - Begin following a target */
 	MavCmdDoFollow = 32
 	/*MavCmdDoFollowReposition - Reposition the MAV after a follow target command has been sent */
 	MavCmdDoFollowReposition = 33
@@ -148,6 +148,8 @@ const (
 	MavCmdDoSetRoiWpnextOffset = 196
 	/*MavCmdDoSetRoiNone - Cancels any previous ROI command returning the vehicle/sensors to default flight characteristics. This can then be used by the vehicles control system to control the vehicle attitude and the attitude of various sensors such as cameras. */
 	MavCmdDoSetRoiNone = 197
+	/*MavCmdDoSetRoiSysID - Mount tracks system with specified system ID. Determination of target vehicle position may be done with GLOBAL_POSITION_INT or any other means. */
+	MavCmdDoSetRoiSysID = 198
 	/*MavCmdDoControlVIDeo - Control onboard camera system. */
 	MavCmdDoControlVIDeo = 200
 	/*MavCmdDoSetRoi - Sets the region of interest (ROI) for a sensor set or the vehicle itself. This can then be used by the vehicles control system to control the vehicle attitude and the attitude of various sensors such as cameras. */
@@ -206,19 +208,21 @@ const (
 	MavCmdMissionStart = 300
 	/*MavCmdComponentArmDisarm - Arms / Disarms a component */
 	MavCmdComponentArmDisarm = 400
+	/*MavCmdIlluminatorOnOff - Turns illuminators ON/OFF. An illuminator is a light source that is used for lighting up dark areas external to the sytstem: e.g. a torch or searchlight (as opposed to a light source for illuminating the system itself, e.g. an indicator light). */
+	MavCmdIlluminatorOnOff = 405
 	/*MavCmdGetHomePosition - Request the home position from the vehicle. */
 	MavCmdGetHomePosition = 410
 	/*MavCmdStartRxPair - Starts receiver pairing. */
 	MavCmdStartRxPair = 500
-	/*MavCmdGetMessageInterval - Request the interval between messages for a particular MAVLink message ID */
+	/*MavCmdGetMessageInterval - Request the interval between messages for a particular MAVLink message ID. The receiver should ACK the command and then emit its response in a MESSAGE_INTERVAL message. */
 	MavCmdGetMessageInterval = 510
-	/*MavCmdSetMessageInterval - Set the interval between messages for a particular MAVLink message ID. This interface replaces REQUEST_DATA_STREAM */
+	/*MavCmdSetMessageInterval - Set the interval between messages for a particular MAVLink message ID. This interface replaces REQUEST_DATA_STREAM. */
 	MavCmdSetMessageInterval = 511
 	/*MavCmdRequestMessage - Request the target system(s) emit a single instance of a specified message (i.e. a "one-shot" version of MAV_CMD_SET_MESSAGE_INTERVAL). */
 	MavCmdRequestMessage = 512
 	/*MavCmdRequestProtocolVersion - Request MAVLink protocol version compatibility */
 	MavCmdRequestProtocolVersion = 519
-	/*MavCmdRequestAutopilotCapabilities - Request autopilot capabilities */
+	/*MavCmdRequestAutopilotCapabilities - Request autopilot capabilities. The receiver should ACK the command and then emit its capabilities in an AUTOPILOT_VERSION message */
 	MavCmdRequestAutopilotCapabilities = 520
 	/*MavCmdRequestCameraInformation - Request camera information (CAMERA_INFORMATION). */
 	MavCmdRequestCameraInformation = 521
@@ -354,6 +358,8 @@ const (
 	MavCmdFixedMagCal = 42004
 	/*MavCmdFixedMagCalField - Magnetometer calibration based on fixed expected field values in milliGauss. */
 	MavCmdFixedMagCalField = 42005
+	/*MavCmdFixedMagCalYaw - Magnetometer calibration based on provided known yaw. This allows for fast calibration using WMM field tables in the vehicle, given only the known yaw of the vehicle. If Latitude and longitude are both zero then use the current vehicle location. */
+	MavCmdFixedMagCalYaw = 42006
 	/*MavCmdDoStartMagCal - Initiate a magnetometer calibration. */
 	MavCmdDoStartMagCal = 42424
 	/*MavCmdDoAcceptMagCal - Initiate a magnetometer calibration. */
@@ -378,8 +384,10 @@ const (
 	MavCmdDoWinch = 42600
 	/*MavCmdFlashBootloader - Update the bootloader */
 	MavCmdFlashBootloader = 42650
+	/*MavCmdBatteryReset - Reset battery capacity for batteries that accumulate consumed battery via integration. */
+	MavCmdBatteryReset = 42651
 	/*MavCmdEnumEnd -  */
-	MavCmdEnumEnd = 42651
+	MavCmdEnumEnd = 42652
 )
 
 /*LIMITS_STATE -  */
@@ -958,8 +966,10 @@ const (
 	MagCalFailed = 5
 	/*MagCalBadOrientation -  */
 	MagCalBadOrientation = 6
+	/*MagCalBadRadius -  */
+	MagCalBadRadius = 7
 	/*MagCalStatusEnumEnd -  */
-	MagCalStatusEnumEnd = 7
+	MagCalStatusEnumEnd = 8
 )
 
 /*MAV_REMOTE_LOG_DATA_BLOCK_COMMANDS - Special ACK block numbers control activation of dataflash log streaming. */
@@ -1038,6 +1048,8 @@ const (
 	PlaneModeRtl = 11
 	/*PlaneModeLoiter -  */
 	PlaneModeLoiter = 12
+	/*PlaneModeTakeoff -  */
+	PlaneModeTakeoff = 13
 	/*PlaneModeAvoIDAdsb -  */
 	PlaneModeAvoIDAdsb = 14
 	/*PlaneModeGUIDed -  */
@@ -1054,8 +1066,10 @@ const (
 	PlaneModeQland = 20
 	/*PlaneModeQrtl -  */
 	PlaneModeQrtl = 21
+	/*PlaneModeQautotune -  */
+	PlaneModeQautotune = 22
 	/*PlaneModeEnumEnd -  */
-	PlaneModeEnumEnd = 22
+	PlaneModeEnumEnd = 23
 )
 
 /*COPTER_MODE - A mapping of copter flight modes for custom_mode field of heartbeat. */

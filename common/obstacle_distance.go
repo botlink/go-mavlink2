@@ -3,7 +3,7 @@ package common
 /*
 Generated using mavgen - https://github.com/ArduPilot/pymavlink/
 
-Copyright 2019 queue-b <https://github.com/queue-b>
+Copyright 2020 queue-b <https://github.com/queue-b>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of the generated software (the "Generated Software"), to deal
@@ -38,7 +38,7 @@ import (
 type ObstacleDistance struct {
 	/*TimeUsec Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude the number. */
 	TimeUsec uint64
-	/*Distances Distance of obstacles around the UAV with index 0 corresponding to local North. A value of 0 means that the obstacle is right in front of the sensor. A value of max_distance +1 means no obstacle is present. A value of UINT16_MAX for unknown/not used. In a array element, one unit corresponds to 1cm. */
+	/*Distances Distance of obstacles around the vehicle with index 0 corresponding to north + angle_offset, unless otherwise specified in the frame. A value of 0 is valid and means that the obstacle is practically touching the sensor. A value of max_distance +1 means no obstacle is present. A value of UINT16_MAX for unknown/not used. In a array element, one unit corresponds to 1cm. */
 	Distances [72]uint16
 	/*MinDistance Minimum distance the sensor can measure. */
 	MinDistance uint16
@@ -46,8 +46,14 @@ type ObstacleDistance struct {
 	MaxDistance uint16
 	/*SensorType Class id of the distance sensor type. */
 	SensorType uint8
-	/*Increment Angular width in degrees of each array element. */
+	/*Increment Angular width in degrees of each array element. Increment direction is clockwise. This field is ignored if increment_f is non-zero. */
 	Increment uint8
+	/*IncrementF Angular width in degrees of each array element as a float. If non-zero then this value is used instead of the uint8_t increment field. Positive is clockwise direction, negative is counter-clockwise. */
+	IncrementF float32
+	/*AngleOffset Relative angle offset of the 0-index element in the distances array. Value of 0 corresponds to forward. Positive is clockwise direction, negative is counter-clockwise. */
+	AngleOffset float32
+	/*Frame Coordinate frame of reference for the yaw rotation and offset of the sensor data. Defaults to MAV_FRAME_GLOBAL, which is north aligned. For body-mounted sensors use MAV_FRAME_BODY_FRD, which is vehicle front aligned. */
+	Frame uint8
 	/*HasExtensionFieldValues indicates if this message has any extensions and  */
 	HasExtensionFieldValues bool
 }
@@ -66,6 +72,32 @@ func (m *ObstacleDistance) String() string {
 	format += "MaxDistance:\t%v [cm]\n"
 	format += "SensorType:\t%v \n"
 	format += "Increment:\t%v [deg]\n"
+	if m.HasExtensionFieldValues {
+		format += "IncrementF:\t%v\n"
+		format += "AngleOffset:\t%v\n"
+		format += "Frame:\t%v\n"
+	}
+
+	if m.HasExtensionFieldValues {
+		fmt.Fprintf(
+			writer,
+			format,
+			m.GetDialect(),
+			m.GetMessageName(),
+			m.TimeUsec,
+			m.Distances,
+			m.MinDistance,
+			m.MaxDistance,
+			m.SensorType,
+			m.Increment,
+			m.IncrementF,
+			m.AngleOffset,
+			m.Frame,
+		)
+
+		writer.Flush()
+		return string(buffer.Bytes())
+	}
 
 	fmt.Fprintf(
 		writer,
@@ -110,7 +142,7 @@ func (m *ObstacleDistance) GetID() uint32 {
 
 // HasExtensionFields returns true if the message definition contained extensions; false otherwise
 func (m *ObstacleDistance) HasExtensionFields() bool {
-	return false
+	return true
 }
 
 func (m *ObstacleDistance) getV1Length() int {
@@ -118,7 +150,7 @@ func (m *ObstacleDistance) getV1Length() int {
 }
 
 func (m *ObstacleDistance) getIOSlice() []byte {
-	return make([]byte, 158+1)
+	return make([]byte, 167+1)
 }
 
 // Read sets the field values of the message from the raw message payload

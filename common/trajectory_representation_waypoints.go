@@ -3,7 +3,7 @@ package common
 /*
 Generated using mavgen - https://github.com/ArduPilot/pymavlink/
 
-Copyright 2019 queue-b <https://github.com/queue-b>
+Copyright 2020 queue-b <https://github.com/queue-b>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of the generated software (the "Generated Software"), to deal
@@ -60,6 +60,8 @@ type TrajectoryRepresentationWaypoints struct {
 	PosYaw [5]float32
 	/*VelYaw Yaw rate, set to NaN if not being used */
 	VelYaw [5]float32
+	/*Command Scheduled action for each waypoint, UINT16_MAX if not being used. */
+	Command [5]uint16
 	/*ValIDPoints Number of valid points (up-to 5 waypoints are possible) */
 	ValIDPoints uint8
 	/*HasExtensionFieldValues indicates if this message has any extensions and  */
@@ -86,6 +88,7 @@ func (m *TrajectoryRepresentationWaypoints) String() string {
 	format += "AccZ:\t%v [m/s/s]\n"
 	format += "PosYaw:\t%v [rad]\n"
 	format += "VelYaw:\t%v [rad/s]\n"
+	format += "Command:\t%v \n"
 	format += "ValIDPoints:\t%v \n"
 
 	fmt.Fprintf(
@@ -105,6 +108,7 @@ func (m *TrajectoryRepresentationWaypoints) String() string {
 		m.AccZ,
 		m.PosYaw,
 		m.VelYaw,
+		m.Command,
 		m.ValIDPoints,
 	)
 
@@ -142,11 +146,11 @@ func (m *TrajectoryRepresentationWaypoints) HasExtensionFields() bool {
 }
 
 func (m *TrajectoryRepresentationWaypoints) getV1Length() int {
-	return 229
+	return 239
 }
 
 func (m *TrajectoryRepresentationWaypoints) getIOSlice() []byte {
-	return make([]byte, 229+1)
+	return make([]byte, 239+1)
 }
 
 // Read sets the field values of the message from the raw message payload

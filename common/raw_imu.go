@@ -3,7 +3,7 @@ package common
 /*
 Generated using mavgen - https://github.com/ArduPilot/pymavlink/
 
-Copyright 2019 queue-b <https://github.com/queue-b>
+Copyright 2020 queue-b <https://github.com/queue-b>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of the generated software (the "Generated Software"), to deal
@@ -34,7 +34,7 @@ import (
 	"github.com/queue-b/go-mavlink2/util"
 )
 
-/*RawIMU The RAW IMU readings for the usual 9DOF sensor setup. This message should always contain the true raw values without any scaling to allow data capture and system debugging. */
+/*RawIMU The RAW IMU readings for a 9DOF sensor, which is identified by the id (default IMU1). This message should always contain the true raw values without any scaling to allow data capture and system debugging. */
 type RawIMU struct {
 	/*TimeUsec Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude the number. */
 	TimeUsec uint64
@@ -56,6 +56,10 @@ type RawIMU struct {
 	Ymag int16
 	/*Zmag Z Magnetic field (raw) */
 	Zmag int16
+	/*ID Id. Ids are numbered from 0 and map to IMUs numbered from 1 (e.g. IMU1 will have a message with id=0) */
+	ID uint8
+	/*Temperature Temperature, 0: IMU does not provide temperature values. If the IMU is at 0C it must send 1 (0.01C). */
+	Temperature int16
 	/*HasExtensionFieldValues indicates if this message has any extensions and  */
 	HasExtensionFieldValues bool
 }
@@ -78,6 +82,34 @@ func (m *RawIMU) String() string {
 	format += "Xmag:\t%v \n"
 	format += "Ymag:\t%v \n"
 	format += "Zmag:\t%v \n"
+	if m.HasExtensionFieldValues {
+		format += "ID:\t%v\n"
+		format += "Temperature:\t%v\n"
+	}
+
+	if m.HasExtensionFieldValues {
+		fmt.Fprintf(
+			writer,
+			format,
+			m.GetDialect(),
+			m.GetMessageName(),
+			m.TimeUsec,
+			m.Xacc,
+			m.Yacc,
+			m.Zacc,
+			m.Xgyro,
+			m.Ygyro,
+			m.Zgyro,
+			m.Xmag,
+			m.Ymag,
+			m.Zmag,
+			m.ID,
+			m.Temperature,
+		)
+
+		writer.Flush()
+		return string(buffer.Bytes())
+	}
 
 	fmt.Fprintf(
 		writer,
@@ -126,7 +158,7 @@ func (m *RawIMU) GetID() uint32 {
 
 // HasExtensionFields returns true if the message definition contained extensions; false otherwise
 func (m *RawIMU) HasExtensionFields() bool {
-	return false
+	return true
 }
 
 func (m *RawIMU) getV1Length() int {
@@ -134,7 +166,7 @@ func (m *RawIMU) getV1Length() int {
 }
 
 func (m *RawIMU) getIOSlice() []byte {
-	return make([]byte, 26+1)
+	return make([]byte, 29+1)
 }
 
 // Read sets the field values of the message from the raw message payload

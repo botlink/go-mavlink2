@@ -3,7 +3,7 @@ package common
 /*
 Generated using mavgen - https://github.com/ArduPilot/pymavlink/
 
-Copyright 2019 queue-b <https://github.com/queue-b>
+Copyright 2020 queue-b <https://github.com/queue-b>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of the generated software (the "Generated Software"), to deal
@@ -51,11 +51,11 @@ type HilGPS struct {
 	Epv uint16
 	/*Vel GPS ground speed. If unknown, set to: 65535 */
 	Vel uint16
-	/*Vn GPS velocity in NORTH direction in earth-fixed NED frame */
+	/*Vn GPS velocity in north direction in earth-fixed NED frame */
 	Vn int16
-	/*Ve GPS velocity in EAST direction in earth-fixed NED frame */
+	/*Ve GPS velocity in east direction in earth-fixed NED frame */
 	Ve int16
-	/*Vd GPS velocity in DOWN direction in earth-fixed NED frame */
+	/*Vd GPS velocity in down direction in earth-fixed NED frame */
 	Vd int16
 	/*Cog Course over ground (NOT heading, but direction of movement), 0.0..359.99 degrees. If unknown, set to: 65535 */
 	Cog uint16

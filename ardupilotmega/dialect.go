@@ -5,7 +5,7 @@ import "github.com/queue-b/go-mavlink2"
 /*
 Generated using mavgen - https://github.com/ArduPilot/pymavlink/
 
-Copyright 2019 queue-b <https://github.com/queue-b>
+Copyright 2020 queue-b <https://github.com/queue-b>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of the generated software (the "Generated Software"), to deal
@@ -68,7 +68,6 @@ var ardupilotmegaMessages = map[uint32]mavlink2.MessageMeta{
 	158:   mavlink2.MessageMeta{CRCExtra: 134, MinimumLength: 14, MaximumLength: 14},
 	160:   mavlink2.MessageMeta{CRCExtra: 78, MinimumLength: 12, MaximumLength: 12},
 	161:   mavlink2.MessageMeta{CRCExtra: 68, MinimumLength: 3, MaximumLength: 3},
-	162:   mavlink2.MessageMeta{CRCExtra: 189, MinimumLength: 8, MaximumLength: 8},
 	163:   mavlink2.MessageMeta{CRCExtra: 127, MinimumLength: 28, MaximumLength: 28},
 	164:   mavlink2.MessageMeta{CRCExtra: 154, MinimumLength: 44, MaximumLength: 44},
 	165:   mavlink2.MessageMeta{CRCExtra: 21, MinimumLength: 3, MaximumLength: 3},
@@ -94,7 +93,7 @@ var ardupilotmegaMessages = map[uint32]mavlink2.MessageMeta{
 	185:   mavlink2.MessageMeta{CRCExtra: 186, MinimumLength: 7, MaximumLength: 7},
 	186:   mavlink2.MessageMeta{CRCExtra: 72, MinimumLength: 29, MaximumLength: 29},
 	191:   mavlink2.MessageMeta{CRCExtra: 92, MinimumLength: 27, MaximumLength: 27},
-	192:   mavlink2.MessageMeta{CRCExtra: 36, MinimumLength: 44, MaximumLength: 50},
+	192:   mavlink2.MessageMeta{CRCExtra: 36, MinimumLength: 44, MaximumLength: 54},
 	193:   mavlink2.MessageMeta{CRCExtra: 71, MinimumLength: 22, MaximumLength: 26},
 	194:   mavlink2.MessageMeta{CRCExtra: 98, MinimumLength: 25, MaximumLength: 25},
 	195:   mavlink2.MessageMeta{CRCExtra: 120, MinimumLength: 37, MaximumLength: 37},
@@ -106,6 +105,7 @@ var ardupilotmegaMessages = map[uint32]mavlink2.MessageMeta{
 	217:   mavlink2.MessageMeta{CRCExtra: 202, MinimumLength: 6, MaximumLength: 6},
 	218:   mavlink2.MessageMeta{CRCExtra: 17, MinimumLength: 7, MaximumLength: 7},
 	219:   mavlink2.MessageMeta{CRCExtra: 162, MinimumLength: 2, MaximumLength: 2},
+	225:   mavlink2.MessageMeta{CRCExtra: 142, MinimumLength: 53, MaximumLength: 53},
 	226:   mavlink2.MessageMeta{CRCExtra: 207, MinimumLength: 8, MaximumLength: 8},
 	11000: mavlink2.MessageMeta{CRCExtra: 134, MinimumLength: 51, MaximumLength: 51},
 	11001: mavlink2.MessageMeta{CRCExtra: 15, MinimumLength: 135, MaximumLength: 135},
@@ -192,13 +192,6 @@ var ardupilotmegaParsers = map[uint32]mavlink2.FrameParser{
 	}),
 	161: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &FenceFetchPoint{}
-
-		err = message.Read(frame)
-
-		return
-	}),
-	162: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
-		message = &FenceStatus{}
 
 		err = message.Read(frame)
 
@@ -458,6 +451,13 @@ var ardupilotmegaParsers = map[uint32]mavlink2.FrameParser{
 	}),
 	219: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &GoproSetResponse{}
+
+		err = message.Read(frame)
+
+		return
+	}),
+	225: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
+		message = &EfiStatus{}
 
 		err = message.Read(frame)
 

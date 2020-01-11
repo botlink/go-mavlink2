@@ -3,7 +3,7 @@ package common
 /*
 Generated using mavgen - https://github.com/ArduPilot/pymavlink/
 
-Copyright 2019 queue-b <https://github.com/queue-b>
+Copyright 2020 queue-b <https://github.com/queue-b>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of the generated software (the "Generated Software"), to deal
@@ -34,15 +34,15 @@ import (
 	"github.com/queue-b/go-mavlink2/util"
 )
 
-/*StorageInformation Information about a storage medium. */
+/*StorageInformation Information about a storage medium. This message is sent in response to a request and whenever the status of the storage changes (STORAGE_STATUS). */
 type StorageInformation struct {
 	/*TimeBootMs Timestamp (time since system boot). */
 	TimeBootMs uint32
-	/*TotalCapacity Total capacity. */
+	/*TotalCapacity Total capacity. If storage is not ready (STORAGE_STATUS_READY) value will be ignored. */
 	TotalCapacity float32
-	/*UsedCapacity Used capacity. */
+	/*UsedCapacity Used capacity. If storage is not ready (STORAGE_STATUS_READY) value will be ignored. */
 	UsedCapacity float32
-	/*AvailableCapacity Available storage capacity. */
+	/*AvailableCapacity Available storage capacity. If storage is not ready (STORAGE_STATUS_READY) value will be ignored. */
 	AvailableCapacity float32
 	/*ReadSpeed Read speed. */
 	ReadSpeed float32
@@ -52,7 +52,7 @@ type StorageInformation struct {
 	StorageID uint8
 	/*StorageCount Number of storage devices */
 	StorageCount uint8
-	/*Status Status of storage (0 not available, 1 unformatted, 2 formatted) */
+	/*Status Status of storage */
 	Status uint8
 	/*HasExtensionFieldValues indicates if this message has any extensions and  */
 	HasExtensionFieldValues bool

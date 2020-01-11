@@ -3,7 +3,7 @@ package common
 /*
 Generated using mavgen - https://github.com/ArduPilot/pymavlink/
 
-Copyright 2019 queue-b <https://github.com/queue-b>
+Copyright 2020 queue-b <https://github.com/queue-b>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of the generated software (the "Generated Software"), to deal
@@ -34,7 +34,7 @@ import (
 	"github.com/queue-b/go-mavlink2/util"
 )
 
-/*CommandLong Send a command with up to seven parameters to the MAV */
+/*CommandLong Send a command with up to seven parameters to the MAV. The command microservice is documented at https://mavlink.io/en/services/command.html */
 type CommandLong struct {
 	/*Param1 Parameter 1 (for the specific command). */
 	Param1 float32

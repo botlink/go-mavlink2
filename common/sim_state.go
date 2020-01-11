@@ -3,7 +3,7 @@ package common
 /*
 Generated using mavgen - https://github.com/ArduPilot/pymavlink/
 
-Copyright 2019 queue-b <https://github.com/queue-b>
+Copyright 2020 queue-b <https://github.com/queue-b>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of the generated software (the "Generated Software"), to deal
@@ -72,11 +72,11 @@ type SimState struct {
 	StdDevHorz float32
 	/*StdDevVert Vertical position standard deviation */
 	StdDevVert float32
-	/*Vn True velocity in NORTH direction in earth-fixed NED frame */
+	/*Vn True velocity in north direction in earth-fixed NED frame */
 	Vn float32
-	/*Ve True velocity in EAST direction in earth-fixed NED frame */
+	/*Ve True velocity in east direction in earth-fixed NED frame */
 	Ve float32
-	/*Vd True velocity in DOWN direction in earth-fixed NED frame */
+	/*Vd True velocity in down direction in earth-fixed NED frame */
 	Vd float32
 	/*HasExtensionFieldValues indicates if this message has any extensions and  */
 	HasExtensionFieldValues bool

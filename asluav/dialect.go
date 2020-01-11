@@ -5,7 +5,7 @@ import "github.com/queue-b/go-mavlink2"
 /*
 Generated using mavgen - https://github.com/ArduPilot/pymavlink/
 
-Copyright 2019 queue-b <https://github.com/queue-b>
+Copyright 2020 queue-b <https://github.com/queue-b>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of the generated software (the "Generated Software"), to deal
@@ -72,7 +72,6 @@ var asluavMessages = map[uint32]mavlink2.MessageMeta{
 	211: mavlink2.MessageMeta{CRCExtra: 54, MinimumLength: 16, MaximumLength: 16},
 	212: mavlink2.MessageMeta{CRCExtra: 222, MinimumLength: 46, MaximumLength: 46},
 	213: mavlink2.MessageMeta{CRCExtra: 200, MinimumLength: 14, MaximumLength: 14},
-	214: mavlink2.MessageMeta{CRCExtra: 23, MinimumLength: 24, MaximumLength: 24},
 }
 
 var ASLUAVParsers = map[uint32]mavlink2.FrameParser{
@@ -176,13 +175,6 @@ var ASLUAVParsers = map[uint32]mavlink2.FrameParser{
 	}),
 	213: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
 		message = &GsmLinkStatus{}
-
-		err = message.Read(frame)
-
-		return
-	}),
-	214: mavlink2.FrameParser(func(frame mavlink2.Frame) (message mavlink2.Message, err error) {
-		message = &SatcomLinkStatus{}
 
 		err = message.Read(frame)
 

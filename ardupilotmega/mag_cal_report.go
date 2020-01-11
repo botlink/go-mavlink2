@@ -3,7 +3,7 @@ package ardupilotmega
 /*
 Generated using mavgen - https://github.com/ArduPilot/pymavlink/
 
-Copyright 2019 queue-b <https://github.com/queue-b>
+Copyright 2020 queue-b <https://github.com/queue-b>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of the generated software (the "Generated Software"), to deal
@@ -70,6 +70,8 @@ type MagCalReport struct {
 	OldOrientation uint8
 	/*NewOrientation orientation after calibration. */
 	NewOrientation uint8
+	/*ScaleFactor field radius correction factor */
+	ScaleFactor float32
 	/*HasExtensionFieldValues indicates if this message has any extensions and  */
 	HasExtensionFieldValues bool
 }
@@ -100,6 +102,7 @@ func (m *MagCalReport) String() string {
 		format += "OrientationConfIDence:\t%v\n"
 		format += "OldOrientation:\t%v\n"
 		format += "NewOrientation:\t%v\n"
+		format += "ScaleFactor:\t%v\n"
 	}
 
 	if m.HasExtensionFieldValues {
@@ -125,6 +128,7 @@ func (m *MagCalReport) String() string {
 			m.OrientationConfIDence,
 			m.OldOrientation,
 			m.NewOrientation,
+			m.ScaleFactor,
 		)
 
 		writer.Flush()
@@ -190,7 +194,7 @@ func (m *MagCalReport) getV1Length() int {
 }
 
 func (m *MagCalReport) getIOSlice() []byte {
-	return make([]byte, 50+1)
+	return make([]byte, 54+1)
 }
 
 // Read sets the field values of the message from the raw message payload
