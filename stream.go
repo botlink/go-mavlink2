@@ -3,7 +3,7 @@ package mavlink2
 /*
 Generated using mavgen - https://github.com/ArduPilot/pymavlink/
 
-Copyright 2019 queue-b <https://github.com/queue-b>
+Copyright 2020 queue-b <https://github.com/queue-b>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of the generated software (the "Generated Software"), to deal
@@ -66,7 +66,6 @@ func NewFrameStream(rwc io.ReadWriteCloser, inputFrames chan Frame) *FrameStream
 		inputFrames:  inputFrames,
 		outputFrames: make(chan Frame),
 		reader:       bufio.NewReader(rwc),
-		writer:       rwc,
 		rwc:          rwc,
 		closeOnce:    sync.Once{},
 		closed:       make(chan struct{}),
@@ -119,7 +118,7 @@ func (s *FrameStream) WriteContext(ctx context.Context) {
 				return
 			}
 
-			_, err := s.writer.Write(frame.Bytes())
+			_, err := s.rwc.Write(frame.Bytes())
 			if err != nil {
 				s.close(err)
 				return
