@@ -92,6 +92,11 @@ func (d Dialects) Validate(frame Frame) error {
 		// If the Dialect doesn't know about the message, just try the next one
 		if err == ErrUnknownMessage {
 			continue
+		} else if err == nil {
+			// TODO(cgrahn): The crc should be checked in this
+			// loop. In case more than one dialect has a match,
+			// multiple crcExtra values could then be tried.
+			break
 		}
 
 		// If there's any error beyond ErrUnknownMessage just give up on the process
