@@ -59,16 +59,23 @@ type FrameStream struct {
 	closeErr     error
 	closeOnce    sync.Once
 	closed       chan struct{}
+	buffer       []byte
+	dialects     Dialects
 }
 
-func NewFrameStream(rwc io.ReadWriteCloser, inputFrames chan Frame) *FrameStream {
+// See https://mavlink.io/en/guide/serialization.html
+// mavlink v1 has max length 263, v2 has max length 279
+const maxFrameLength = 279
+
+func NewFrameStream(rwc io.ReadWriteCloser, inputFrames chan Frame, dialects Dialects) *FrameStream {
 	f := &FrameStream{
 		inputFrames:  inputFrames,
 		outputFrames: make(chan Frame),
-		reader:       bufio.NewReader(rwc),
+		reader:       bufio.NewReaderSize(rwc, maxFrameLength*2),
 		rwc:          rwc,
 		closeOnce:    sync.Once{},
 		closed:       make(chan struct{}),
+		dialects:     dialects,
 	}
 
 	return f
@@ -134,7 +141,7 @@ func (s *FrameStream) ReadContext(ctx context.Context) {
 			s.close(ctx.Err())
 			return
 		default:
-			frame, err := readFrame(s.reader)
+			frame, err := s.readFrame(s.reader)
 
 			if err != nil {
 				s.close(err)
@@ -146,58 +153,72 @@ func (s *FrameStream) ReadContext(ctx context.Context) {
 	}
 }
 
-func peekHeader(reader *bufio.Reader) (frameLength uint16, err error) {
-	for {
-		var headerBytes []byte
-		headerBytes, err = reader.Peek(3)
+func peekHeader(buffer []byte) (frameLength uint16, startFound bool) {
+	messageLength := buffer[1]
+	startByte := buffer[0]
 
-		if err != nil {
-			return
+	if startByte == V2StartByte {
+		frameLength = uint16(messageLength) + 12
+
+		if buffer[2]&CompatibilityFlagSignature == CompatibilityFlagSignature {
+			frameLength += 13
 		}
 
-		messageLength := headerBytes[1]
-		startByte := headerBytes[0]
+		return frameLength, true
+	} else if startByte == V1StartByte {
+		frameLength = uint16(messageLength) + 8
 
-		if startByte == V2StartByte {
-			frameLength = uint16(messageLength) + 12
-
-			if headerBytes[2]&CompatibilityFlagSignature == CompatibilityFlagSignature {
-				frameLength += 13
-			}
-
-			return
-		} else if startByte == V1StartByte {
-			frameLength = uint16(messageLength) + 8
-
-			return
-		} else {
-			_, err = reader.ReadByte()
-
-			if err != nil {
-				return
-			}
-		}
+		return frameLength, true
+	} else {
+		return 0, false
 	}
 }
 
-func readFrame(reader *bufio.Reader) (frame Frame, err error) {
-	frameLength, err := peekHeader(reader)
+func (s *FrameStream) readFrame(reader *bufio.Reader) (frame Frame, err error) {
+	// This is terrible code
+	for {
+		if len(s.buffer) < 3 {
+			bytesNeeded := 3 - len(s.buffer)
+			bytes := make([]byte, bytesNeeded)
+			_, err = io.ReadAtLeast(reader, bytes, bytesNeeded)
+			if err != nil {
+				return
+			}
+			s.buffer = append(s.buffer, bytes...)
+		}
 
-	if err != nil {
-		return
+		frameLength, startFound := peekHeader(s.buffer)
+		if startFound {
+			if len(s.buffer) < int(frameLength) {
+				bytesNeeded := int(frameLength) - len(s.buffer)
+				bytes := make([]byte, bytesNeeded)
+				_, err = io.ReadAtLeast(reader, bytes, bytesNeeded)
+				if err != nil {
+					return
+				}
+				s.buffer = append(s.buffer, bytes...)
+			}
+			// validate
+			valid := false
+			frame, err = FrameFromBytes(s.buffer)
+			if err != nil {
+				return frame, err
+			}
+
+			if err = s.dialects.Validate(frame); err == nil {
+				valid = true
+			}
+
+			if valid {
+				s.buffer = s.buffer[frameLength:]
+				return frame, err
+			} else {
+				s.buffer = s.buffer[1:]
+			}
+		} else {
+			s.buffer = s.buffer[1:]
+		}
 	}
-
-	frameBytes := make([]byte, frameLength)
-
-	_, err = io.ReadFull(reader, frameBytes)
-
-	if err != nil {
-		return
-	}
-
-	frame, err = FrameFromBytes(frameBytes)
-
-	return
 }
 
 func packFrame(version int, senderSystemID, senderComponentID, messageSequence uint8, message Message, meta MessageMeta) (frame Frame, err error) {

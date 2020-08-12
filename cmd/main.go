@@ -20,9 +20,9 @@ func main() {
 
 	input := make(chan mavlink2.Frame)
 
-	stream := mavlink2.NewFrameStream(rwc, input)
-
 	dialects := mavlink2.Dialects{common.Dialect{}, ardupilotmega.Dialect{}}
+
+	stream := mavlink2.NewFrameStream(rwc, input, dialects)
 
 	var wg sync.WaitGroup
 
