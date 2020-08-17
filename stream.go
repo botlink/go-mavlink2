@@ -29,6 +29,7 @@ import (
 	"context"
 	"encoding/binary"
 	"errors"
+	"fmt"
 	"io"
 	"sync"
 )
@@ -60,6 +61,7 @@ type FrameStream struct {
 	closeOnce    sync.Once
 	closed       chan struct{}
 	buffer       []byte
+	bufferIndex  int
 	dialects     Dialects
 }
 
@@ -71,10 +73,12 @@ func NewFrameStream(rwc io.ReadWriteCloser, inputFrames chan Frame, dialects Dia
 	f := &FrameStream{
 		inputFrames:  inputFrames,
 		outputFrames: make(chan Frame),
-		reader:       bufio.NewReaderSize(rwc, maxFrameLength*2),
+		reader:       bufio.NewReader(rwc),
 		rwc:          rwc,
 		closeOnce:    sync.Once{},
 		closed:       make(chan struct{}),
+		buffer:       make([]byte, maxFrameLength*2, maxFrameLength*2),
+		bufferIndex:  0,
 		dialects:     dialects,
 	}
 
@@ -177,46 +181,52 @@ func peekHeader(buffer []byte) (frameLength uint16, startFound bool) {
 func (s *FrameStream) readFrame(reader *bufio.Reader) (frame Frame, err error) {
 	// This is terrible code
 	for {
-		if len(s.buffer) < 3 {
-			bytesNeeded := 3 - len(s.buffer)
-			bytes := make([]byte, bytesNeeded)
-			_, err = io.ReadAtLeast(reader, bytes, bytesNeeded)
+		if s.bufferIndex < 3 {
+			bytesNeeded := 3 - s.bufferIndex
+			n, err := io.ReadAtLeast(reader, s.buffer[s.bufferIndex:], bytesNeeded)
 			if err != nil {
-				return
+				return frame, err
 			}
-			s.buffer = append(s.buffer, bytes...)
+			s.bufferIndex += n
 		}
 
 		frameLength, startFound := peekHeader(s.buffer)
 		if startFound {
-			if len(s.buffer) < int(frameLength) {
-				bytesNeeded := int(frameLength) - len(s.buffer)
-				bytes := make([]byte, bytesNeeded)
-				_, err = io.ReadAtLeast(reader, bytes, bytesNeeded)
+			if s.bufferIndex < int(frameLength) {
+				bytesNeeded := int(frameLength) - s.bufferIndex
+				//bytes := make([]byte, bytesNeeded)
+				n, err := io.ReadAtLeast(reader, s.buffer[s.bufferIndex:], bytesNeeded)
 				if err != nil {
-					return
+					return frame, err
 				}
-				s.buffer = append(s.buffer, bytes...)
+				s.bufferIndex += n
 			}
 			// validate
 			valid := false
-			frame, err = FrameFromBytes(s.buffer)
+			frame, err = FrameFromBytes(s.buffer, false)
 			if err != nil {
 				return frame, err
 			}
 
 			if err = s.dialects.Validate(frame); err == nil {
 				valid = true
+			} else {
+				fmt.Println("Got invalid frame")
 			}
 
 			if valid {
-				s.buffer = s.buffer[frameLength:]
+				// need to copy frame as it's constructed using s.buffer without copying from s.buffer
+				frame, err = FrameFromBytes(s.buffer, true)
+				copy(s.buffer, s.buffer[frameLength:])
+				s.bufferIndex -= int(frameLength)
 				return frame, err
 			} else {
-				s.buffer = s.buffer[1:]
+				copy(s.buffer, s.buffer[1:])
+				s.bufferIndex -= 1
 			}
 		} else {
-			s.buffer = s.buffer[1:]
+			copy(s.buffer, s.buffer[1:])
+			s.bufferIndex -= 1
 		}
 	}
 }
