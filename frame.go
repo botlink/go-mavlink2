@@ -90,12 +90,16 @@ func (frame FrameV1) GetMessageID() uint32 {
 
 // GetChecksum returns the checksum of the Frame contents
 func (frame FrameV1) GetChecksum() uint16 {
-	return binary.LittleEndian.Uint16(frame[len(frame)-2:])
+	start := int(frame.GetMessageLength()) + 6
+	end := start + 2
+	return binary.LittleEndian.Uint16(frame[start:end])
 }
 
 // GetChecksumInput returns the contents of the Frame used to calculate the checksum
 func (frame FrameV1) GetChecksumInput() []byte {
-	return frame[1 : len(frame)-2]
+	start := 1
+	end := int(frame.GetMessageLength()) + 6
+	return frame[start:end]
 }
 
 func (frame FrameV1) String() string {
@@ -194,8 +198,9 @@ func (frame FrameV2) GetSignature() []byte {
 	if frame.GetCompatibilityFlags()&CompatibilityFlagSignature != CompatibilityFlagSignature {
 		return nil
 	}
-
-	return frame[frame.GetMessageLength()+12:]
+	start := frame.GetMessageLength() + 12
+	end := start + 13
+	return frame[start:end]
 }
 
 func (frame FrameV2) String() string {
