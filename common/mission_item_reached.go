@@ -30,8 +30,8 @@ import (
 	"fmt"
 	"text/tabwriter"
 
-	"github.com/queue-b/go-mavlink2"
-	"github.com/queue-b/go-mavlink2/util"
+	"github.com/botlink/go-mavlink2"
+	"github.com/botlink/go-mavlink2/util"
 )
 
 /*MissionItemReached A certain mission item has been reached. The system will either hold this position (or circle on the orbit) or (if the autocontinue on the WP was set) continue to the next waypoint. */

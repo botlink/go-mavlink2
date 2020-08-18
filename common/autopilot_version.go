@@ -30,8 +30,8 @@ import (
 	"fmt"
 	"text/tabwriter"
 
-	"github.com/queue-b/go-mavlink2"
-	"github.com/queue-b/go-mavlink2/util"
+	"github.com/botlink/go-mavlink2"
+	"github.com/botlink/go-mavlink2/util"
 )
 
 /*AutopilotVersion Version and capability of autopilot software. This should be emitted in response to a MAV_CMD_REQUEST_AUTOPILOT_CAPABILITIES command. */

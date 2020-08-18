@@ -30,8 +30,8 @@ import (
 	"fmt"
 	"text/tabwriter"
 
-	"github.com/queue-b/go-mavlink2"
-	"github.com/queue-b/go-mavlink2/util"
+	"github.com/botlink/go-mavlink2"
+	"github.com/botlink/go-mavlink2/util"
 )
 
 /*ScriptRequest Request script item with the sequence number seq. The response of the system to this message should be a SCRIPT_ITEM message. */

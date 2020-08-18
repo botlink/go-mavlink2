@@ -30,8 +30,8 @@ import (
 	"fmt"
 	"text/tabwriter"
 
-	"github.com/queue-b/go-mavlink2"
-	"github.com/queue-b/go-mavlink2/util"
+	"github.com/botlink/go-mavlink2"
+	"github.com/botlink/go-mavlink2/util"
 )
 
 /*SetPositionTargetGlobalInt Sets a desired vehicle position, velocity, and/or acceleration in a global coordinate system (WGS84). Used by an external controller to command the vehicle (manual controller or other system). */

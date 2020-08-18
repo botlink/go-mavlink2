@@ -31,8 +31,8 @@ import (
 	"math"
 	"text/tabwriter"
 
-	"github.com/queue-b/go-mavlink2"
-	"github.com/queue-b/go-mavlink2/util"
+	"github.com/botlink/go-mavlink2"
+	"github.com/botlink/go-mavlink2/util"
 )
 
 /*StatustextLong Status text message (use only for important status and error messages). The full message payload can be used for status text, but we recommend that updates be kept concise. Note: The message is intended as a less restrictive replacement for STATUSTEXT. */

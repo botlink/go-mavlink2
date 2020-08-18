@@ -31,8 +31,8 @@ import (
 	"math"
 	"text/tabwriter"
 
-	"github.com/queue-b/go-mavlink2"
-	"github.com/queue-b/go-mavlink2/util"
+	"github.com/botlink/go-mavlink2"
+	"github.com/botlink/go-mavlink2/util"
 )
 
 /*ParamExtRequestRead Request to read the value of a parameter with the either the param_id string id or param_index. */

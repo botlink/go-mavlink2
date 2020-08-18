@@ -31,8 +31,8 @@ import (
 	"math"
 	"text/tabwriter"
 
-	"github.com/queue-b/go-mavlink2"
-	"github.com/queue-b/go-mavlink2/util"
+	"github.com/botlink/go-mavlink2"
+	"github.com/botlink/go-mavlink2/util"
 )
 
 /*ParamMapRC Bind a RC channel to a parameter. The parameter should change according to the RC channel value. */

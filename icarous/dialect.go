@@ -1,6 +1,6 @@
 package icarous
 
-import "github.com/queue-b/go-mavlink2"
+import "github.com/botlink/go-mavlink2"
 
 /*
 Generated using mavgen - https://github.com/ArduPilot/pymavlink/

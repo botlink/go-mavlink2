@@ -5,10 +5,10 @@ import (
 	"log"
 	"sync"
 
-	mavlink2 "github.com/queue-b/go-mavlink2"
-	"github.com/queue-b/go-mavlink2/ardupilotmega"
-	"github.com/queue-b/go-mavlink2/common"
-	"github.com/queue-b/go-mavlink2/util"
+	mavlink2 "github.com/botlink/go-mavlink2"
+	"github.com/botlink/go-mavlink2/ardupilotmega"
+	"github.com/botlink/go-mavlink2/common"
+	"github.com/botlink/go-mavlink2/util"
 )
 
 func main() {
