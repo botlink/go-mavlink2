@@ -179,7 +179,6 @@ func peekHeader(buffer []byte) (frameLength uint16, startFound bool) {
 }
 
 func (s *FrameStream) readFrame(reader *bufio.Reader) (frame Frame, err error) {
-	// This is terrible code
 	for {
 		if s.bufferIndex < 3 {
 			bytesNeeded := 3 - s.bufferIndex
