@@ -52,34 +52,36 @@ var ErrWriteChannelClosed = errors.New("Write channel closed")
 // FrameStream represents a stream of MAVLink Frames
 type FrameStream struct {
 	sync.RWMutex
-	inputFrames  chan Frame
-	outputFrames chan Frame
-	rwc          io.ReadWriteCloser
-	reader       *bufio.Reader
-	writer       io.Writer
-	closeErr     error
-	closeOnce    sync.Once
-	closed       chan struct{}
-	buffer       []byte
-	bufferIndex  int
-	dialects     Dialects
+	inputFrames         chan Frame
+	outputFrames        chan Frame
+	rwc                 io.ReadWriteCloser
+	reader              *bufio.Reader
+	writer              io.Writer
+	closeErr            error
+	closeOnce           sync.Once
+	closed              chan struct{}
+	buffer              []byte
+	bufferIndex         int
+	dialects            Dialects
+	returnInvalidFrames bool
 }
 
 // See https://mavlink.io/en/guide/serialization.html
 // mavlink v1 has max length 263, v2 has max length 279
 const maxFrameLength = 279
 
-func NewFrameStream(rwc io.ReadWriteCloser, inputFrames chan Frame, dialects Dialects) *FrameStream {
+func NewFrameStream(rwc io.ReadWriteCloser, inputFrames chan Frame, dialects Dialects, returnInvalidFrames bool) *FrameStream {
 	f := &FrameStream{
-		inputFrames:  inputFrames,
-		outputFrames: make(chan Frame),
-		reader:       bufio.NewReader(rwc),
-		rwc:          rwc,
-		closeOnce:    sync.Once{},
-		closed:       make(chan struct{}),
-		buffer:       make([]byte, maxFrameLength*2, maxFrameLength*2),
-		bufferIndex:  0,
-		dialects:     dialects,
+		inputFrames:         inputFrames,
+		outputFrames:        make(chan Frame),
+		reader:              bufio.NewReader(rwc),
+		rwc:                 rwc,
+		closeOnce:           sync.Once{},
+		closed:              make(chan struct{}),
+		buffer:              make([]byte, maxFrameLength*2, maxFrameLength*2),
+		bufferIndex:         0,
+		dialects:            dialects,
+		returnInvalidFrames: returnInvalidFrames,
 	}
 
 	return f
@@ -210,6 +212,9 @@ func (s *FrameStream) readFrame(reader *bufio.Reader) (frame Frame, err error) {
 			if err = s.dialects.Validate(frame); err == nil {
 				valid = true
 			} else {
+				// TODO(cgrahn): print some info here
+				// identifying the message so we know if we're
+				// missing the CRC seed for an expected message
 				fmt.Println("Got invalid frame")
 			}
 
@@ -220,8 +225,16 @@ func (s *FrameStream) readFrame(reader *bufio.Reader) (frame Frame, err error) {
 				s.bufferIndex -= int(frameLength)
 				return frame, err
 			} else {
+				if s.returnInvalidFrames {
+					frame, err = FrameFromBytes(s.buffer, true)
+				}
+
 				copy(s.buffer, s.buffer[1:])
 				s.bufferIndex -= 1
+
+				if s.returnInvalidFrames {
+					return frame, err
+				}
 			}
 		} else {
 			copy(s.buffer, s.buffer[1:])

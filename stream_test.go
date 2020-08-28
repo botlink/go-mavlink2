@@ -26,7 +26,7 @@ func TestReadFrames(t *testing.T) {
 		inputFrames := make(chan mavlink2.Frame, 1)
 		buf := bufReadWriteCloser{bytes.NewBuffer(mav2Heartbeat)}
 		dialects := mavlink2.Dialects{common.Dialect{}, ardupilotmega.Dialect{}}
-		mavlinkStream := mavlink2.NewFrameStream(buf, inputFrames, dialects)
+		mavlinkStream := mavlink2.NewFrameStream(buf, inputFrames, dialects, false)
 
 		ctx := context.Background()
 		go mavlinkStream.ReadContext(ctx)
@@ -48,7 +48,7 @@ func TestReadFrames(t *testing.T) {
 		inputFrames := make(chan mavlink2.Frame, 1)
 		buf := bufReadWriteCloser{bytes.NewBuffer(msg)}
 		dialects := mavlink2.Dialects{common.Dialect{}, ardupilotmega.Dialect{}}
-		mavlinkStream := mavlink2.NewFrameStream(buf, inputFrames, dialects)
+		mavlinkStream := mavlink2.NewFrameStream(buf, inputFrames, dialects, false)
 
 		ctx := context.Background()
 		go mavlinkStream.ReadContext(ctx)
@@ -71,7 +71,7 @@ func TestReadFrames(t *testing.T) {
 		inputFrames := make(chan mavlink2.Frame, 1)
 		buf := bufReadWriteCloser{bytes.NewBuffer(msg)}
 		dialects := mavlink2.Dialects{common.Dialect{}, ardupilotmega.Dialect{}}
-		mavlinkStream := mavlink2.NewFrameStream(buf, inputFrames, dialects)
+		mavlinkStream := mavlink2.NewFrameStream(buf, inputFrames, dialects, false)
 
 		ctx := context.Background()
 		go mavlinkStream.ReadContext(ctx)
@@ -87,8 +87,6 @@ func TestReadFrames(t *testing.T) {
 	})
 
 	t.Run("MultipleHeartbeats", func(t *testing.T) {
-		// Prepend an extra start byte (and length and compatibility
-		// bytes that won't cause us to read past the end of buf)
 		msg := []byte{}
 		msg = append(msg, mav2Heartbeat...)
 		junk := []byte{253, 9, 0}
@@ -99,7 +97,7 @@ func TestReadFrames(t *testing.T) {
 		inputFrames := make(chan mavlink2.Frame, 1)
 		buf := bufReadWriteCloser{bytes.NewBuffer(msg)}
 		dialects := mavlink2.Dialects{common.Dialect{}, ardupilotmega.Dialect{}}
-		mavlinkStream := mavlink2.NewFrameStream(buf, inputFrames, dialects)
+		mavlinkStream := mavlink2.NewFrameStream(buf, inputFrames, dialects, false)
 
 		ctx := context.Background()
 		go mavlinkStream.ReadContext(ctx)
@@ -123,7 +121,7 @@ func TestReadFrames(t *testing.T) {
 		inputFrames := make(chan mavlink2.Frame, 1)
 		buf := bufReadWriteCloser{bytes.NewBuffer(msg)}
 		dialects := mavlink2.Dialects{common.Dialect{}, ardupilotmega.Dialect{}}
-		mavlinkStream := mavlink2.NewFrameStream(buf, inputFrames, dialects)
+		mavlinkStream := mavlink2.NewFrameStream(buf, inputFrames, dialects, false)
 
 		ctx := context.Background()
 		go mavlinkStream.ReadContext(ctx)
@@ -141,7 +139,7 @@ func TestReadFrames(t *testing.T) {
 		inputFrames := make(chan mavlink2.Frame, 1)
 		buf := bufReadWriteCloser{bytes.NewBuffer(msg)}
 		dialects := mavlink2.Dialects{common.Dialect{}, ardupilotmega.Dialect{}}
-		mavlinkStream := mavlink2.NewFrameStream(buf, inputFrames, dialects)
+		mavlinkStream := mavlink2.NewFrameStream(buf, inputFrames, dialects, false)
 
 		ctx := context.Background()
 		go mavlinkStream.ReadContext(ctx)
@@ -159,7 +157,7 @@ func TestReadFrames(t *testing.T) {
 		inputFrames := make(chan mavlink2.Frame, 1)
 		buf := bufReadWriteCloser{bytes.NewBuffer(msg)}
 		dialects := mavlink2.Dialects{common.Dialect{}, ardupilotmega.Dialect{}}
-		mavlinkStream := mavlink2.NewFrameStream(buf, inputFrames, dialects)
+		mavlinkStream := mavlink2.NewFrameStream(buf, inputFrames, dialects, false)
 
 		ctx := context.Background()
 		go mavlinkStream.ReadContext(ctx)
@@ -171,6 +169,86 @@ func TestReadFrames(t *testing.T) {
 			t.Errorf("Received message when expecting no message due to bad CRC")
 		}
 	})
+
+	t.Run("Mavlink1-ReturnInvalidFrames", func(t *testing.T) {
+		// Generated using pymavlink, system time message, 1 added to last byte to invalidate CRC
+		msg := []byte{254, 12, 0, 255, 0, 2, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 177, 130}
+
+		inputFrames := make(chan mavlink2.Frame, 1)
+		buf := bufReadWriteCloser{bytes.NewBuffer(msg)}
+		dialects := mavlink2.Dialects{common.Dialect{}, ardupilotmega.Dialect{}}
+		mavlinkStream := mavlink2.NewFrameStream(buf, inputFrames, dialects, true)
+
+		ctx := context.Background()
+		go mavlinkStream.ReadContext(ctx)
+
+		_, ok := <-mavlinkStream.Read()
+		if !ok {
+			t.Errorf("Unable to read from stream")
+		}
+	})
+
+	t.Run("Mav2HeartbeatBadCrc-ReturnInvalidFrames", func(t *testing.T) {
+		var msg []byte
+		msg = append(msg, mav2Heartbeat...)
+		msg[len(msg)-1] = msg[len(msg)-1] + 1
+		inputFrames := make(chan mavlink2.Frame, 1)
+		buf := bufReadWriteCloser{bytes.NewBuffer(msg)}
+		dialects := mavlink2.Dialects{common.Dialect{}, ardupilotmega.Dialect{}}
+		mavlinkStream := mavlink2.NewFrameStream(buf, inputFrames, dialects, true)
+
+		ctx := context.Background()
+		go mavlinkStream.ReadContext(ctx)
+
+		_, ok := <-mavlinkStream.Read()
+
+		// Should have still received a frame as we created FrameStream
+		// that returns invalid frames.
+		if !ok {
+			t.Errorf("Did not receive invalid frame when FrameStream configured to return invalid frames.")
+		}
+	})
+
+	t.Run("Mavlink1and2-ReturnInvalidFrames", func(t *testing.T) {
+		var msgs [][]byte
+		msgs = append(msgs, mav2Heartbeat)
+		junk := []byte{253, 9, 0}
+		msgs = append(msgs, junk)
+		msgs = append(msgs, mav2Heartbeat)
+		msgs = append(msgs, []byte{254, 12, 0, 255, 0, 2, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 177, 129})
+		msgs = append(msgs, []byte{254, 12, 0, 255, 0, 123, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 177, 129})
+		msgs = append(msgs, mav2Heartbeat)
+
+		var streamBuffer []byte
+		for i := 0; i < len(msgs); i++ {
+			streamBuffer = append(streamBuffer, msgs[i]...)
+		}
+
+		inputFrames := make(chan mavlink2.Frame, 1)
+		buf := bufReadWriteCloser{bytes.NewBuffer(streamBuffer)}
+		dialects := mavlink2.Dialects{common.Dialect{}, ardupilotmega.Dialect{}}
+		mavlinkStream := mavlink2.NewFrameStream(buf, inputFrames, dialects, true)
+
+		ctx := context.Background()
+		go mavlinkStream.ReadContext(ctx)
+
+		for i := 0; i < len(msgs); i++ {
+			recvd, ok := <-mavlinkStream.Read()
+
+			if !ok {
+				t.Errorf("Unable to read from stream")
+				return
+			}
+
+			expectedLength := msgs[i][1]
+			actualLength := recvd.GetMessageLength()
+			if actualLength != expectedLength {
+				t.Errorf("Did not get expected message length. Actual %d vs expected %d",
+					actualLength, expectedLength)
+			}
+		}
+	})
+
 }
 
 func verifyHeartbeatFrame(frame mavlink2.Frame, t *testing.T) {
