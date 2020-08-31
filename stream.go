@@ -49,6 +49,13 @@ type FrameParser func(Frame) (Message, error)
 var ErrUserClosed = errors.New("User closed")
 var ErrWriteChannelClosed = errors.New("Write channel closed")
 
+type frameLoggingMetaData struct {
+	version           int
+	messageID         uint32
+	senderSystemID    uint8
+	senderComponentID uint8
+}
+
 // FrameStream represents a stream of MAVLink Frames
 type FrameStream struct {
 	sync.RWMutex
@@ -64,6 +71,7 @@ type FrameStream struct {
 	bufferIndex         int
 	dialects            Dialects
 	returnInvalidFrames bool
+	invalidLogged       map[frameLoggingMetaData]bool
 }
 
 // See https://mavlink.io/en/guide/serialization.html
@@ -82,6 +90,7 @@ func NewFrameStream(rwc io.ReadWriteCloser, inputFrames chan Frame, dialects Dia
 		bufferIndex:         0,
 		dialects:            dialects,
 		returnInvalidFrames: returnInvalidFrames,
+		invalidLogged:       make(map[frameLoggingMetaData]bool),
 	}
 
 	return f
@@ -212,10 +221,17 @@ func (s *FrameStream) readFrame(reader *bufio.Reader) (frame Frame, err error) {
 			if err = s.dialects.Validate(frame); err == nil {
 				valid = true
 			} else {
-				// TODO(cgrahn): print some info here
-				// identifying the message so we know if we're
-				// missing the CRC seed for an expected message
-				fmt.Println("Got invalid frame")
+				// Check if already logged so we don't spam the logs
+				metaData := frameLoggingMetaData{frame.GetVersion(),
+					frame.GetMessageID(),
+					frame.GetSenderSystemID(),
+					frame.GetSenderComponentID()}
+				if _, ok := s.invalidLogged[metaData]; !ok {
+					fmt.Printf("Got invalid frame, version %d, message id %d, system id %d, component id %d\n",
+						metaData.version, metaData.messageID,
+						metaData.senderSystemID, metaData.senderComponentID)
+					s.invalidLogged[metaData] = true
+				}
 			}
 
 			if valid {
