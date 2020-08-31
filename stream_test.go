@@ -191,6 +191,7 @@ func TestReadFrames(t *testing.T) {
 	t.Run("Mav2HeartbeatBadCrc-ReturnInvalidFrames", func(t *testing.T) {
 		var msg []byte
 		msg = append(msg, mav2Heartbeat...)
+		// modify CRC to make invalid
 		msg[len(msg)-1] = msg[len(msg)-1] + 1
 		inputFrames := make(chan mavlink2.Frame, 1)
 		buf := bufReadWriteCloser{bytes.NewBuffer(msg)}
@@ -215,7 +216,9 @@ func TestReadFrames(t *testing.T) {
 		junk := []byte{253, 9, 0}
 		msgs = append(msgs, junk)
 		msgs = append(msgs, mav2Heartbeat)
+		// Mavlink 1 system time message
 		msgs = append(msgs, []byte{254, 12, 0, 255, 0, 2, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 177, 129})
+		// Change message ID of Mavlink 1 system time message to "corrupt" message (2 -> 123)
 		msgs = append(msgs, []byte{254, 12, 0, 255, 0, 123, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 177, 129})
 		msgs = append(msgs, mav2Heartbeat)
 
