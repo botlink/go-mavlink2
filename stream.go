@@ -213,7 +213,7 @@ func (s *FrameStream) readFrame(reader *bufio.Reader) (frame Frame, err error) {
 			}
 			// validate
 			valid := false
-			frame, err = FrameFromBytes(s.buffer, false)
+			frame, err = FrameFromBytes(s.buffer, frameLength, false)
 			if err != nil {
 				return frame, err
 			}
@@ -236,13 +236,13 @@ func (s *FrameStream) readFrame(reader *bufio.Reader) (frame Frame, err error) {
 
 			if valid {
 				// need to copy frame as it's constructed using s.buffer without copying from s.buffer
-				frame, err = FrameFromBytes(s.buffer, true)
+				frame, err = FrameFromBytes(s.buffer, frameLength, true)
 				copy(s.buffer, s.buffer[frameLength:])
 				s.bufferIndex -= int(frameLength)
 				return frame, err
 			} else {
 				if s.returnInvalidFrames {
-					frame, err = FrameFromBytes(s.buffer, true)
+					frame, err = FrameFromBytes(s.buffer, frameLength, true)
 				}
 
 				copy(s.buffer, s.buffer[1:])

@@ -266,7 +266,7 @@ var ErrValueTooLong = fmt.Errorf("The input string was too long and was truncate
 
 // FrameFromBytes returns a Frame containing the input bytes,
 // or an error if the first byte is not a valid frame start
-func FrameFromBytes(raw []byte, makeCopy bool) (frame Frame, err error) {
+func FrameFromBytes(raw []byte, frameLength uint16, makeCopy bool) (frame Frame, err error) {
 	if len(raw) == 0 {
 		err = ErrFrameTooShort
 		return
@@ -277,7 +277,7 @@ func FrameFromBytes(raw []byte, makeCopy bool) (frame Frame, err error) {
 	if startByte == V1StartByte {
 		if makeCopy {
 			var rawCopy []byte
-			rawCopy = append(rawCopy, raw...)
+			rawCopy = append(rawCopy, raw[:frameLength]...)
 			frame = FrameV1(rawCopy)
 		} else {
 			frame = FrameV1(raw)
@@ -285,7 +285,7 @@ func FrameFromBytes(raw []byte, makeCopy bool) (frame Frame, err error) {
 	} else if startByte == V2StartByte {
 		if makeCopy {
 			var rawCopy []byte
-			rawCopy = append(rawCopy, raw...)
+			rawCopy = append(rawCopy, raw[:frameLength]...)
 			frame = FrameV2(rawCopy)
 		} else {
 			frame = FrameV2(raw)
