@@ -72,6 +72,14 @@ type FrameStream struct {
 	dialects            Dialects
 	returnInvalidFrames bool
 	invalidLogged       map[frameLoggingMetaData]bool
+	logger              FrameLogger
+}
+
+// An interface for logging frames read from the stream and for
+// logging frames written to the stream
+type FrameLogger interface {
+	LogRead(msg []byte) error
+	LogWritten(msg []byte) error
 }
 
 // See https://mavlink.io/en/guide/serialization.html
@@ -79,6 +87,10 @@ type FrameStream struct {
 const maxFrameLength = 279
 
 func NewFrameStream(rwc io.ReadWriteCloser, inputFrames chan Frame, dialects Dialects, returnInvalidFrames bool) *FrameStream {
+	return NewFrameStreamWithLogger(rwc, inputFrames, dialects, returnInvalidFrames, nil)
+}
+
+func NewFrameStreamWithLogger(rwc io.ReadWriteCloser, inputFrames chan Frame, dialects Dialects, returnInvalidFrames bool, logger FrameLogger) *FrameStream {
 	f := &FrameStream{
 		inputFrames:         inputFrames,
 		outputFrames:        make(chan Frame),
@@ -91,6 +103,7 @@ func NewFrameStream(rwc io.ReadWriteCloser, inputFrames chan Frame, dialects Dia
 		dialects:            dialects,
 		returnInvalidFrames: returnInvalidFrames,
 		invalidLogged:       make(map[frameLoggingMetaData]bool),
+		logger:              logger,
 	}
 
 	return f
@@ -128,6 +141,10 @@ func (s *FrameStream) close(err error) {
 	})
 }
 
+func (s *FrameStream) GetCloseErr() error {
+	return s.closeErr
+}
+
 func (s *FrameStream) WriteContext(ctx context.Context) {
 	for {
 		select {
@@ -144,6 +161,9 @@ func (s *FrameStream) WriteContext(ctx context.Context) {
 			if err != nil {
 				s.close(err)
 				return
+			}
+			if s.logger != nil {
+				s.logger.LogWritten(frame.Bytes())
 			}
 		}
 	}
@@ -162,7 +182,9 @@ func (s *FrameStream) ReadContext(ctx context.Context) {
 				s.close(err)
 				return
 			}
-
+			if s.logger != nil {
+				s.logger.LogRead(frame.Bytes())
+			}
 			s.outputFrames <- frame
 		}
 	}

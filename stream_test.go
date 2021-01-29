@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"testing"
+	"time"
 
 	"github.com/botlink/go-mavlink2"
 	"github.com/botlink/go-mavlink2/ardupilotmega"
@@ -280,4 +281,67 @@ func verifyHeartbeatFrame(frame mavlink2.Frame, t *testing.T) {
 	if err := dialects.Validate(frame); err != nil {
 		t.Errorf("Error verifying packet checksum: %v", err)
 	}
+}
+
+type testLogger struct {
+	bufRead    *bytes.Buffer
+	bufWritten *bytes.Buffer
+}
+
+func (t testLogger) LogRead(msg []byte) error {
+	t.bufRead.Write(msg)
+	return nil
+}
+
+func (t testLogger) LogWritten(msg []byte) error {
+	t.bufWritten.Write(msg)
+	return nil
+}
+
+func TestFrameLogging(t *testing.T) {
+	t.Run("LogRead", func(t *testing.T) {
+		logger := testLogger{new(bytes.Buffer), new(bytes.Buffer)}
+		inputFrames := make(chan mavlink2.Frame, 1)
+		buf := bufReadWriteCloser{bytes.NewBuffer(mav2Heartbeat)}
+		dialects := mavlink2.Dialects{common.Dialect{}, ardupilotmega.Dialect{}}
+		mavlinkStream := mavlink2.NewFrameStreamWithLogger(buf, inputFrames, dialects, false, logger)
+
+		ctx := context.Background()
+		go mavlinkStream.ReadContext(ctx)
+
+		recvd, ok := <-mavlinkStream.Read()
+
+		if !ok {
+			t.Errorf("Unable to read from stream")
+			return
+		}
+
+		verifyHeartbeatFrame(recvd, t)
+		if bytes.Compare(recvd.Bytes(), logger.bufRead.Bytes()) != 0 {
+			t.Errorf("Message read does not match message logged. %v vs %v\n", recvd.Bytes(), logger.bufRead.Bytes())
+		}
+	})
+
+	t.Run("LogWritten", func(t *testing.T) {
+		logger := testLogger{new(bytes.Buffer), new(bytes.Buffer)}
+		inputFrames := make(chan mavlink2.Frame, 1)
+		msg := mavlink2.FrameV2(mav2Heartbeat)
+		buf := bufReadWriteCloser{new(bytes.Buffer)}
+		buf.Grow(len(msg))
+		dialects := mavlink2.Dialects{common.Dialect{}, ardupilotmega.Dialect{}}
+		mavlinkStream := mavlink2.NewFrameStreamWithLogger(buf, inputFrames, dialects, false, logger)
+
+		ctx := context.Background()
+		go mavlinkStream.WriteContext(ctx)
+
+		mavlinkStream.Write() <- msg
+		// wait for goroutine
+		time.Sleep(time.Millisecond * 100)
+		if mavlinkStream.GetCloseErr() != nil {
+			t.Errorf("error %s\n", mavlinkStream.GetCloseErr().Error())
+		}
+		if bytes.Compare(msg.Bytes(), logger.bufWritten.Bytes()) != 0 {
+			t.Errorf("Message written does not match message logged. %v vs %v\n", msg.Bytes(), logger.bufWritten.Bytes())
+		}
+	})
 }
