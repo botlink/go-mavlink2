@@ -218,7 +218,7 @@ func (s *FrameStream) readFrame(reader *bufio.Reader) (frame Frame, err error) {
 			bytesNeeded := 3 - s.bufferIndex
 			n, err := io.ReadAtLeast(reader, s.buffer[s.bufferIndex:], bytesNeeded)
 			if err != nil {
-				fmt.PrintF(hex.Dump(frame))
+				fmt.Printf(hex.Dump(frame))
 				return frame, err
 			}
 			s.bufferIndex += n
@@ -231,7 +231,7 @@ func (s *FrameStream) readFrame(reader *bufio.Reader) (frame Frame, err error) {
 				//bytes := make([]byte, bytesNeeded)
 				n, err := io.ReadAtLeast(reader, s.buffer[s.bufferIndex:], bytesNeeded)
 				if err != nil {
-					fmt.PrintF(hex.Dump(frame))
+					fmt.Printf(hex.Dump(frame))
 					return frame, err
 				}
 				s.bufferIndex += n
@@ -241,7 +241,7 @@ func (s *FrameStream) readFrame(reader *bufio.Reader) (frame Frame, err error) {
 			valid := false
 			frame, err = FrameFromBytes(s.buffer, frameLength, false)
 			if err != nil {
-				fmt.PrintF(hex.Dump(frame))
+				fmt.Printf(hex.Dump(frame))
 				return frame, err
 			}
 
@@ -266,7 +266,7 @@ func (s *FrameStream) readFrame(reader *bufio.Reader) (frame Frame, err error) {
 				frame, err = FrameFromBytes(s.buffer, frameLength, true)
 				copy(s.buffer, s.buffer[frameLength:])
 				s.bufferIndex -= int(frameLength)
-				fmt.PrintF(hex.Dump(frame))
+				fmt.Printf(hex.Dump(frame))
 				return frame, err
 			} else {
 				if s.returnInvalidFrames {
@@ -277,7 +277,7 @@ func (s *FrameStream) readFrame(reader *bufio.Reader) (frame Frame, err error) {
 				s.bufferIndex -= 1
 
 				if s.returnInvalidFrames {
-					fmt.PrintF(hex.Dump(frame))
+					fmt.Printf(hex.Dump(frame))
 					return frame, err
 				}
 			}
