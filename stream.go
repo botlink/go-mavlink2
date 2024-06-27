@@ -233,6 +233,7 @@ func (s *FrameStream) readFrame(reader *bufio.Reader) (frame Frame, err error) {
 				}
 				s.bufferIndex += n
 			}
+
 			// validate
 			valid := false
 			frame, err = FrameFromBytes(s.buffer, frameLength, false)

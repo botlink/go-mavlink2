@@ -33,8 +33,8 @@ import (
 // MessageMeta stores metadata information about a MAVLink message
 type MessageMeta struct {
 	CRCExtra      byte
-	MinimumLength uint8
-	MaximumLength uint8
+	MinimumLength uint
+	MaximumLength uint
 }
 
 // Message defines a common interface for MAVLink messages
