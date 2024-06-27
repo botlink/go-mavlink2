@@ -60,12 +60,12 @@ func (frame FrameV1) GetVersion() int {
 
 // GetMessageLength returns the length of the message contained in the Frame
 func (frame FrameV1) GetMessageLength() uint {
-	return frame[1]
+	return uint(frame[1])
 }
 
 // GetMessageSequence the sequence number of the message contained in the Frame
 func (frame FrameV1) GetMessageSequence() uint {
-	return frame[2]
+	return uint(frame[2])
 }
 
 // GetMessageBytes returns the message contained in the Frame as a byte array
@@ -135,7 +135,7 @@ func (frame FrameV2) GetVersion() int {
 
 // GetMessageLength returns the length of the message contained in the Frame
 func (frame FrameV2) GetMessageLength() uint {
-	return frame[1]
+	return uint(frame[1])
 }
 
 // GetIncompatibilityFlags returns the incompatibility flags for the Frame
@@ -150,7 +150,7 @@ func (frame FrameV2) GetCompatibilityFlags() uint8 {
 
 // GetMessageSequence the sequence number of the message contained in the Frame
 func (frame FrameV2) GetMessageSequence() uint {
-	return frame[4]
+	return uint(frame[4])
 }
 
 // GetSenderSystemID returns the ID of the system that sent the Frame
@@ -174,7 +174,7 @@ func (frame FrameV2) GetMessageID() uint32 {
 
 // GetMessageBytes returns the message contained in the Frame as a byte array
 func (frame FrameV2) GetMessageBytes() []byte {
-	start := 10
+	start := uint(10)
 	end := start + frame.GetMessageLength()
 	return frame[start:end]
 }
