@@ -34,8 +34,8 @@ import (
 // Frame represents a MAVLink frame containing a MAVLink message
 type Frame interface {
 	GetVersion() int
-	GetMessageLength() uint8
-	GetMessageSequence() uint8
+	GetMessageLength() uint
+	GetMessageSequence() uint
 	GetSenderSystemID() uint8
 	GetSenderComponentID() uint8
 	GetMessageBytes() []byte
@@ -59,12 +59,12 @@ func (frame FrameV1) GetVersion() int {
 }
 
 // GetMessageLength returns the length of the message contained in the Frame
-func (frame FrameV1) GetMessageLength() uint8 {
+func (frame FrameV1) GetMessageLength() uint {
 	return frame[1]
 }
 
 // GetMessageSequence the sequence number of the message contained in the Frame
-func (frame FrameV1) GetMessageSequence() uint8 {
+func (frame FrameV1) GetMessageSequence() uint {
 	return frame[2]
 }
 
@@ -90,7 +90,7 @@ func (frame FrameV1) GetMessageID() uint32 {
 
 // GetChecksum returns the checksum of the Frame contents
 func (frame FrameV1) GetChecksum() uint16 {
-	start := int(frame.GetMessageLength()) + 6
+	start := frame.GetMessageLength() + 6
 	end := start + 2
 	return binary.LittleEndian.Uint16(frame[start:end])
 }
@@ -98,7 +98,7 @@ func (frame FrameV1) GetChecksum() uint16 {
 // GetChecksumInput returns the contents of the Frame used to calculate the checksum
 func (frame FrameV1) GetChecksumInput() []byte {
 	start := 1
-	end := int(frame.GetMessageLength()) + 6
+	end := frame.GetMessageLength() + 6
 	return frame[start:end]
 }
 
@@ -134,7 +134,7 @@ func (frame FrameV2) GetVersion() int {
 }
 
 // GetMessageLength returns the length of the message contained in the Frame
-func (frame FrameV2) GetMessageLength() uint8 {
+func (frame FrameV2) GetMessageLength() uint {
 	return frame[1]
 }
 
@@ -149,7 +149,7 @@ func (frame FrameV2) GetCompatibilityFlags() uint8 {
 }
 
 // GetMessageSequence the sequence number of the message contained in the Frame
-func (frame FrameV2) GetMessageSequence() uint8 {
+func (frame FrameV2) GetMessageSequence() uint {
 	return frame[4]
 }
 
@@ -175,13 +175,13 @@ func (frame FrameV2) GetMessageID() uint32 {
 // GetMessageBytes returns the message contained in the Frame as a byte array
 func (frame FrameV2) GetMessageBytes() []byte {
 	start := 10
-	end := start + int(frame.GetMessageLength())
+	end := start + frame.GetMessageLength()
 	return frame[start:end]
 }
 
 // GetChecksum returns the checksum of the Frame contents
 func (frame FrameV2) GetChecksum() uint16 {
-	start := int(frame.GetMessageLength()) + 10
+	start := frame.GetMessageLength() + 10
 	end := start + 2
 	return binary.LittleEndian.Uint16(frame[start:end])
 }
@@ -189,7 +189,7 @@ func (frame FrameV2) GetChecksum() uint16 {
 // GetChecksumInput returns the contents of the Frame used to calculate the checksum
 func (frame FrameV2) GetChecksumInput() []byte {
 	start := 1
-	end := int(frame.GetMessageLength()) + 10
+	end := frame.GetMessageLength() + 10
 	return frame[start:end]
 }
 

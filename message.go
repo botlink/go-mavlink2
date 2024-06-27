@@ -85,6 +85,12 @@ func (m *UnknownMessage) GetID() uint32 {
 }
 
 func (m *UnknownMessage) Read(frame Frame) (err error) {
+	fmt.Printf("frame.GetMessageLength: %d\n", frame.GetMessageLength())
+	fmt.Printf(hex.Dump(frame.Bytes()))
+	if frame.GetMessageLength() < 0 {
+		err = fmt.Errorf("Message too short")
+		return
+	}
 	rawBytes := make([]byte, frame.GetMessageLength())
 
 	copy(rawBytes, frame.GetMessageBytes())
